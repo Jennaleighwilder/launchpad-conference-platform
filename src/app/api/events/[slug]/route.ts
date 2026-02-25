@@ -8,12 +8,38 @@ function hasSupabase(): boolean {
   );
 }
 
+const DEMO_CONFERENCE = {
+  id: 'demo',
+  slug: 'demo-conference',
+  name: 'SuperNova AI Summit 2026',
+  topic: 'AI & Machine Learning',
+  topic_key: 'ai',
+  city: 'Amsterdam, Netherlands',
+  date: '2026-03-25',
+  capacity: 2500,
+  budget: '',
+  vibe: '',
+  venue: { name: 'Beurs van Berlage', address: 'Damrak 243, Amsterdam', capacity_note: 'Historic venue in the heart of Amsterdam' },
+  tracks: ['AI & Machine Learning', 'Startup Growth', 'Enterprise Innovation'],
+  speakers: [],
+  schedule: [],
+  pricing: { early_bird: '€299', regular: '€499', vip: '€999', currency: 'EUR' },
+  description: 'Where AI meets ambition. A two-day summit bringing together innovators, founders, and enterprise leaders.',
+  tagline: 'Where AI meets ambition',
+  created_at: new Date().toISOString(),
+  status: 'ticket_sales' as const,
+};
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     const { slug } = await params;
+
+    if (slug === 'demo-conference') {
+      return NextResponse.json({ event: DEMO_CONFERENCE });
+    }
 
     // Try Supabase first
     if (hasSupabase()) {

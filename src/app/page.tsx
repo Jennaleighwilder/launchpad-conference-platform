@@ -95,7 +95,7 @@ function CountdownWidget() {
         <span>{diff.s}s</span>
       </div>
       <p className="text-xs mt-2" style={{ color: '#666' }}>Avg. generation time: 47s</p>
-      <a href="#" className="text-sm mt-3 block" style={{ color: 'var(--color-accent)' }}>Add to calendar 📅</a>
+      <button type="button" onClick={() => alert('Calendar invite coming soon!')} className="text-sm mt-3 block text-left w-full" style={{ color: 'var(--color-accent)', background: 'none', border: 'none', cursor: 'pointer' }}>Add to calendar 📅</button>
     </div>
   );
 }
@@ -124,10 +124,10 @@ export default function HomePage() {
           <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem' }}>Launchpad</span>
         </div>
         <div className="flex items-center gap-6">
-          <Link href="#how-it-works" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>How It Works</Link>
-          <Link href="/dashboard" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Demo Events</Link>
+          <a href="#how-it-works" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }} onClick={(e) => { e.preventDefault(); document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }); }}>How It Works</a>
+          <Link href="/e/demo-conference" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Demo Events</Link>
           <Link href="/sponsor" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Sponsor</Link>
-          <Link href="/affiliate" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Affiliate</Link>
+          <button type="button" onClick={() => alert('Affiliate program coming soon!')} className="text-sm hover:text-[var(--color-accent)] transition-colors bg-transparent border-none cursor-pointer p-0" style={{ color: 'var(--color-text-muted)' }}>Affiliate</button>
           <Link href="/create" className="btn-primary" style={{ padding: '0.5rem 1.5rem', fontSize: '0.875rem' }}>Create Event →</Link>
         </div>
       </nav>
@@ -173,7 +173,8 @@ export default function HomePage() {
             <div className="flex gap-4 flex-wrap">
               <Link href="/create" className="btn-primary" style={{ fontSize: '1.125rem' }}>Generate Your Event →</Link>
               <a href="#how-it-works" className="px-6 py-3 rounded-lg font-semibold border transition-all hover:border-[var(--color-accent)]"
-                style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'var(--color-text)' }}>See How It Works →</a>
+                style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'var(--color-text)' }}
+                onClick={(e) => { e.preventDefault(); document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }); }}>See How It Works →</a>
             </div>
           </div>
           <div className="hidden md:block">
@@ -194,9 +195,10 @@ export default function HomePage() {
               Launchpad eliminates months of planning. Drop your topic, city, and date — AI generates speakers, schedule, venue, and pricing. A complete shareable event page in under a minute.
             </p>
             <div className="space-y-4">
-              {['Explore the AI engine ↗', 'See demo events ↗', 'View pricing ↗', 'Start generating ↗'].map((label) => (
-                <a key={label} href={label.includes('demo') ? '/dashboard' : label.includes('pricing') ? '#pricing' : '/create'} className="block py-2 border-b border-transparent hover:border-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text)' }}>{label}</a>
-              ))}
+              <Link href="/create" className="block py-2 border-b border-transparent hover:border-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text)' }}>Explore the AI engine ↗</Link>
+              <Link href="/e/demo-conference" className="block py-2 border-b border-transparent hover:border-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text)' }}>See demo events ↗</Link>
+              <a href="#pricing" className="block py-2 border-b border-transparent hover:border-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text)' }} onClick={(e) => { e.preventDefault(); document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' }); }}>View pricing ↗</a>
+              <Link href="/create" className="block py-2 border-b border-transparent hover:border-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text)' }}>Start generating ↗</Link>
             </div>
           </RevealSection>
           <div className="md:col-span-3 flex flex-col gap-6">
@@ -286,8 +288,8 @@ export default function HomePage() {
               <h2 className="text-4xl font-normal" style={{ fontFamily: 'var(--font-display)' }}>for Demo Conference 2026</h2>
             </div>
             <div className="flex gap-3">
-              <Link href="/dashboard" className="btn-primary text-sm py-2">Explore the program →</Link>
-              <a href="/dashboard" className="px-4 py-2 rounded-lg border text-sm" style={{ borderColor: 'rgba(255,255,255,0.3)' }}>Meet all speakers →</a>
+              <Link href="/e/demo-conference" className="btn-primary text-sm py-2">Explore the program →</Link>
+              <Link href="/e/demo-conference" className="px-4 py-2 rounded-lg border text-sm" style={{ borderColor: 'rgba(255,255,255,0.3)' }}>Meet all speakers →</Link>
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
@@ -316,7 +318,7 @@ export default function HomePage() {
           <p className="text-center max-w-2xl mx-auto mb-12" style={{ color: 'var(--color-text-muted)' }}>Explore generated events from our platform.</p>
           <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory" style={{ scrollbarWidth: 'none' }}>
             {DEMO_EVENTS.map((e) => (
-              <Link key={e.slug} href={e.slug.startsWith('ai-') ? '/e/ai-austin-ovw4' : '/dashboard'} className="flex-shrink-0 w-72 snap-center rounded-2xl overflow-hidden group" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <Link key={e.slug} href="/e/demo-conference" className="flex-shrink-0 w-72 snap-center rounded-2xl overflow-hidden group" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="h-48 relative">
                   <Image src={e.img} alt={e.name} fill className="object-cover" />
                 </div>
@@ -442,48 +444,48 @@ export default function HomePage() {
               <div className="text-xs uppercase tracking-wider mb-4" style={{ color: 'var(--color-text-muted)' }}>Product</div>
               <div className="space-y-2">
                 <Link href="/create" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Generate Event</Link>
-                <Link href="/dashboard" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Demo Events</Link>
+                <Link href="/e/demo-conference" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Demo Events</Link>
                 <Link href="/sponsor" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Sponsor</Link>
-                <a href="#how-it-works" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>AI Engine</a>
+                <Link href="/create" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>AI Engine</Link>
                 <Link href="/create" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Swarm Mode</Link>
               </div>
             </div>
             <div>
               <div className="text-xs uppercase tracking-wider mb-4" style={{ color: 'var(--color-text-muted)' }}>Resources</div>
               <div className="space-y-2">
-                <a href="#" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Documentation</a>
-                <a href="#" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>API</a>
-                <a href="#" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Blog</a>
+                <button type="button" onClick={() => alert('Documentation coming soon!')} className="block text-sm hover:text-white transition-colors text-left w-full bg-transparent border-none cursor-pointer p-0" style={{ color: '#666' }}>Documentation</button>
+                <button type="button" onClick={() => alert('API docs coming soon!')} className="block text-sm hover:text-white transition-colors text-left w-full bg-transparent border-none cursor-pointer p-0" style={{ color: '#666' }}>API</button>
+                <button type="button" onClick={() => alert('Blog coming soon!')} className="block text-sm hover:text-white transition-colors text-left w-full bg-transparent border-none cursor-pointer p-0" style={{ color: '#666' }}>Blog</button>
               </div>
             </div>
             <div>
               <div className="text-xs uppercase tracking-wider mb-4" style={{ color: 'var(--color-text-muted)' }}>Company</div>
               <div className="space-y-2">
-                <a href="#" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>About</a>
-                <a href="#" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Contact</a>
+                <button type="button" onClick={() => alert('About coming soon!')} className="block text-sm hover:text-white transition-colors text-left w-full bg-transparent border-none cursor-pointer p-0" style={{ color: '#666' }}>About</button>
+                <button type="button" onClick={() => alert('Contact coming soon!')} className="block text-sm hover:text-white transition-colors text-left w-full bg-transparent border-none cursor-pointer p-0" style={{ color: '#666' }}>Contact</button>
               </div>
             </div>
             <div>
               <div className="text-xs uppercase tracking-wider mb-4" style={{ color: 'var(--color-text-muted)' }}>Legal</div>
               <div className="space-y-2">
-                <a href="#" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Privacy</a>
-                <a href="#" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Terms</a>
+                <button type="button" onClick={() => alert('Privacy coming soon!')} className="block text-sm hover:text-white transition-colors text-left w-full bg-transparent border-none cursor-pointer p-0" style={{ color: '#666' }}>Privacy</button>
+                <button type="button" onClick={() => alert('Terms coming soon!')} className="block text-sm hover:text-white transition-colors text-left w-full bg-transparent border-none cursor-pointer p-0" style={{ color: '#666' }}>Terms</button>
               </div>
             </div>
             <div>
               <div className="text-xs uppercase tracking-wider mb-4" style={{ color: 'var(--color-text-muted)' }}>Connect</div>
               <div className="flex gap-4">
-                <a href="#" className="text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Twitter</a>
-                <a href="#" className="text-sm hover:text-white transition-colors" style={{ color: '#666' }}>LinkedIn</a>
-                <a href="#" className="text-sm hover:text-white transition-colors" style={{ color: '#666' }}>GitHub</a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Twitter</a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-white transition-colors" style={{ color: '#666' }}>LinkedIn</a>
+                <a href="https://github.com/Jennaleighwilder/launchpad-conference-platform" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-white transition-colors" style={{ color: '#666' }}>GitHub</a>
               </div>
             </div>
           </div>
           <div className="pt-8 border-t flex flex-col md:flex-row items-center justify-between gap-4" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
             <p className="text-sm" style={{ color: '#666' }}>© 2026 Launchpad. All rights reserved.</p>
             <div className="flex gap-6">
-              <a href="#" className="text-sm hover:text-white transition-colors" style={{ color: '#666' }}>LinkedIn</a>
-              <a href="#" className="text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Twitter</a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-white transition-colors" style={{ color: '#666' }}>LinkedIn</a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Twitter</a>
             </div>
           </div>
         </div>
