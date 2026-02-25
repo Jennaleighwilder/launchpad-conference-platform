@@ -238,7 +238,10 @@ export default function EventPage() {
       {schedule.length > 0 && (
         <section className="px-6 py-16">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-sm font-medium uppercase tracking-wider mb-8" style={{ color: 'var(--color-text-muted)' }}>Schedule</h2>
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-sm font-medium uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Schedule</h2>
+              <Link href={`/e/${slug}/agenda`} className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-accent)' }}>View full agenda →</Link>
+            </div>
             <div className="relative">
               <div className="absolute left-4 top-0 bottom-0 w-px" style={{ background: 'rgba(255,255,255,0.1)' }} />
               <div className="space-y-0">
@@ -343,6 +346,16 @@ export default function EventPage() {
               </div>
             )}
           </div>
+        </div>
+      </section>
+
+      {/* Sponsor CTA */}
+      <section className="px-6 py-12" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="max-w-5xl mx-auto text-center mb-8">
+          <Link href="/sponsor" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all"
+            style={{ background: 'rgba(79,255,223,0.1)', border: '1px solid rgba(79,255,223,0.3)', color: 'var(--color-accent)' }}>
+            Become a Sponsor →
+          </Link>
         </div>
       </section>
 

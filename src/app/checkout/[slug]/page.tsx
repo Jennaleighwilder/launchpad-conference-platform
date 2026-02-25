@@ -4,6 +4,48 @@ import { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+function CheckoutCountdown() {
+  const [diff, setDiff] = useState({ d: 2, h: 12, m: 30, s: 0 });
+  useEffect(() => {
+    const end = new Date();
+    end.setDate(end.getDate() + 3);
+    const tick = () => {
+      const now = new Date();
+      let ms = end.getTime() - now.getTime();
+      if (ms < 0) ms = 0;
+      setDiff({
+        d: Math.floor(ms / 86400000),
+        h: Math.floor((ms % 86400000) / 3600000),
+        m: Math.floor((ms % 3600000) / 60000),
+        s: Math.floor((ms % 60000) / 1000),
+      });
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <div className="grid grid-cols-4 gap-4 text-center">
+      <div>
+        <div className="text-2xl font-bold font-mono" style={{ color: 'var(--color-accent)' }}>{diff.d}</div>
+        <div className="text-xs" style={{ color: 'var(--color-text-muted)' }}>DAYS</div>
+      </div>
+      <div>
+        <div className="text-2xl font-bold font-mono" style={{ color: 'var(--color-accent)' }}>{diff.h}</div>
+        <div className="text-xs" style={{ color: 'var(--color-text-muted)' }}>HOURS</div>
+      </div>
+      <div>
+        <div className="text-2xl font-bold font-mono" style={{ color: 'var(--color-accent)' }}>{diff.m}</div>
+        <div className="text-xs" style={{ color: 'var(--color-text-muted)' }}>MIN</div>
+      </div>
+      <div>
+        <div className="text-2xl font-bold font-mono" style={{ color: 'var(--color-accent)' }}>{diff.s}</div>
+        <div className="text-xs" style={{ color: 'var(--color-text-muted)' }}>SEC</div>
+      </div>
+    </div>
+  );
+}
+
 export default function MockCheckoutPage() {
   const params = useParams();
   const searchParams = useSearchParams();
@@ -67,8 +109,17 @@ export default function MockCheckoutPage() {
     );
   }
 
+  const deadline = new Date();
+  deadline.setDate(deadline.getDate() + 3);
+  const deadlineStr = deadline.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+
   return (
     <main className="min-h-screen" style={{ background: '#0A0A0A' }}>
+      {/* Urgency banner */}
+      <div className="py-3 px-6 text-center font-medium" style={{ background: 'var(--color-accent)', color: '#0A0A0A' }}>
+        Price Increase Extended | Register by {deadlineStr}
+      </div>
+
       <div className="max-w-4xl mx-auto px-6 py-12">
         <div className="mb-6 flex items-center justify-between">
           <Link href={`/e/${slug}`} className="text-sm hover:text-[#4FFFDF] transition-colors" style={{ color: 'var(--color-text-muted)' }}>
@@ -77,6 +128,15 @@ export default function MockCheckoutPage() {
           <span className="text-xs px-3 py-1 rounded-full" style={{ background: 'rgba(245,158,11,0.2)', color: '#F59E0B' }}>
             🔒 Demo Mode — No real charges
           </span>
+        </div>
+
+        {/* Prices increase box */}
+        <div className="rounded-xl p-6 mb-12" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <h3 className="text-lg font-semibold mb-4">Prices Increase Soon</h3>
+          <CheckoutCountdown />
+          <p className="text-sm mt-6" style={{ color: 'var(--color-text-muted)' }}>
+            Group Discount Codes: 3+ use BUY3 for 5%, 5+ use BUY5 for 10%, 10+ use BUY10 for 20% off
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-12">
