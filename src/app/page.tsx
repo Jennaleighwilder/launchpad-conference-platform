@@ -327,9 +327,9 @@ export default function HomePage() {
                   loop
                   playsInline
                   className="w-full h-full object-cover"
-                  poster="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&h=675&fit=crop"
+                  poster="https://assets.mixkit.co/videos/99786/99786-thumb-720-3.jpg"
                 >
-                  <source src="https://assets.mixkit.co/videos/13192/13192-720.mp4" type="video/mp4" />
+                  <source src="https://assets.mixkit.co/videos/99786/99786-720.mp4" type="video/mp4" />
                 </video>
               </div>
             </div>
