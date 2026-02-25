@@ -65,7 +65,7 @@ async function ensureActionRun(supabase: ReturnType<typeof createServiceClient>,
     .select('id')
     .eq('event_id', eventId)
     .eq('action_key', actionKey)
-    .single();
+    .maybeSingle();
   if (error) throw new Error(`lifecycle_log required: ${error.message}. Run supabase/migrations/002_event_lifecycle.sql`);
   return !data;
 }
