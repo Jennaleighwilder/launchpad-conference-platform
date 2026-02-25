@@ -66,18 +66,18 @@ async function ensureActionRun(supabase: ReturnType<typeof createServiceClient>,
     .eq('event_id', eventId)
     .eq('action_key', actionKey)
     .single();
-  if (error) return true; // Table may not exist yet, proceed
+  if (error) throw new Error(`lifecycle_log required: ${error.message}. Run supabase/migrations/002_event_lifecycle.sql`);
   return !data;
 }
 
 async function logAction(supabase: ReturnType<typeof createServiceClient>, eventId: string, fromStatus: string, toStatus: string, actionKey: string): Promise<void> {
-  await supabase.from('lifecycle_log').insert({
+  const { error } = await supabase.from('lifecycle_log').insert({
     event_id: eventId,
     from_status: fromStatus,
     to_status: toStatus,
     action_key: actionKey,
   });
-  // Ignore insert errors (lifecycle_log may not exist before migration)
+  if (error) throw new Error(`lifecycle_log insert failed: ${error.message}`);
 }
 
 async function transitionAndRun(

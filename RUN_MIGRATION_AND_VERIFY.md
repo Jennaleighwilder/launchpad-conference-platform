@@ -1,5 +1,7 @@
 # Run migration and verify — do these in order
 
+**The lifecycle_log table is required.** The engine will not run without it. It is the machine's memory — without it, actions can run twice (duplicate emails, repeated transitions).
+
 ## 1. Run the migration (Supabase)
 
 1. Open https://supabase.com/dashboard/project/kzfdxrncortatzrfoxbd/sql/new
@@ -22,10 +24,14 @@ Table Editor → **events** → check these columns exist:
 
 ## 3. Add CRON_SECRET (Vercel)
 
+**If CRON_SECRET was ever pasted in chat, delete it and create a new one.**
+
 1. Vercel → Project → Settings → Environment Variables
-2. Add: `CRON_SECRET` = (generate a long random string, e.g. `openssl rand -hex 32`)
-3. Apply to **Production** and **Preview**
-4. Redeploy (or wait for the next deploy)
+2. Delete any existing `CRON_SECRET`
+3. Generate new: `openssl rand -hex 32`
+4. Add: `CRON_SECRET` = (the new value — never paste it anywhere)
+5. Apply to **Production** and **Preview**
+6. Redeploy
 
 ## 4. Call the lifecycle endpoint
 
