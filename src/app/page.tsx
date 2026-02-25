@@ -21,10 +21,10 @@ const SPEAKERS = [
 ];
 
 const PERSONAS = [
-  { role: 'Startup Founder', pct: 42, cta: 'Startup plan →', img: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=500&h=300&fit=crop' },
-  { role: 'Enterprise Planner', pct: 28, cta: 'Enterprise plan →', img: 'https://images.unsplash.com/photo-1551818255-e6e10975bc17?w=500&h=300&fit=crop' },
-  { role: 'Event Agency', pct: 18, cta: 'Agency plan →', img: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&h=300&fit=crop' },
-  { role: 'Community Builder', pct: 12, cta: 'Community plan →', img: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&h=300&fit=crop' },
+  { role: 'Startup Founder', pct: 42, cta: 'Startup plan →', href: '/pricing/startup', desc: 'Launch your first event in 60 seconds. Start free, no credit card.', img: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=500&h=300&fit=crop' },
+  { role: 'Enterprise Planner', pct: 28, cta: 'Enterprise plan →', href: '/pricing/enterprise', desc: 'Unlimited events, custom branding, SSO, dedicated support.', img: 'https://images.unsplash.com/photo-1551818255-e6e10975bc17?w=500&h=300&fit=crop' },
+  { role: 'Event Agency', pct: 18, cta: 'Agency plan →', href: '/pricing/agency', desc: 'Ship client events 10x faster. $29/mo, unlimited events.', img: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&h=300&fit=crop' },
+  { role: 'Community Builder', pct: 12, cta: 'Community plan →', href: '/pricing/community', desc: 'Meetups, workshops, retreats. Start free, grow with your community.', img: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&h=300&fit=crop' },
 ];
 
 const PARTNER_TIERS = [
@@ -275,15 +275,15 @@ export default function HomePage() {
           <div className="grid md:grid-cols-4 gap-6">
             {PERSONAS.map((p) => (
               <RevealSection key={p.role}>
-              <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <Link href={p.href} className="block rounded-2xl overflow-hidden group" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="h-48 relative">
-                  <Image src={p.img} alt="" fill className="object-cover" />
+                  <Image src={p.img} alt="" fill className="object-cover transition-transform group-hover:scale-105" />
                 </div>
                 <div className="p-6">
                   <div className="text-xs uppercase mb-2" style={{ color: 'var(--color-text-muted)' }}>I am a</div>
-                  <h3 className="text-xl font-semibold mb-2">{p.role}</h3>
-                  <p className="text-sm mb-4" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>Launchpad adapts to your scale. From first-time organizers to enterprise teams.</p>
-                  <Link href="/create" className="btn-primary w-full text-sm py-2">{p.cta}</Link>
+                  <h3 className="text-xl font-semibold mb-2 group-hover:text-[var(--color-accent)] transition-colors">{p.role}</h3>
+                  <p className="text-sm mb-4" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>{p.desc}</p>
+                  <span className="btn-primary w-full text-sm py-2 inline-block text-center">{p.cta}</span>
                   <div className="mt-4">
                     <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
                       <div className="h-full rounded-full" style={{ width: `${p.pct}%`, background: 'var(--color-accent)' }} />
@@ -291,7 +291,7 @@ export default function HomePage() {
                     <p className="text-xs mt-1" style={{ color: 'var(--color-text-muted)' }}>{p.pct}% of users</p>
                   </div>
                 </div>
-              </div>
+              </Link>
               </RevealSection>
             ))}
           </div>
