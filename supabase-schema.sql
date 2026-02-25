@@ -71,3 +71,24 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER events_updated_at
   BEFORE UPDATE ON events
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- Affiliates table (influencer distribution)
+CREATE TABLE IF NOT EXISTS affiliates (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  code TEXT UNIQUE NOT NULL,
+  clicks INTEGER DEFAULT 0,
+  conversions INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- RPC to record affiliate conversions (creates affiliate on first conversion)
+CREATE OR REPLACE FUNCTION increment_conversion(refcode TEXT)
+RETURNS VOID
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  INSERT INTO affiliates (id, code, clicks, conversions)
+  VALUES (gen_random_uuid(), refcode, 0, 1)
+  ON CONFLICT (code) DO UPDATE SET conversions = affiliates.conversions + 1;
+END;
+$$;

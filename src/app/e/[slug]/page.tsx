@@ -14,6 +14,7 @@ export default function EventPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+  const [bgVideoReady, setBgVideoReady] = useState(true);
 
   useEffect(() => {
     async function fetchEvent() {
@@ -104,7 +105,23 @@ export default function EventPage() {
   }, {});
 
   return (
-    <main className="min-h-screen" style={{ background: 'var(--color-bg)' }}>
+    <main className="min-h-screen relative" style={{ background: 'var(--color-bg)' }}>
+      {/* Conference background reel — add /public/conference-bg.mp4 for full effect */}
+      {bgVideoReady && (
+        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover opacity-30"
+            onError={() => setBgVideoReady(false)}
+          >
+            <source src="/conference-bg.mp4" type="video/mp4" />
+          </video>
+        </div>
+      )}
+
       {/* Hero */}
       <section className="relative px-6 pt-8 pb-20">
         <div className="max-w-5xl mx-auto">

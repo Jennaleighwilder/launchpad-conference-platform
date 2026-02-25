@@ -59,6 +59,9 @@ export default function DashboardPage() {
           <Link href="/dashboard" className="text-sm font-medium" style={{ color: 'var(--color-accent)' }}>
             Dashboard
           </Link>
+          <Link href="/affiliate" className="text-sm hover:text-[var(--color-accent)] transition-colors">
+            Affiliate
+          </Link>
           <Link href="/create" className="btn-primary" style={{ padding: '0.5rem 1.25rem', fontSize: '0.875rem' }}>
             Create New Event
           </Link>

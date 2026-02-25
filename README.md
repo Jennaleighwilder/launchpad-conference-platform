@@ -55,7 +55,9 @@ Total: ~3-5s (parallel) vs ~10-15s (sequential). Requires `OPENAI_API_KEY`.
 
 ## Supabase Setup
 
-Run `supabase-schema.sql` in your Supabase SQL Editor for persistent storage.
+Run `supabase-schema.sql` in your Supabase SQL Editor for persistent storage and affiliate tracking.
+
+**Conference background:** Add a looping abstract tech video to `/public/conference-bg.mp4` for the event page atmosphere (royalty-free; optional).
 
 ## Tech Stack
 

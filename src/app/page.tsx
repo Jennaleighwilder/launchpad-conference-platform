@@ -171,6 +171,7 @@ export default function HomePage() {
           <div className="flex gap-8" style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
             <Link href="/" className="hover:text-[var(--color-accent)] transition-colors">Home</Link>
             <Link href="/create" className="hover:text-[var(--color-accent)] transition-colors">Create Event</Link>
+            <Link href="/affiliate" className="hover:text-[var(--color-accent)] transition-colors">Affiliate</Link>
             <a href="#how-it-works" className="hover:text-[var(--color-accent)] transition-colors">How It Works</a>
           </div>
           <div style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>© 2026 Launchpad. AI-powered conference generation.</div>

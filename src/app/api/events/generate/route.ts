@@ -121,6 +121,17 @@ export async function POST(request: NextRequest) {
           .single();
 
         if (!error && data) {
+          // Record affiliate conversion if tagged
+          const affiliate = request.headers.get('cookie')?.match(/affiliate=([^;]+)/)?.[1];
+          if (affiliate && hasSupabase()) {
+            try {
+              const { createServiceClient } = await import('@/lib/supabase');
+              const sb = createServiceClient();
+              await sb.rpc('increment_conversion', { refcode: affiliate });
+            } catch (e) {
+              console.warn('Affiliate conversion tracking failed:', e);
+            }
+          }
           return NextResponse.json({ success: true, event: data, persisted: true });
         }
       } catch (dbErr) {
