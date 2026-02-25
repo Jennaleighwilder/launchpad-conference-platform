@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
     const fullEvent: EventData = {
       ...eventData,
       id: crypto.randomUUID(),
-      status: 'live',
+      status: 'draft',
       created_at: new Date().toISOString(),
     };
 
@@ -115,11 +115,14 @@ export async function POST(request: NextRequest) {
             description: fullEvent.description,
             tagline: fullEvent.tagline,
             topic_key: fullEvent.topic_key,
-            status: 'live',
+            status: 'draft',
           })
           .select()
           .single();
 
+        if (error) {
+          console.error('[Supabase] Insert error:', JSON.stringify(error));
+        }
         if (!error && data) {
           // Record affiliate conversion if tagged
           const affiliate = request.headers.get('cookie')?.match(/affiliate=([^;]+)/)?.[1];

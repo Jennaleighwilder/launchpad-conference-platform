@@ -1,5 +1,7 @@
 # Cursor Operating Instructions (DO NOT DEVIATE)
 
+**See also:** `ARCHITECTURE.md` — system law for how Launchpad is built (data-first, server-owned logic, Stripe, webhooks, etc.)
+
 You are assisting on an EXISTING deployed production project.
 
 You are **not allowed** to:

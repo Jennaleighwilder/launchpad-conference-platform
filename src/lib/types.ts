@@ -18,7 +18,7 @@ export interface EventData {
   topic_key: string;
   created_at: string;
   organizer_email?: string;
-  status: 'draft' | 'live' | 'sold_out' | 'past';
+  status: 'draft' | 'planning' | 'announcing' | 'ticket_sales' | 'live' | 'completed' | 'sold_out' | 'past';
 }
 
 export interface VenueData {

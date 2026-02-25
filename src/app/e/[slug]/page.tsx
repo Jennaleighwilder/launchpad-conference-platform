@@ -96,6 +96,7 @@ export default function EventPage() {
   const pricing = event.pricing as PricingData;
   const tracks = (event.tracks || []) as string[];
   const accentColor = getTopicColor(event.topic_key);
+  const ticketsAvailable = event.status === 'ticket_sales' || event.status === 'live';
   const formattedDate = formatDate(event.date);
 
   // Map speaker names to their talks from schedule
@@ -134,7 +135,7 @@ export default function EventPage() {
             style={{ background: `${accentColor}15`, border: `1px solid ${accentColor}40` }}>
             <span className="w-1.5 h-1.5 rounded-full" style={{ background: accentColor }}></span>
             <span style={{ color: accentColor, fontSize: '0.75rem', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              {event.status === 'live' ? 'Tickets Available' : event.status}
+              {event.status === 'ticket_sales' || event.status === 'live' ? 'Tickets Available' : event.status === 'draft' ? 'Draft' : event.status === 'planning' ? 'Planning' : event.status === 'announcing' ? 'Coming Soon' : event.status === 'completed' ? 'Completed' : event.status}
             </span>
           </div>
 
@@ -283,10 +284,10 @@ export default function EventPage() {
               <div className="text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>Limited availability</div>
               <button
                 onClick={() => handleBuyTicket('early_bird', pricing.early_bird)}
-                disabled={!!checkoutLoading}
+                disabled={!!checkoutLoading || !ticketsAvailable}
                 className="btn-primary w-full py-3 text-sm disabled:opacity-50"
               >
-                {checkoutLoading === 'early_bird' ? 'Loading...' : 'Buy Ticket'}
+                {checkoutLoading === 'early_bird' ? 'Loading...' : ticketsAvailable ? 'Buy Ticket' : 'Coming Soon'}
               </button>
             </div>
             <div className="card text-center flex flex-col" style={{ borderColor: 'rgba(79,255,223,0.3)', boxShadow: '0 0 20px rgba(79,255,223,0.05)' }}>
@@ -297,10 +298,10 @@ export default function EventPage() {
               <div className="text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>Standard admission</div>
               <button
                 onClick={() => handleBuyTicket('regular', pricing.regular)}
-                disabled={!!checkoutLoading}
+                disabled={!!checkoutLoading || !ticketsAvailable}
                 className="btn-primary w-full py-3 text-sm disabled:opacity-50"
               >
-                {checkoutLoading === 'regular' ? 'Loading...' : 'Buy Ticket'}
+                {checkoutLoading === 'regular' ? 'Loading...' : ticketsAvailable ? 'Buy Ticket' : 'Coming Soon'}
               </button>
             </div>
             {pricing.vip && (
@@ -312,10 +313,10 @@ export default function EventPage() {
                 <div className="text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>Premium access + perks</div>
                 <button
                   onClick={() => handleBuyTicket('vip', pricing.vip!)}
-                  disabled={!!checkoutLoading}
+                  disabled={!!checkoutLoading || !ticketsAvailable}
                   className="btn-primary w-full py-3 text-sm disabled:opacity-50"
                 >
-                  {checkoutLoading === 'vip' ? 'Loading...' : 'Buy Ticket'}
+                  {checkoutLoading === 'vip' ? 'Loading...' : ticketsAvailable ? 'Buy Ticket' : 'Coming Soon'}
                 </button>
               </div>
             )}
