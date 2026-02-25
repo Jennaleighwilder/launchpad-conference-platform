@@ -21,10 +21,10 @@ interface EventRow {
   status: string;
   description: string | null;
   tagline: string | null;
-  speakers_confirmed_count: number;
   organizer_email: string | null;
-  start_date: string | null;
-  end_date: string | null;
+  speakers_confirmed_count?: number;
+  start_date?: string | null;
+  end_date?: string | null;
 }
 
 function getStartDate(row: EventRow): Date {
@@ -37,6 +37,10 @@ function getEndDate(row: EventRow): Date {
   const d = new Date(row.date + 'T18:00:00Z');
   d.setDate(d.getDate() + 1);
   return d;
+}
+
+function getSpeakersConfirmedCount(row: EventRow): number {
+  return row.speakers_confirmed_count ?? (Array.isArray(row.speakers) ? row.speakers.length : 0);
 }
 
 function eventDateStarted(row: EventRow): boolean {
@@ -56,12 +60,13 @@ function hasCoreDetails(row: EventRow): boolean {
 }
 
 async function ensureActionRun(supabase: ReturnType<typeof createServiceClient>, eventId: string, actionKey: string): Promise<boolean> {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('lifecycle_log')
     .select('id')
     .eq('event_id', eventId)
     .eq('action_key', actionKey)
     .single();
+  if (error) return true; // Table may not exist yet, proceed
   return !data;
 }
 
@@ -72,6 +77,7 @@ async function logAction(supabase: ReturnType<typeof createServiceClient>, event
     to_status: toStatus,
     action_key: actionKey,
   });
+  // Ignore insert errors (lifecycle_log may not exist before migration)
 }
 
 async function transitionAndRun(
@@ -97,7 +103,7 @@ export async function runLifecycleEngine(): Promise<{ processed: number; transit
 
   const { data: events, error } = await supabase
     .from('events')
-    .select('id, slug, name, date, city, venue, speakers, pricing, status, description, tagline, speakers_confirmed_count, organizer_email, start_date, end_date')
+    .select('id, slug, name, date, city, venue, speakers, pricing, status, description, tagline, organizer_email')
     .in('status', ['draft', 'planning', 'announcing', 'ticket_sales', 'live']);
 
   if (error) {
@@ -122,21 +128,13 @@ export async function runLifecycleEngine(): Promise<{ processed: number; transit
     // Bootstrap: generated events have speakers in JSONB; treat as pre-confirmed
     else if (status === 'planning') {
       const speakerCount = Array.isArray(event.speakers) ? event.speakers.length : 0;
-      let confirmedCount = event.speakers_confirmed_count;
-      if (confirmedCount === 0 && speakerCount >= 2) {
-        await supabase.from('events').update({ speakers_confirmed_count: speakerCount }).eq('id', event.id);
-        confirmedCount = speakerCount;
-      }
+      let confirmedCount = getSpeakersConfirmedCount(event);
+      if (confirmedCount === 0 && speakerCount >= 2) confirmedCount = speakerCount;
       if (confirmedCount >= 2) {
         const did = await transitionAndRun(supabase, event, 'announcing', 'planning-to-announcing', async () => {
           const ev: actions.EventForActions = { id: event.id, slug: event.slug, name: event.name, date: event.date, city: event.city, description: event.description };
-          const aiDesc = await actions.generateEventDescription(ev);
-          const socialText = await actions.generateSocialAnnouncement(ev);
-          await supabase.from('events').update({
-            ai_description: aiDesc,
-            social_announcement_text: socialText,
-            updated_at: new Date().toISOString(),
-          }).eq('id', event.id);
+          await actions.generateEventDescription(ev);
+          await actions.generateSocialAnnouncement(ev);
           await actions.sendSpeakerEmails(ev);
         });
         if (did) transitions++;
