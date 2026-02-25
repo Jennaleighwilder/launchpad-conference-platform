@@ -3,12 +3,21 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { EventData, SpeakerData, ScheduleItem, PricingData, VenueData } from '@/lib/types';
 
 const TRACK_COLORS = ['#4FFFDF', '#A78BFA', '#34D399', '#F472B6', '#FBBF24', '#60A5FA'];
 
 const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
 const SOLD_PCT = { early_bird: 78, regular: 45, vip: 23 };
+
+const EVENT_FAQ = [
+  { q: 'How do I get my ticket?', a: 'After purchase you\'ll receive a confirmation email with your ticket and QR code. Present the QR code at check-in.' },
+  { q: 'Is there a virtual attendance option?', a: 'Yes. Registered attendees receive a livestream link before the event. Sessions are also recorded and shared post-event.' },
+  { q: 'What\'s your refund policy?', a: 'Full refunds up to 14 days before the event. After that, we offer 50% refund or transfer to a future event.' },
+  { q: 'Where should I stay?', a: 'We\'ve partnered with local hotels — use the accommodation links above for discounted rates near the venue.' },
+  { q: 'Is parking available?', a: 'Yes. The venue offers on-site parking. Electric vehicle charging stations are available. Carpooling is encouraged.' },
+];
 
 export default function EventPage() {
   const params = useParams();
@@ -18,6 +27,8 @@ export default function EventPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+  const [faqOpen, setFaqOpen] = useState<number | null>(null);
+  const shareUrl = typeof window !== 'undefined' ? window.location.href : `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/e/${slug}`;
 
   useEffect(() => {
     async function fetchEvent() {
@@ -221,9 +232,13 @@ export default function EventPage() {
                 const trackColor = talk?.track ? TRACK_COLORS[tracks.indexOf(talk.track) % TRACK_COLORS.length] : accentColor;
                 return (
                   <div key={i} className="card group">
-                    <div className="w-14 h-14 rounded-full mb-4 flex items-center justify-center text-lg font-bold"
-                      style={{ background: `${accentColor}20`, color: accentColor }}>
-                      {speaker.initials}
+                    <div className="w-14 h-14 rounded-full mb-4 flex items-center justify-center text-lg font-bold overflow-hidden shrink-0"
+                      style={speaker.photo_url ? {} : { background: `${accentColor}20`, color: accentColor }}>
+                      {speaker.photo_url ? (
+                        <Image src={speaker.photo_url} alt={speaker.name} width={56} height={56} className="w-full h-full object-cover" />
+                      ) : (
+                        speaker.initials
+                      )}
                     </div>
                     <h3 className="font-semibold mb-1">{speaker.name}</h3>
                     <p className="text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>{speaker.role}</p>
@@ -282,16 +297,112 @@ export default function EventPage() {
         </section>
       )}
 
-      {/* Venue */}
+      {/* Venue + Map */}
       <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto">
           <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Venue</h2>
-          <div className="card">
+          <div className="card mb-6">
             <h3 className="text-xl font-semibold mb-2">{venue.name}</h3>
             <p className="mb-2" style={{ color: 'var(--color-text-muted)' }}>{venue.address}</p>
             {venue.capacity_note && (
               <p className="text-sm" style={{ color: 'var(--color-text-muted)', opacity: 0.8 }}>{venue.capacity_note}</p>
             )}
+          </div>
+          <div className="rounded-xl overflow-hidden border" style={{ borderColor: 'rgba(255,255,255,0.08)', height: 280 }}>
+            <iframe
+              title="Venue map"
+              src={`https://www.google.com/maps?q=${encodeURIComponent(venue.address)}&z=15&output=embed`}
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Travel & Accommodation */}
+      <section className="px-6 py-16">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Travel & Accommodation</h2>
+          <div className="grid sm:grid-cols-3 gap-4">
+            <a
+              href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(event.city)}&checkin=${event.date}&checkout=${event.date}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="card flex items-center gap-4 hover:border-[var(--color-accent)] transition-colors group"
+            >
+              <span className="text-2xl">🏨</span>
+              <div className="text-left">
+                <div className="font-semibold group-hover:text-[var(--color-accent)] transition-colors">Hotels</div>
+                <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Book stays in {event.city}</div>
+              </div>
+            </a>
+            <a
+              href={`https://www.google.com/travel/flights?q=Flights%20to%20${encodeURIComponent(event.city)}%20on%20${event.date}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="card flex items-center gap-4 hover:border-[var(--color-accent)] transition-colors group"
+            >
+              <span className="text-2xl">✈️</span>
+              <div className="text-left">
+                <div className="font-semibold group-hover:text-[var(--color-accent)] transition-colors">Flights</div>
+                <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Find flights to {event.city}</div>
+              </div>
+            </a>
+            <a
+              href={`https://www.google.com/maps/search/restaurants+near+${encodeURIComponent(venue.address)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="card flex items-center gap-4 hover:border-[var(--color-accent)] transition-colors group"
+            >
+              <span className="text-2xl">🍽️</span>
+              <div className="text-left">
+                <div className="font-semibold group-hover:text-[var(--color-accent)] transition-colors">Dining</div>
+                <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Restaurants near venue</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Networking & Live Engagement */}
+      <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Networking & Live Engagement</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="card">
+              <div className="text-xl mb-2">💬</div>
+              <h3 className="font-semibold mb-1">Live Q&A</h3>
+              <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Submit and upvote questions for speakers in real time</p>
+            </div>
+            <div className="card">
+              <div className="text-xl mb-2">📊</div>
+              <h3 className="font-semibold mb-1">Live Polls</h3>
+              <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Real-time voting and audience insights during sessions</p>
+            </div>
+            <div className="card">
+              <div className="text-xl mb-2">🤝</div>
+              <h3 className="font-semibold mb-1">AI Matchmaking</h3>
+              <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Get matched with attendees who share your interests</p>
+            </div>
+            <div className="card">
+              <div className="text-xl mb-2">📱</div>
+              <h3 className="font-semibold mb-1">Event App</h3>
+              <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Personal agenda, session alerts, venue maps, and chat</p>
+            </div>
+            <div className="card">
+              <div className="text-xl mb-2">🎥</div>
+              <h3 className="font-semibold mb-1">Live Stream</h3>
+              <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Virtual attendance via YouTube, Zoom, or Vimeo</p>
+            </div>
+            <div className="card">
+              <div className="text-xl mb-2">🏆</div>
+              <h3 className="font-semibold mb-1">Gamification</h3>
+              <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Earn points, climb the leaderboard, VIP 2x multiplier</p>
+            </div>
           </div>
         </div>
       </section>
@@ -371,18 +482,89 @@ export default function EventPage() {
         </div>
       </section>
 
-      {/* Share */}
+      {/* Share & Calendar */}
       <section className="px-6 py-12" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="max-w-5xl mx-auto text-center">
-          <p className="mb-3" style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>Share this event</p>
-          <button
-            onClick={() => navigator.clipboard.writeText(typeof window !== 'undefined' ? window.location.href : `/e/${slug}`)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-all hover:border-[var(--color-accent)]"
-            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontFamily: 'var(--font-mono)', fontSize: '0.875rem' }}
-          >
-            {typeof window !== 'undefined' ? window.location.href : `/e/${slug}`}
-            <span style={{ color: 'var(--color-accent)' }}>📋</span>
-          </button>
+        <div className="max-w-5xl mx-auto">
+          <p className="mb-4 text-center" style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>Share & Add to Calendar</p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <button
+              onClick={() => {
+                const url = typeof window !== 'undefined' ? window.location.origin : '';
+                const ics = [
+                  'BEGIN:VCALENDAR',
+                  'VERSION:2.0',
+                  'BEGIN:VEVENT',
+                  `DTSTART:${event.date.replace(/-/g, '')}T090000`,
+                  `DTEND:${event.date.replace(/-/g, '')}T180000`,
+                  `SUMMARY:${event.name.replace(/,/g, '\\,')}`,
+                  `LOCATION:${venue.address.replace(/,/g, '\\,')}`,
+                  `DESCRIPTION:${(event.description || '').replace(/,/g, '\\,').slice(0, 200)}`,
+                  'END:VEVENT',
+                  'END:VCALENDAR',
+                ].join('\r\n');
+                const blob = new Blob([ics], { type: 'text/calendar' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `${event.slug}.ics`;
+                a.click();
+                URL.revokeObjectURL(a.href);
+              }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-all hover:border-[var(--color-accent)]"
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontFamily: 'var(--font-mono)', fontSize: '0.875rem' }}
+            >
+              📅 Add to Calendar
+            </button>
+            <a
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`${event.name} — ${formattedDate} in ${event.city}`)}&url=${encodeURIComponent(shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-all hover:border-[var(--color-accent)]"
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontFamily: 'var(--font-mono)', fontSize: '0.875rem' }}
+            >
+              𝕏 Share on X
+            </a>
+            <a
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-all hover:border-[var(--color-accent)]"
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontFamily: 'var(--font-mono)', fontSize: '0.875rem' }}
+            >
+              Share on LinkedIn
+            </a>
+            <button
+              onClick={() => navigator.clipboard.writeText(shareUrl)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-all hover:border-[var(--color-accent)]"
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontFamily: 'var(--font-mono)', fontSize: '0.875rem' }}
+            >
+              📋 Copy Link
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Event FAQ */}
+      <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>FAQ</h2>
+          <div className="space-y-2">
+            {EVENT_FAQ.map((item, i) => (
+              <div key={i} className="card">
+                <button
+                  onClick={() => setFaqOpen(faqOpen === i ? null : i)}
+                  className="w-full text-left flex items-center justify-between gap-4 py-1"
+                >
+                  <span className="font-medium">{item.q}</span>
+                  <span style={{ color: accentColor, transform: faqOpen === i ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>▼</span>
+                </button>
+                {faqOpen === i && (
+                  <p className="mt-2 pt-2 text-sm" style={{ color: 'var(--color-text-muted)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                    {item.a}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

@@ -69,11 +69,12 @@ Return JSON with:
 }
 
 function mapAIResponse(data: any, input: CreateEventInput, slug: string): Omit<EventData, 'id' | 'created_at' | 'status'> {
-  const speakers: SpeakerData[] = (data.speakers || []).map((s: any) => ({
+  const speakers: SpeakerData[] = (data.speakers || []).map((s: any, i: number) => ({
     name: s.name,
     role: s.role,
     initials: getInitials(s.name),
     bio: s.bio,
+    photo_url: getSpeakerPhoto(i),
   }));
 
   return {
@@ -217,6 +218,8 @@ const TRACK_DB: Record<string, string[]> = {
   general: ['Innovation', 'Leadership', 'Technology', 'Workshops'],
 };
 
+import { getSpeakerPhoto } from './speaker-photos';
+
 const SPEAKER_DB: Record<string, SpeakerData[]> = {
   ai: [
     { name: 'Dr. Sarah Chen', role: 'Head of AI Research, DeepScale', initials: 'SC' },
@@ -268,7 +271,10 @@ function pickSpeakers(topicKey: string, count: number): SpeakerData[] {
     const j = Math.floor(Math.random() * (i + 1));
     [pool[i], pool[j]] = [pool[j], pool[i]];
   }
-  return pool.slice(0, count);
+  return pool.slice(0, count).map((s, i) => ({
+    ...s,
+    photo_url: getSpeakerPhoto(i),
+  }));
 }
 
 function buildSchedule(topic: string, speakers: SpeakerData[], tracks: string[]): ScheduleItem[] {
