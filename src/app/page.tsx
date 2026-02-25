@@ -309,7 +309,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Experience the Energy — Video + Stats */}
+      {/* Experience the Energy — Cinematic image, no video */}
       <section className="px-6 py-24" style={{ background: '#0A0A0A' }}>
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
@@ -319,16 +319,16 @@ export default function HomePage() {
                 High-energy keynotes, packed stages, and the buzz of thousands of innovators — that&apos;s the energy we bring to every event.
               </p>
             </div>
-            <div className="rounded-xl overflow-hidden shadow-2xl" style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
-              <div className="aspect-video w-full">
-                <iframe
-                  src="https://www.youtube.com/embed/XEzRZ35urlk?autoplay=0&mute=1"
-                  title="Tech conference energy — Google I/O 2024"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-full rounded-xl"
-                />
-              </div>
+            <div className="rounded-xl overflow-hidden shadow-2xl relative aspect-video" style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
+              <div className="absolute inset-0" style={{
+                backgroundImage: 'url("https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&h=675&fit=crop")',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                animation: 'kenBurns 20s ease-in-out infinite',
+              }} />
+              <div className="absolute inset-0" style={{
+                background: 'linear-gradient(to top, rgba(10,10,10,0.8) 0%, transparent 50%, transparent 100%)',
+              }} />
             </div>
           </div>
           <div className="grid md:grid-cols-3 gap-8 text-center">
@@ -364,7 +364,7 @@ export default function HomePage() {
             </div>
             <div className="flex gap-3">
               <Link href="/e/demo-conference" className="btn-primary text-sm py-2">Explore the program →</Link>
-              <Link href="/e/demo-conference" className="px-4 py-2 rounded-lg border text-sm" style={{ borderColor: 'rgba(255,255,255,0.3)' }}>Meet all speakers →</Link>
+              <Link href="/speakers" className="px-4 py-2 rounded-lg border text-sm" style={{ borderColor: 'rgba(255,255,255,0.3)' }}>Meet all speakers →</Link>
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
@@ -393,7 +393,7 @@ export default function HomePage() {
           <p className="text-center max-w-2xl mx-auto mb-12" style={{ color: 'var(--color-text-muted)' }}>Explore generated events from our platform.</p>
           <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory" style={{ scrollbarWidth: 'none' }}>
             {DEMO_EVENTS.map((e) => (
-              <Link key={e.slug} href="/e/demo-conference" className="flex-shrink-0 w-72 snap-center rounded-2xl overflow-hidden group" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <Link key={e.slug} href={`/e/${e.slug}`} className="flex-shrink-0 w-72 snap-center rounded-2xl overflow-hidden group" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="h-48 relative">
                   <Image src={e.img} alt={e.name} fill className="object-cover" />
                 </div>
