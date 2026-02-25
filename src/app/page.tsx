@@ -13,11 +13,11 @@ const DEMO_EVENTS = [
 ];
 
 const SPEAKERS = [
-  { name: 'Sarah Chen', role: 'CTO, TechForge', flag: '🇺🇸', color: '#4FFFDF', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop' },
-  { name: 'Marcus Berg', role: 'CEO, EventScale', flag: '🇩🇪', color: '#A78BFA', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=500&fit=crop' },
-  { name: 'Priya Sharma', role: 'VP Engineering, CloudNova', flag: '🇮🇳', color: '#34D399', img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=500&fit=crop' },
-  { name: 'James Wright', role: 'Founder, LaunchLab', flag: '🇬🇧', color: '#F472B6', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop' },
-  { name: 'Ana Costa', role: 'Director of AI, FutureConf', flag: '🇧🇷', color: '#60A5FA', img: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=500&fit=crop' },
+  { id: 'sarah-chen', name: 'Sarah Chen', role: 'CTO, TechForge', flag: '🇺🇸', color: '#4FFFDF', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop' },
+  { id: 'marcus-berg', name: 'Marcus Berg', role: 'CEO, EventScale', flag: '🇩🇪', color: '#A78BFA', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=500&fit=crop' },
+  { id: 'priya-sharma', name: 'Priya Sharma', role: 'VP Engineering, CloudNova', flag: '🇮🇳', color: '#34D399', img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=500&fit=crop' },
+  { id: 'james-wright', name: 'James Wright', role: 'Founder, LaunchLab', flag: '🇬🇧', color: '#F472B6', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop' },
+  { id: 'ana-costa', name: 'Ana Costa', role: 'Director of AI, FutureConf', flag: '🇧🇷', color: '#60A5FA', img: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=500&fit=crop' },
 ];
 
 const PERSONAS = [
@@ -112,6 +112,34 @@ function RevealSection({ children, className = '' }: { children: React.ReactNode
   return <div ref={ref} className={`reveal ${visible ? 'visible' : ''} ${className}`}>{children}</div>;
 }
 
+function AnimatedStat({ target, suffix = '', prefix = '' }: { target: number; suffix?: string; prefix?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(0);
+  const countedRef = useRef(false);
+  useEffect(() => {
+    if (countedRef.current || !ref.current) return;
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !countedRef.current) {
+        countedRef.current = true;
+        const dur = 2000;
+        const steps = 60;
+        const inc = target / steps;
+        let n = 0;
+        const iv = setInterval(() => {
+          n += inc;
+          if (n >= target) {
+            setValue(target);
+            clearInterval(iv);
+          } else setValue(Math.floor(n));
+        }, dur / steps);
+      }
+    }, { threshold: 0.5 });
+    obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, [target]);
+  return <div ref={ref}>{prefix}{value.toLocaleString()}{suffix}</div>;
+}
+
 export default function HomePage() {
   return (
     <main className="min-h-screen" style={{ background: 'var(--color-bg)' }}>
@@ -127,7 +155,7 @@ export default function HomePage() {
           <a href="#how-it-works" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }} onClick={(e) => { e.preventDefault(); document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }); }}>How It Works</a>
           <Link href="/e/demo-conference" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Demo Events</Link>
           <Link href="/sponsor" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Sponsor</Link>
-          <button type="button" onClick={() => alert('Affiliate program coming soon!')} className="text-sm hover:text-[var(--color-accent)] transition-colors bg-transparent border-none cursor-pointer p-0" style={{ color: 'var(--color-text-muted)' }}>Affiliate</button>
+          <Link href="/affiliate" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Affiliate</Link>
           <Link href="/create" className="btn-primary" style={{ padding: '0.5rem 1.5rem', fontSize: '0.875rem' }}>Create Event →</Link>
         </div>
       </nav>
@@ -279,6 +307,51 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Experience the Energy — Video + Stats */}
+      <section className="px-6 py-24" style={{ background: '#0A0A0A' }}>
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-normal mb-4" style={{ fontFamily: 'var(--font-display)' }}>Experience the Energy</h2>
+              <p className="text-xl" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
+                See what AI-powered conference generation looks like in action.
+              </p>
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-2xl" style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
+              <div className="aspect-video w-full">
+                <iframe
+                  src="https://www.youtube.com/embed/jfKfPfyJRdk"
+                  title="Launchpad in action"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full rounded-xl"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8 text-center">
+            <RevealSection>
+              <div className="text-3xl md:text-4xl font-bold font-mono mb-2" style={{ color: 'var(--color-accent)' }}>
+                <AnimatedStat target={2847} />
+              </div>
+              <div className="text-sm uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Events Generated</div>
+            </RevealSection>
+            <RevealSection>
+              <div className="text-3xl md:text-4xl font-bold font-mono mb-2" style={{ color: 'var(--color-accent)' }}>
+                <AnimatedStat target={50000} suffix="+" />
+              </div>
+              <div className="text-sm uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Attendees Reached</div>
+            </RevealSection>
+            <RevealSection>
+              <div className="text-3xl md:text-4xl font-bold font-mono mb-2" style={{ color: 'var(--color-accent)' }}>
+                <AnimatedStat target={12} prefix="$" suffix="M+" />
+              </div>
+              <div className="text-sm uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Revenue Processed</div>
+            </RevealSection>
+          </div>
+        </div>
+      </section>
+
       {/* Speakers */}
       <section className="px-6 py-24">
         <div className="max-w-6xl mx-auto">
@@ -294,16 +367,16 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
             {SPEAKERS.map((s) => (
-              <RevealSection key={s.name}>
-              <div>
+              <RevealSection key={s.id}>
+              <Link href={`/speakers/${s.id}`} className="group block">
                 <div className="rounded-xl overflow-hidden mb-4 aspect-[4/5] relative">
-                  <Image src={s.img} alt={s.name} fill className="object-cover" />
+                  <Image src={s.img} alt={s.name} fill className="object-cover group-hover:opacity-90 transition-opacity" />
                 </div>
                 <div className="w-8 h-8 rounded-full mb-2 flex items-center justify-center text-xs font-bold" style={{ background: s.color + '40', color: s.color }}>{s.name.charAt(0)}</div>
-                <h3 className="font-semibold">{s.name}</h3>
+                <h3 className="font-semibold group-hover:text-[var(--color-accent)] transition-colors">{s.name}</h3>
                 <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>{s.role}</p>
                 <span className="text-sm">{s.flag}</span>
-              </div>
+              </Link>
               </RevealSection>
             ))}
           </div>
@@ -397,9 +470,9 @@ export default function HomePage() {
           <p className="text-center mb-16" style={{ color: 'var(--color-text-muted)', fontSize: '1.125rem' }}>Start free. Scale when you need to.</p>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { name: 'Free', price: '$0', period: 'forever', features: ['1 event', 'AI generation', 'Shareable page', 'In-memory storage'], highlight: false, pct: 35, gradient: '#34D399' },
-              { name: 'Pro', price: '$29', period: '/mo', features: ['Unlimited events', 'Supabase persistence', 'Custom branding', 'Priority support'], highlight: true, pct: 52, gradient: '#4FFFDF', badge: 'Most Popular' },
-              { name: 'Enterprise', price: 'Custom', period: '', features: ['Everything in Pro', 'Dedicated support', 'SLA', 'Custom integrations'], highlight: false, pct: 13, gradient: '#A78BFA' },
+              { name: 'Free', price: '$0', period: 'forever', features: ['1 event', 'AI generation', 'Shareable page', 'In-memory storage'], highlight: false, pct: 35, gradient: '#34D399', href: '/create' },
+              { name: 'Pro', price: '$29', period: '/mo', features: ['Unlimited events', 'Supabase persistence', 'Custom branding', 'Priority support'], highlight: true, pct: 52, gradient: '#4FFFDF', badge: 'Most Popular', href: '/pricing' },
+              { name: 'Enterprise', price: 'Custom', period: '', features: ['Everything in Pro', 'Dedicated support', 'SLA', 'Custom integrations'], highlight: false, pct: 13, gradient: '#A78BFA', href: '/contact' },
             ].map((tier) => (
               <div key={tier.name} className={`rounded-2xl overflow-hidden ${tier.highlight ? 'ring-1' : ''}`}
                 style={tier.highlight ? { borderColor: 'rgba(79,255,223,0.4)', boxShadow: '0 0 30px rgba(79,255,223,0.08)', background: 'rgba(255,255,255,0.03)' } : { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
@@ -416,7 +489,7 @@ export default function HomePage() {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/create" className="btn-primary w-full block mb-4">Get started →</Link>
+                  <Link href={tier.href} className="btn-primary w-full block mb-4">Get started →</Link>
                   <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
                     <div className="h-full rounded-full" style={{ width: `${tier.pct}%`, background: tier.gradient }} />
                   </div>

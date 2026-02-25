@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const BENEFITS = [
   { num: '01', title: 'Secure High-Value Deal Flow', desc: 'Meet executives, founders, and decision-makers in an environment built for meaningful connections.' },
@@ -40,8 +41,18 @@ export default function SponsorPage() {
       </nav>
 
       {/* Hero */}
-      <section className="pt-32 pb-24 px-6" style={{ background: 'linear-gradient(135deg, rgba(79,255,223,0.15) 0%, rgba(10,10,10,1) 50%)' }}>
-        <div className="max-w-4xl mx-auto">
+      <section className="relative pt-32 pb-24 px-6 overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=600&fit=crop"
+            alt=""
+            fill
+            className="object-cover"
+            unoptimized
+          />
+        </div>
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.85) 100%)' }} />
+        <div className="relative z-10 max-w-4xl mx-auto">
           <h1 className="text-5xl md:text-6xl font-normal mb-6" style={{ fontFamily: 'var(--font-display)' }}>Become a Sponsor</h1>
           <p className="text-xl" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
             Grow your brand, make connections and demonstrate value to a diverse community of tech leaders and innovators.
@@ -52,7 +63,15 @@ export default function SponsorPage() {
       {/* Two-column */}
       <section className="px-6 py-24">
         <div className="max-w-6xl mx-auto grid md:grid-cols-5 gap-16 items-center">
-          <div className="md:col-span-3 rounded-2xl overflow-hidden h-96" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' }} />
+          <div className="md:col-span-3 rounded-2xl overflow-hidden h-96 relative">
+            <Image
+              src="https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=700&h=500&fit=crop"
+              alt="Expo floor"
+              fill
+              className="object-cover"
+              unoptimized
+            />
+          </div>
           <div className="md:col-span-2">
             <p className="mb-6" style={{ color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
               Launchpad events bring together the brightest minds in tech. Work with our partnerships team to select the opportunity that best fits your needs and budget.
@@ -61,6 +80,21 @@ export default function SponsorPage() {
             <p className="text-sm">
               <a href="mailto:partners@launchpad.events" className="hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Click here to reach out directly</a>
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Networking section */}
+      <section className="px-6 py-24">
+        <div className="max-w-6xl mx-auto">
+          <div className="rounded-2xl overflow-hidden h-80 md:h-96 relative">
+            <Image
+              src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=700&h=400&fit=crop"
+              alt="People at a conference"
+              fill
+              className="object-cover"
+              unoptimized
+            />
           </div>
         </div>
       </section>
@@ -80,6 +114,22 @@ export default function SponsorPage() {
                 <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>{b.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Past Sponsors */}
+      <section className="px-6 py-24">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl font-normal mb-8" style={{ fontFamily: 'var(--font-display)' }}>Past Sponsors</h2>
+          <div className="rounded-2xl overflow-hidden h-64 md:h-80 relative">
+            <Image
+              src="https://images.unsplash.com/photo-1587825140708-dfaf18c4c5ad?w=800&h=400&fit=crop"
+              alt="Conference booth"
+              fill
+              className="object-cover"
+              unoptimized
+            />
           </div>
         </div>
       </section>

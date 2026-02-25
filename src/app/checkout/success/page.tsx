@@ -38,17 +38,19 @@ function SuccessContent() {
   const tier = searchParams.get('tier') || 'regular';
   const name = searchParams.get('name') || '';
   const email = searchParams.get('email') || '';
+  const plan = searchParams.get('plan');
 
   const [event, setEvent] = useState<{ name: string; date: string; city: string } | null>(null);
-  const confNum = useMemo(() => generateConfirmationNumber(email + slug + tier), [email, slug, tier]);
+  const confNum = useMemo(() => generateConfirmationNumber(email + (slug || '') + tier), [email, slug, tier]);
 
   const isDemoFlow = !!(slug && name && email);
+  const isProPlan = plan === 'pro';
 
   useEffect(() => {
-    if (isDemoFlow) {
+    if (isDemoFlow || isProPlan) {
       confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
     }
-  }, [isDemoFlow]);
+  }, [isDemoFlow, isProPlan]);
 
   useEffect(() => {
     if (slug) {
@@ -96,10 +98,10 @@ function SuccessContent() {
           </svg>
         </div>
         <h1 className="text-3xl font-semibold mb-3" style={{ fontFamily: 'var(--font-display)' }}>
-          You&apos;re In! 🎉
+          {isProPlan ? 'Pro Plan Activated! 🎉' : 'You\'re In! 🎉'}
         </h1>
         <p className="mb-8" style={{ color: 'var(--color-text-muted)', fontSize: '1.125rem' }}>
-          You&apos;re all set for <strong style={{ color: 'var(--color-text)' }}>{eventName}</strong>
+          {isProPlan ? 'Welcome to Launchpad Pro. You now have unlimited events, custom branding, and priority support.' : <>You&apos;re all set for <strong style={{ color: 'var(--color-text)' }}>{eventName}</strong></>}
         </p>
 
         {isDemoFlow && (
@@ -157,9 +159,18 @@ function SuccessContent() {
               Back to Event →
             </Link>
           )}
+          {isProPlan && (
+            <Link
+              href="/create"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all"
+              style={{ background: '#4FFFDF', color: '#0A0A0A' }}
+            >
+              Create Your First Event →
+            </Link>
+          )}
         </div>
 
-        {!isDemoFlow && (
+        {!isDemoFlow && !isProPlan && (
           <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
             A confirmation email has been sent to your inbox.
           </p>
