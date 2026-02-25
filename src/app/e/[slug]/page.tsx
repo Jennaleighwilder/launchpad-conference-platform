@@ -1,14 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import type { EventData, SpeakerData, ScheduleItem, PricingData, VenueData } from '@/lib/types';
 
 const TRACK_COLORS = ['#4FFFDF', '#A78BFA', '#34D399', '#F472B6', '#FBBF24', '#60A5FA'];
 
+const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
+const SOLD_PCT = { early_bird: 78, regular: 45, vip: 23 };
+
 export default function EventPage() {
   const params = useParams();
+  const router = useRouter();
   const slug = params.slug as string;
   const [event, setEvent] = useState<EventData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,31 +39,37 @@ export default function EventPage() {
     if (slug) fetchEvent();
   }, [slug]);
 
-  const handleBuyTicket = async (tier: string, price: string) => {
+  const handleBuyTicket = (tier: string, price: string) => {
     if (!event) return;
-    setCheckoutLoading(tier);
-    try {
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tier,
-          eventSlug: event.slug,
-          eventName: event.name,
-          price,
-        }),
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert(data.error || 'Checkout not configured. Add Stripe keys to enable ticket sales.');
-      }
-    } catch {
-      alert('Failed to start checkout');
-    } finally {
-      setCheckoutLoading(null);
+    if (DEMO_MODE) {
+      router.push(`/checkout/${event.slug}?tier=${tier}&price=${encodeURIComponent(price)}`);
+      return;
     }
+    setCheckoutLoading(tier);
+    fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ticketType: tier,
+        eventSlug: event.slug,
+        buyerEmail: '',
+        buyerName: '',
+      }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.url) window.location.href = data.url;
+        else alert(data.error || 'Checkout not configured.');
+      })
+      .catch(() => alert('Failed to start checkout'))
+      .finally(() => setCheckoutLoading(null));
+  };
+
+  const ticketsRemaining = (tier: keyof typeof SOLD_PCT) => {
+    const pct = SOLD_PCT[tier] ?? 0;
+    const cap = event?.capacity ?? 500;
+    const sold = Math.round((cap / 3) * (pct / 100));
+    return Math.max(0, Math.round(cap / 3) - sold);
   };
 
   if (loading) {
@@ -281,7 +291,11 @@ export default function EventPage() {
               <div className="text-3xl font-bold mb-2 flex-1" style={{ fontFamily: 'var(--font-display)', color: accentColor }}>
                 {pricing.early_bird}
               </div>
-              <div className="text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>Limited availability</div>
+              <div className="text-xs mb-2" style={{ color: 'var(--color-text-muted)' }}>Limited availability</div>
+              <div className="h-1.5 rounded-full mb-3 overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                <div className="h-full rounded-full" style={{ width: `${SOLD_PCT.early_bird}%`, background: accentColor }} />
+              </div>
+              <p className="text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>🎫 {ticketsRemaining('early_bird')} tickets remaining</p>
               <button
                 onClick={() => handleBuyTicket('early_bird', pricing.early_bird)}
                 disabled={!!checkoutLoading || !ticketsAvailable}
@@ -295,7 +309,11 @@ export default function EventPage() {
               <div className="text-3xl font-bold mb-2 flex-1" style={{ fontFamily: 'var(--font-display)' }}>
                 {pricing.regular}
               </div>
-              <div className="text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>Standard admission</div>
+              <div className="text-xs mb-2" style={{ color: 'var(--color-text-muted)' }}>Standard admission</div>
+              <div className="h-1.5 rounded-full mb-3 overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                <div className="h-full rounded-full" style={{ width: `${SOLD_PCT.regular}%`, background: accentColor }} />
+              </div>
+              <p className="text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>🎫 {ticketsRemaining('regular')} tickets remaining</p>
               <button
                 onClick={() => handleBuyTicket('regular', pricing.regular)}
                 disabled={!!checkoutLoading || !ticketsAvailable}
@@ -310,7 +328,11 @@ export default function EventPage() {
                 <div className="text-3xl font-bold mb-2 flex-1" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-warm)' }}>
                   {pricing.vip}
                 </div>
-                <div className="text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>Premium access + perks</div>
+                <div className="text-xs mb-2" style={{ color: 'var(--color-text-muted)' }}>Premium access + perks</div>
+                <div className="h-1.5 rounded-full mb-3 overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                  <div className="h-full rounded-full" style={{ width: `${SOLD_PCT.vip}%`, background: 'var(--color-warm)' }} />
+                </div>
+                <p className="text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>🎫 {ticketsRemaining('vip')} tickets remaining</p>
                 <button
                   onClick={() => handleBuyTicket('vip', pricing.vip!)}
                   disabled={!!checkoutLoading || !ticketsAvailable}

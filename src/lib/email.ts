@@ -1,64 +1,45 @@
-/**
- * Email automation — centralized in /lib/email
- * Add Resend or SendGrid when ready. Stubs log for now.
- */
+import { Resend } from 'resend';
 
-type EmailPayload = {
+const resendKey = process.env.RESEND_API_KEY;
+
+type TicketEmailArgs = {
   to: string;
-  subject: string;
-  html?: string;
-  text?: string;
+  eventName: string;
+  eventUrl: string;
+  ticketType: string;
 };
 
-async function send(payload: EmailPayload): Promise<void> {
-  // TODO: Integrate Resend or SendGrid
-  console.log('[email]', payload.subject, '→', payload.to);
-}
+export async function sendTicketConfirmationEmail(args: TicketEmailArgs) {
+  if (!resendKey) {
+    console.log('[email stub] RESEND_API_KEY missing, would send:', args);
+    return;
+  }
 
-export async function sendSpeakerConfirmation(to: string, eventName: string, confirmLink: string): Promise<void> {
-  await send({
-    to,
-    subject: `Speaker confirmation: ${eventName}`,
-    html: `You've been invited to speak at ${eventName}. <a href="${confirmLink}">Confirm here</a>.`,
+  const resend = new Resend(resendKey);
+
+  const subject = `${args.eventName} — Ticket Confirmed`;
+
+  const html = `
+  <div style="font-family: ui-sans-serif, system-ui, -apple-system; line-height:1.5; color:#0b0b0c;">
+    <h2 style="margin:0 0 12px 0; font-weight:700;">Ticket confirmed</h2>
+    <p style="margin:0 0 10px 0;">You're in for <b>${escapeHtml(args.eventName)}</b>.</p>
+    <p style="margin:0 0 14px 0;">Ticket type: <b>${escapeHtml(args.ticketType)}</b></p>
+    <a href="${args.eventUrl}" style="display:inline-block; padding:12px 16px; border-radius:999px; background:#0b0b0c; color:#fff; text-decoration:none;">
+      View event details
+    </a>
+    <p style="margin:18px 0 0 0; font-size:12px; color:#555;">
+      Launchpad — Event OS
+    </p>
+  </div>`;
+
+  await resend.emails.send({
+    from: process.env.EMAIL_FROM || 'Launchpad <no-reply@yourdomain.com>',
+    to: args.to,
+    subject,
+    html,
   });
 }
 
-export async function sendOrganizerChecklist(to: string, eventName: string): Promise<void> {
-  await send({
-    to,
-    subject: `Organizer checklist: ${eventName}`,
-    html: `Your event ${eventName} is ready to announce. Checklist: confirm speakers, set ticket prices, schedule launch.`,
-  });
-}
-
-export async function sendLaunchAnnouncement(to: string, eventName: string, eventUrl: string): Promise<void> {
-  await send({
-    to,
-    subject: `Tickets live: ${eventName}`,
-    html: `Tickets are now on sale for ${eventName}. <a href="${eventUrl}">Get yours</a>.`,
-  });
-}
-
-export async function sendAttendeeReminder(to: string, eventName: string, hoursUntil: number): Promise<void> {
-  await send({
-    to,
-    subject: `Reminder: ${eventName} in ${hoursUntil}h`,
-    html: `Don't forget — ${eventName} starts in ${hoursUntil} hours.`,
-  });
-}
-
-export async function sendThankYou(to: string, eventName: string): Promise<void> {
-  await send({
-    to,
-    subject: `Thank you for attending ${eventName}`,
-    html: `Thanks for being part of ${eventName}. We hope you had a great experience.`,
-  });
-}
-
-export async function sendFeedbackSurvey(to: string, eventName: string, surveyLink: string): Promise<void> {
-  await send({
-    to,
-    subject: `Quick feedback: ${eventName}`,
-    html: `How was ${eventName}? <a href="${surveyLink}">Share your feedback</a> (takes 1 min).`,
-  });
+function escapeHtml(s: string) {
+  return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
 }

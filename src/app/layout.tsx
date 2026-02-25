@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { DemoBanner } from "./DemoBanner";
 
 export const metadata: Metadata = {
   title: "Launchpad — AI-Powered Conference Generator",
@@ -26,6 +27,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
+        <DemoBanner />
         {children}
       </body>
     </html>

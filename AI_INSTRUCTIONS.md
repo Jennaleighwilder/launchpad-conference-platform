@@ -1,3 +1,16 @@
+# READ FIRST — PRODUCTION MAINTENANCE MODE
+
+This repo is an existing production system. You are NOT allowed to:
+- create new repos/projects
+- change frameworks
+- restructure directories
+- delete tables or data
+- replace lifecycle engine logic
+
+All work must be additive, minimal-diff, and deployed to the existing Vercel project.
+
+---
+
 # Cursor Operating Instructions (DO NOT DEVIATE)
 
 **See also:** `ARCHITECTURE.md` — system law for how Launchpad is built (data-first, server-owned logic, Stripe, webhooks, etc.)

@@ -1,0 +1,54 @@
+---
+description: Launchpad Event OS — data-first, server-owned logic, no UI-first development
+alwaysApply: true
+---
+
+# Launchpad Event OS — Cursor Rules (ALWAYS ON)
+
+## ZERO-DESTRUCTION LAW
+- NEVER delete or recreate tables: events, tickets, affiliates, lifecycle_log, attendees.
+- NEVER run DROP TABLE in any migration.
+- NEVER change frameworks, routers, or folder structures.
+- NEVER create a new repo, new Vercel project, or new Supabase project.
+- Work ONLY inside the existing repository and deployment.
+
+## CORE FREEZE
+The following are CORE and must not be rewritten; only minimal, additive edits allowed:
+- src/lib/lifecycle/engine.ts
+- src/lib/lifecycle/actions.ts
+- src/app/api/lifecycle/run/route.ts
+- src/middleware.ts (affiliate capture)
+- src/app/api/events/generate (event creation)
+
+If change is needed, do it with smallest diff and preserve behavior.
+
+## BUILD ORDER (NO UI FIRST)
+1) Schema migration (additive only)
+2) Server routes (Stripe / webhooks / email)
+3) UI display (minimal)
+4) Observability (logs)
+
+## DATA OWNS TRUTH
+- Server owns state transitions, payments, attendee creation, email sending.
+- UI is read-only for lifecycle state and payment status.
+- Idempotency is mandatory for any webhook or scheduled action.
+
+## PAYMENTS
+- Stripe Checkout is required for paid tickets.
+- Webhooks finalize payment status. Never trust client "success".
+
+## EMAIL
+- Use an email provider (Resend preferred). All email send calls must be server-side only.
+- Store email delivery actions in lifecycle_log or a new email_log table (additive) to prevent duplicates.
+
+## SECURITY
+- Never expose SUPABASE_SERVICE_ROLE_KEY or Stripe secret keys to client.
+- Public pages only use anon Supabase key (or server rendering).
+- Protected routes require auth/secret header.
+
+## UI AESTHETIC (SuperNova-style)
+- Do not redesign. Use existing styles. Match SuperNova: strong typography, wide spacing, minimal components, cinematic video hero.
+- Dark-ink typography, big spacing, minimal components.
+- Hero sections with looping background video (e.g. /public/conference-bg.mp4).
+- No "cute cards" everywhere; use clean sections and strong type.
+- 1 primary CTA per view ("Get ticket", "Generate event", "Become affiliate").

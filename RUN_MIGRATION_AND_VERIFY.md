@@ -35,7 +35,12 @@ Table Editor → **events** → check these columns exist:
 
 ## 4. Call the lifecycle endpoint
 
-After deploy and CRON_SECRET are set:
+**Header format matters.** Use exactly:
+
+- Key: `Authorization`
+- Value: `Bearer YOUR_CRON_SECRET`
+
+Wrong: `x-cron-secret: value` or `Authorization: value` (missing Bearer)
 
 ```bash
 curl -H "Authorization: Bearer YOUR_CRON_SECRET" https://launchpad-conference-platform.vercel.app/api/lifecycle/run
