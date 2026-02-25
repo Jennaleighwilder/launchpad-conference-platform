@@ -1,9 +1,10 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-export default function CheckoutCancelPage() {
+function CancelContent() {
   const searchParams = useSearchParams();
   const eventSlug = searchParams.get('event');
 
@@ -41,5 +42,17 @@ export default function CheckoutCancelPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function CheckoutCancelPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen flex items-center justify-center" style={{ background: '#0A0A0A' }}>
+        <p style={{ color: 'var(--color-text-muted)' }}>Loading...</p>
+      </main>
+    }>
+      <CancelContent />
+    </Suspense>
   );
 }

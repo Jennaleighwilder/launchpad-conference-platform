@@ -1,9 +1,10 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-export default function CheckoutSuccessPage() {
+function SuccessContent() {
   const searchParams = useSearchParams();
   const eventSlug = searchParams.get('event');
   const eventName = searchParams.get('name') || 'Your Event';
@@ -37,5 +38,17 @@ export default function CheckoutSuccessPage() {
         </p>
       </div>
     </main>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen flex items-center justify-center" style={{ background: '#0A0A0A' }}>
+        <p style={{ color: 'var(--color-text-muted)' }}>Loading...</p>
+      </main>
+    }>
+      <SuccessContent />
+    </Suspense>
   );
 }
