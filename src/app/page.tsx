@@ -309,7 +309,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Experience the Energy — Cinematic image, no video */}
+      {/* Experience the Energy — Conference video (no anime, muted) */}
       <section className="px-6 py-24" style={{ background: '#0A0A0A' }}>
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
@@ -319,16 +319,19 @@ export default function HomePage() {
                 High-energy keynotes, packed stages, and the buzz of thousands of innovators — that&apos;s the energy we bring to every event.
               </p>
             </div>
-            <div className="rounded-xl overflow-hidden shadow-2xl relative aspect-video" style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
-              <div className="absolute inset-0" style={{
-                backgroundImage: 'url("https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&h=675&fit=crop")',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                animation: 'kenBurns 20s ease-in-out infinite',
-              }} />
-              <div className="absolute inset-0" style={{
-                background: 'linear-gradient(to top, rgba(10,10,10,0.8) 0%, transparent 50%, transparent 100%)',
-              }} />
+            <div className="rounded-xl overflow-hidden shadow-2xl" style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
+              <div className="aspect-video w-full relative bg-black">
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="w-full h-full object-cover"
+                  poster="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&h=675&fit=crop"
+                >
+                  <source src="https://assets.mixkit.co/videos/13192/13192-720.mp4" type="video/mp4" />
+                </video>
+              </div>
             </div>
           </div>
           <div className="grid md:grid-cols-3 gap-8 text-center">
