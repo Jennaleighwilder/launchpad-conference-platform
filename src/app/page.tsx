@@ -1,29 +1,30 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const DEMO_EVENTS = [
-  { slug: 'the-future-forum', name: 'The Future Forum', date: 'March 23, 2026', desc: 'For students & young leaders', color: '#FBBF24' },
-  { slug: 'cybernova', name: 'CyberNova', date: 'March 24, 2026', desc: 'Cybersecurity deep-dive', color: '#60A5FA' },
-  { slug: 'ai-summit-2026', name: 'AI Summit 2026', date: 'March 25-26, 2026', desc: 'The flagship 2-day conference', color: '#A78BFA' },
-  { slug: 'startup-zaken', name: 'Startup Zaken', date: 'March 28, 2026', desc: 'For small & medium businesses', color: '#34D399' },
-  { slug: 'an-evening-with', name: 'An Evening With', date: 'March 29, 2026', desc: 'World-class keynote speaker', color: '#888' },
+  { slug: 'the-future-forum', name: 'The Future Forum', date: 'March 23, 2026', desc: 'For students & young leaders', color: '#FBBF24', img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop' },
+  { slug: 'cybernova', name: 'CyberNova', date: 'March 24, 2026', desc: 'Cybersecurity deep-dive', color: '#60A5FA', img: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&h=400&fit=crop' },
+  { slug: 'ai-summit-2026', name: 'AI Summit 2026', date: 'March 25-26, 2026', desc: 'The flagship 2-day conference', color: '#A78BFA', img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=400&fit=crop' },
+  { slug: 'startup-zaken', name: 'Startup Zaken', date: 'March 28, 2026', desc: 'For small & medium businesses', color: '#34D399', img: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600&h=400&fit=crop' },
+  { slug: 'an-evening-with', name: 'An Evening With', date: 'March 29, 2026', desc: 'World-class keynote speaker', color: '#888', img: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600&h=400&fit=crop' },
 ];
 
 const SPEAKERS = [
-  { name: 'Sarah Chen', role: 'CTO, TechForge', flag: '🇺🇸', color: '#4FFFDF' },
-  { name: 'Marcus Berg', role: 'CEO, EventScale', flag: '🇩🇪', color: '#A78BFA' },
-  { name: 'Priya Sharma', role: 'VP Engineering, CloudNova', flag: '🇮🇳', color: '#34D399' },
-  { name: 'James Wright', role: 'Founder, LaunchLab', flag: '🇬🇧', color: '#F472B6' },
-  { name: 'Ana Costa', role: 'Director of AI, FutureConf', flag: '🇧🇷', color: '#60A5FA' },
+  { name: 'Sarah Chen', role: 'CTO, TechForge', flag: '🇺🇸', color: '#4FFFDF', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop' },
+  { name: 'Marcus Berg', role: 'CEO, EventScale', flag: '🇩🇪', color: '#A78BFA', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=500&fit=crop' },
+  { name: 'Priya Sharma', role: 'VP Engineering, CloudNova', flag: '🇮🇳', color: '#34D399', img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=500&fit=crop' },
+  { name: 'James Wright', role: 'Founder, LaunchLab', flag: '🇬🇧', color: '#F472B6', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop' },
+  { name: 'Ana Costa', role: 'Director of AI, FutureConf', flag: '🇧🇷', color: '#60A5FA', img: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=500&fit=crop' },
 ];
 
 const PERSONAS = [
-  { role: 'Startup Founder', pct: 42, gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', cta: 'Startup plan →' },
-  { role: 'Enterprise Planner', pct: 28, gradient: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)', cta: 'Enterprise plan →' },
-  { role: 'Event Agency', pct: 18, gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', cta: 'Agency plan →' },
-  { role: 'Community Builder', pct: 12, gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', cta: 'Community plan →' },
+  { role: 'Startup Founder', pct: 42, cta: 'Startup plan →', img: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=500&h=300&fit=crop' },
+  { role: 'Enterprise Planner', pct: 28, cta: 'Enterprise plan →', img: 'https://images.unsplash.com/photo-1551818255-e6e10975bc17?w=500&h=300&fit=crop' },
+  { role: 'Event Agency', pct: 18, cta: 'Agency plan →', img: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&h=300&fit=crop' },
+  { role: 'Community Builder', pct: 12, cta: 'Community plan →', img: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&h=300&fit=crop' },
 ];
 
 const PARTNER_TIERS = [
@@ -32,8 +33,14 @@ const PARTNER_TIERS = [
   { label: 'KEY PARTNERS', names: ['Innovate', 'GrowthHub', 'FutureConf', 'StackAI', 'VenueMatch', 'TicketFlow', 'SpeakerSync', 'SchedulePro'] },
 ];
 
+const PARTNER_WEIGHTS = [100, 200, 300, 400, 500, 600, 700, 800, 900];
+
 function CountdownWidget() {
   const [diff, setDiff] = useState({ d: 28, h: 3, m: 2, s: 17 });
+  const [eventsCount, setEventsCount] = useState(0);
+  const countRef = useRef<HTMLDivElement>(null);
+  const countedRef = useRef(false);
+
   useEffect(() => {
     const end = new Date();
     end.setDate(end.getDate() + 30);
@@ -52,8 +59,34 @@ function CountdownWidget() {
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, []);
+
+  useEffect(() => {
+    if (countedRef.current || !countRef.current) return;
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !countedRef.current) {
+        countedRef.current = true;
+        const target = 2847;
+        const dur = 2000;
+        const steps = 60;
+        const inc = target / steps;
+        let n = 0;
+        const iv = setInterval(() => {
+          n += inc;
+          if (n >= target) {
+            setEventsCount(target);
+            clearInterval(iv);
+          } else setEventsCount(Math.floor(n));
+        }, dur / steps);
+      }
+    }, { threshold: 0.5 });
+    obs.observe(countRef.current);
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <div className="rounded-xl p-6" style={{ background: '#fff', color: '#0A0A0A' }}>
+      <div ref={countRef} className="text-xs uppercase tracking-wider mb-2" style={{ color: '#666' }}>Events generated</div>
+      <div className="font-mono text-3xl font-bold mb-4" style={{ color: 'var(--color-accent)' }}>{eventsCount.toLocaleString()}</div>
       <div className="text-xs uppercase tracking-wider mb-3" style={{ color: '#666' }}>Starting in</div>
       <div className="flex gap-4 font-mono text-2xl font-bold">
         <span>{diff.d}d</span>
@@ -61,9 +94,22 @@ function CountdownWidget() {
         <span>{diff.m}m</span>
         <span>{diff.s}s</span>
       </div>
+      <p className="text-xs mt-2" style={{ color: '#666' }}>Avg. generation time: 47s</p>
       <a href="#" className="text-sm mt-3 block" style={{ color: 'var(--color-accent)' }}>Add to calendar 📅</a>
     </div>
   );
+}
+
+function RevealSection({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    if (!ref.current) return;
+    const obs = new IntersectionObserver(([e]) => e.isIntersecting && setVisible(true), { threshold: 0.1 });
+    obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+  return <div ref={ref} className={`reveal ${visible ? 'visible' : ''} ${className}`}>{children}</div>;
 }
 
 export default function HomePage() {
@@ -88,16 +134,33 @@ export default function HomePage() {
 
       {/* Hero — full viewport, cinematic */}
       <section className="min-h-screen flex flex-col justify-end relative px-6 pb-24 pt-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A] via-[#0A0A1A] to-[#0A0A0A]" />
+        <div className="absolute inset-0" style={{
+          background: 'linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.4) 50%, rgba(10,10,10,0.95) 100%)',
+          zIndex: 2,
+        }} />
         <div className="absolute inset-0 opacity-30" style={{
           background: 'radial-gradient(ellipse 80% 50% at 50% 50%, rgba(79,255,223,0.15) 0%, transparent 70%)',
+          zIndex: 2,
         }} />
         <div className="absolute inset-0" style={{
-          backgroundImage: 'url("https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&q=80")',
+          backgroundImage: 'url("https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          opacity: 0.25,
+          animation: 'kenBurns 20s ease-in-out infinite',
+          willChange: 'transform',
         }} />
+        {[...Array(25)].map((_, i) => (
+          <div key={i} className="absolute rounded-full bg-white" style={{
+            width: 2 + (i % 3),
+            height: 2 + (i % 3),
+            left: `${(i * 7) % 100}%`,
+            bottom: 0,
+            opacity: 0.1 + (i % 4) * 0.1,
+            animation: `floatUp ${15 + (i % 15)}s linear infinite`,
+            animationDelay: `${i * 0.8}s`,
+            zIndex: 1,
+          }} />
+        ))}
         <div className="relative z-10 max-w-6xl mx-auto w-full flex flex-col md:flex-row md:items-end md:justify-between gap-12">
           <div>
             <div className="flex gap-2 mb-6">
@@ -119,10 +182,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Why Launchpad — split layout, light bg */}
+      {/* Why Launchpad — split layout */}
       <section className="px-6 py-32" style={{ background: '#0A0A0A' }}>
         <div className="max-w-6xl mx-auto grid md:grid-cols-5 gap-16 items-center">
-          <div className="md:col-span-2">
+          <RevealSection className="md:col-span-2">
             <div className="text-xs uppercase tracking-wider mb-4" style={{ color: 'var(--color-accent)' }}>Why Launchpad</div>
             <h2 className="text-4xl md:text-5xl font-normal mb-6 leading-tight" style={{ fontFamily: 'var(--font-display)' }}>
               The playground for event creators
@@ -135,10 +198,14 @@ export default function HomePage() {
                 <a key={label} href={label.includes('demo') ? '/dashboard' : label.includes('pricing') ? '#pricing' : '/create'} className="block py-2 border-b border-transparent hover:border-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text)' }}>{label}</a>
               ))}
             </div>
-          </div>
+          </RevealSection>
           <div className="md:col-span-3 flex flex-col gap-6">
-            <div className="rounded-2xl overflow-hidden h-64" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' }} />
-            <div className="rounded-2xl overflow-hidden h-48 ml-12" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)' }} />
+            <RevealSection className="rounded-2xl overflow-hidden h-64 relative">
+              <Image src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&h=500&fit=crop" alt="" fill className="object-cover" />
+            </RevealSection>
+            <RevealSection className="rounded-2xl overflow-hidden h-48 ml-12 relative">
+              <Image src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&h=400&fit=crop" alt="" fill className="object-cover" />
+            </RevealSection>
           </div>
         </div>
       </section>
@@ -146,7 +213,7 @@ export default function HomePage() {
       {/* How It Works */}
       <section id="how-it-works" className="px-6 py-24" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-center mb-4" style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem' }}>How It Works</h2>
+          <RevealSection><h2 className="text-center mb-4" style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem' }}>How It Works</h2></RevealSection>
           <p className="text-center mb-16" style={{ color: 'var(--color-text-muted)', fontSize: '1.125rem' }}>Three steps. One click. Done.</p>
           <div className="grid md:grid-cols-3 gap-8">
             {[
@@ -175,8 +242,11 @@ export default function HomePage() {
           </p>
           <div className="grid md:grid-cols-4 gap-6">
             {PERSONAS.map((p) => (
-              <div key={p.role} className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <div className="h-48" style={{ background: p.gradient }} />
+              <RevealSection key={p.role}>
+              <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="h-48 relative">
+                  <Image src={p.img} alt="" fill className="object-cover" />
+                </div>
                 <div className="p-6">
                   <div className="text-xs uppercase mb-2" style={{ color: 'var(--color-text-muted)' }}>I am a</div>
                   <h3 className="text-xl font-semibold mb-2">{p.role}</h3>
@@ -190,6 +260,7 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
+              </RevealSection>
             ))}
           </div>
         </div>
@@ -220,16 +291,18 @@ export default function HomePage() {
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-            {SPEAKERS.map((s, i) => (
-              <div key={s.name}>
-                <div className="rounded-xl overflow-hidden mb-4 aspect-[4/5] flex items-center justify-center" style={{ background: s.color + '40' }}>
-                  <span className="text-4xl font-bold" style={{ color: s.color }}>{s.name.charAt(0)}</span>
+            {SPEAKERS.map((s) => (
+              <RevealSection key={s.name}>
+              <div>
+                <div className="rounded-xl overflow-hidden mb-4 aspect-[4/5] relative">
+                  <Image src={s.img} alt={s.name} fill className="object-cover" />
                 </div>
                 <div className="w-8 h-8 rounded-full mb-2 flex items-center justify-center text-xs font-bold" style={{ background: s.color + '40', color: s.color }}>{s.name.charAt(0)}</div>
                 <h3 className="font-semibold">{s.name}</h3>
                 <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>{s.role}</p>
                 <span className="text-sm">{s.flag}</span>
               </div>
+              </RevealSection>
             ))}
           </div>
         </div>
@@ -242,9 +315,11 @@ export default function HomePage() {
           <h2 className="text-center text-4xl font-normal mb-4" style={{ fontFamily: 'var(--font-display)' }}>A full week of inspiration, connection, and innovation</h2>
           <p className="text-center max-w-2xl mx-auto mb-12" style={{ color: 'var(--color-text-muted)' }}>Explore generated events from our platform.</p>
           <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory" style={{ scrollbarWidth: 'none' }}>
-            {DEMO_EVENTS.map((e, i) => (
+            {DEMO_EVENTS.map((e) => (
               <Link key={e.slug} href={e.slug.startsWith('ai-') ? '/e/ai-austin-ovw4' : '/dashboard'} className="flex-shrink-0 w-72 snap-center rounded-2xl overflow-hidden group" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <div className="h-48" style={{ background: `linear-gradient(135deg, ${e.color}40 0%, ${e.color}20 100%)` }} />
+                <div className="h-48 relative">
+                  <Image src={e.img} alt={e.name} fill className="object-cover" />
+                </div>
                 <div className="p-4">
                   <div className="text-xs mb-2" style={{ color: 'var(--color-text-muted)' }}>{e.date}</div>
                   <div className="w-2 h-2 rounded-full inline-block mr-2" style={{ background: e.color }} />
@@ -272,12 +347,17 @@ export default function HomePage() {
             {PARTNER_TIERS.map((tier) => (
               <div key={tier.label}>
                 <div className="text-xs uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>{tier.label}</div>
-                <div className="flex flex-wrap gap-8">
-                  {tier.names.map((n) => (
-                    <div key={n} className="px-6 py-3 rounded-lg" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                      <span className="font-semibold">{n}</span>
-                    </div>
-                  ))}
+                <div className="overflow-hidden">
+                  <div className="flex gap-12 marquee" style={{ width: 'max-content' }}>
+                    {[...tier.names, ...tier.names].map((n, i) => (
+                      <span key={`${n}-${i}`} className="whitespace-nowrap transition-opacity duration-300 hover:!opacity-100" style={{
+                        fontWeight: PARTNER_WEIGHTS[i % PARTNER_WEIGHTS.length],
+                        fontSize: `${18 + (i % 3) * 4}px`,
+                        color: 'white',
+                        opacity: 0.6,
+                      }}>{n.toUpperCase()}</span>
+                    ))}
+                  </div>
                 </div>
               </div>
             ))}
@@ -287,8 +367,14 @@ export default function HomePage() {
 
       {/* Newsletter */}
       <section className="px-6 py-24" style={{ background: 'rgba(255,255,255,0.02)' }}>
-        <div className="max-w-2xl mx-auto">
-          <div className="rounded-2xl p-12 text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="max-w-4xl mx-auto relative">
+          <div className="absolute -left-24 top-1/2 w-48 h-64 rounded-xl overflow-hidden -z-10 relative" style={{ transform: 'translateY(-50%) rotate(-6deg)' }}>
+            <Image src="https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=300&h=400&fit=crop" alt="" fill className="object-cover" sizes="192px" />
+          </div>
+          <div className="absolute -right-24 top-1/2 w-48 h-64 rounded-xl overflow-hidden -z-10 relative" style={{ transform: 'translateY(-50%) rotate(6deg)' }}>
+            <Image src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=300&h=400&fit=crop" alt="" fill className="object-cover" sizes="192px" />
+          </div>
+          <div className="rounded-2xl p-12 text-center relative z-10" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
             <h2 className="text-2xl font-normal mb-2" style={{ fontFamily: 'var(--font-display)' }}>Join the Launchpad Community</h2>
             <p className="mb-8" style={{ color: 'var(--color-text-muted)' }}>Stay up to date with the latest AI event generation features.</p>
             <form className="flex flex-col sm:flex-row gap-4 mb-4">
