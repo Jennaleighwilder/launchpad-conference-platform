@@ -17,18 +17,16 @@ const VENUE = {
 const TRACKS = ['AI & Machine Learning', 'Startup Growth', 'Enterprise Innovation'];
 
 const SPEAKERS = [
-  { name: 'Sarah Chen', role: 'CTO, TechForge', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop', talk: 'Building AI-First Products', track: 'AI & Machine Learning' },
-  { name: 'Marcus Berg', role: 'CEO, EventScale', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=500&fit=crop', talk: 'Scaling Events to 10K Attendees', track: 'Startup Growth' },
-  { name: 'Priya Sharma', role: 'VP Engineering, CloudNova', img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=500&fit=crop', talk: 'Enterprise ML Infrastructure', track: 'Enterprise Innovation' },
-  { name: 'James Wright', role: 'Founder, LaunchLab', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop', talk: 'From Zero to Series A', track: 'Startup Growth' },
-  { name: 'Ana Costa', role: 'Director of AI, FutureConf', img: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=500&fit=crop', talk: 'Responsible AI in Production', track: 'AI & Machine Learning' },
-  { name: 'David Kim', role: 'Head of Growth, ScaleUp', img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop', talk: 'Growth Loops That Work', track: 'Startup Growth' },
-  { name: 'Emma Watson', role: 'Chief Data Officer, DataPulse', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop', talk: 'Data Strategy for Enterprises', track: 'Enterprise Innovation' },
-  { name: 'Alex Rivera', role: 'Founder, AI Ventures', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop', talk: 'Investing in AI Startups', track: 'AI & Machine Learning' },
-  { name: 'Sofia Martinez', role: 'VP Product, FlowSync', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop', talk: 'Product-Led Growth at Scale', track: 'Startup Growth' },
-  { name: 'Michael Chen', role: 'CTO, Innovate Corp', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop', talk: 'Legacy to AI: Enterprise Transformation', track: 'Enterprise Innovation' },
-  { name: 'Yuki Tanaka', role: 'Research Lead, StackAI', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop', talk: 'LLMs in Production', track: 'AI & Machine Learning' },
-  { name: 'Rachel Green', role: 'Head of Partnerships, Launchpad', img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=500&fit=crop', talk: 'Building Ecosystems', track: 'Enterprise Innovation' },
+  { id: 'sarah-chen', name: 'Sarah Chen', role: 'CTO, TechForge', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop', talk: 'Building AI-First Products', track: 'AI & Machine Learning' },
+  { id: 'marcus-berg', name: 'Marcus Berg', role: 'CEO, EventScale', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=500&fit=crop', talk: 'Scaling Events to 10K Attendees', track: 'Startup Growth' },
+  { id: 'priya-sharma', name: 'Priya Sharma', role: 'VP Engineering, CloudNova', img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=500&fit=crop', talk: 'Enterprise ML Infrastructure', track: 'Enterprise Innovation' },
+  { id: 'james-wright', name: 'James Wright', role: 'Founder, LaunchLab', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop', talk: 'From Zero to Series A', track: 'Startup Growth' },
+  { id: 'ana-costa', name: 'Ana Costa', role: 'Director of AI, FutureConf', img: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=500&fit=crop', talk: 'Responsible AI in Production', track: 'AI & Machine Learning' },
+  { id: 'david-kim', name: 'David Kim', role: 'Head of Growth, ScaleUp', img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop', talk: 'Growth Loops That Work', track: 'Startup Growth' },
+  { id: 'elena-vasquez', name: 'Elena Vasquez', role: 'Chief Product Officer, DataPulse', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop', talk: 'Product Strategy for Technical Products', track: 'Enterprise Innovation' },
+  { id: 'thomas-muller', name: 'Thomas Muller', role: 'VP Engineering, Innovate Corp', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop', talk: 'Legacy to AI: Enterprise Transformation', track: 'Enterprise Innovation' },
+  { id: 'aisha-patel', name: 'Aisha Patel', role: 'Director of AI, StackAI', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop', talk: 'LLMs in Production', track: 'AI & Machine Learning' },
+  { id: 'ryan-obrien', name: 'Ryan O\'Brien', role: 'Founder, GrowthHub', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop', talk: 'Building Ecosystems', track: 'Enterprise Innovation' },
 ];
 
 const SCHEDULE = [
@@ -38,8 +36,8 @@ const SCHEDULE = [
   { time: '14:00', title: 'From Zero to Series A', speaker: 'James Wright', track: 'Startup Growth', day: 'Day 1' },
   { time: '09:00', title: 'Responsible AI in Production', speaker: 'Ana Costa', track: 'AI & Machine Learning', day: 'Day 2' },
   { time: '10:30', title: 'Growth Loops That Work', speaker: 'David Kim', track: 'Startup Growth', day: 'Day 2' },
-  { time: '12:00', title: 'Data Strategy for Enterprises', speaker: 'Emma Watson', track: 'Enterprise Innovation', day: 'Day 2' },
-  { time: '14:00', title: 'Investing in AI Startups', speaker: 'Alex Rivera', track: 'AI & Machine Learning', day: 'Day 2' },
+  { time: '12:00', title: 'Product Strategy for Technical Products', speaker: 'Elena Vasquez', track: 'Enterprise Innovation', day: 'Day 2' },
+  { time: '14:00', title: 'Legacy to AI: Enterprise Transformation', speaker: 'Thomas Muller', track: 'AI & Machine Learning', day: 'Day 2' },
 ];
 
 const PRICING = { early_bird: '€299', regular: '€499', vip: '€999' };
@@ -93,32 +91,55 @@ function ticketsRemaining(tier: keyof typeof SOLD_PCT) {
 }
 
 export default function DemoConferencePage() {
-  const [bgVideoReady, setBgVideoReady] = useState(true);
-
   return (
     <main className="min-h-screen relative" style={{ background: 'var(--color-bg)' }}>
-      {bgVideoReady && (
-        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover opacity-30"
-            onError={() => setBgVideoReady(false)}
-          >
-            <source src="/conference-bg.mp4" type="video/mp4" />
-          </video>
+      {/* Cinematic hero background — same as landing page */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'url("https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          animation: 'kenBurns 20s ease-in-out infinite',
+          willChange: 'transform',
+        }} />
+        <div className="absolute inset-0" style={{
+          background: 'linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.4) 50%, rgba(10,10,10,0.95) 100%)',
+        }} />
+        <div className="absolute inset-0 opacity-30" style={{
+          background: 'radial-gradient(ellipse 80% 50% at 50% 50%, rgba(79,255,223,0.15) 0%, transparent 70%)',
+        }} />
+        {[...Array(25)].map((_, i) => (
+          <div key={i} className="absolute rounded-full bg-white" style={{
+            width: 2 + (i % 3),
+            height: 2 + (i % 3),
+            left: `${(i * 7) % 100}%`,
+            bottom: 0,
+            opacity: 0.1 + (i % 4) * 0.1,
+            animation: `floatUp ${15 + (i % 15)}s linear infinite`,
+            animationDelay: `${i * 0.8}s`,
+            zIndex: 1,
+          }} />
+        ))}
+      </div>
+
+      {/* Nav — matches landing page */}
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4"
+        style={{ background: 'rgba(10,10,10,0.9)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <Link href="/" className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold" style={{ background: accentColor, color: 'var(--color-bg)' }}>L</div>
+          <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem' }}>Launchpad</span>
+        </Link>
+        <div className="flex items-center gap-6">
+          <Link href="/speakers" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Speakers</Link>
+          <Link href="/features" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Features</Link>
+          <Link href="/" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Home</Link>
+          <Link href="/create" className="btn-primary" style={{ padding: '0.5rem 1.5rem', fontSize: '0.875rem' }}>Create Event →</Link>
         </div>
-      )}
+      </nav>
 
       {/* Hero */}
-      <section className="relative px-6 pt-8 pb-20">
+      <section className="relative px-6 pt-32 pb-24 min-h-[70vh] flex flex-col justify-end">
         <div className="max-w-5xl mx-auto">
-          <Link href="/" className="inline-flex items-center gap-2 mb-8 text-sm transition-colors hover:text-[var(--color-accent)]"
-            style={{ color: 'var(--color-text-muted)' }}>
-            ← Back to Launchpad
-          </Link>
 
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6"
             style={{ background: `${accentColor}15`, border: `1px solid ${accentColor}40` }}>
@@ -180,28 +201,28 @@ export default function DemoConferencePage() {
       <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto">
           <h2 className="text-sm font-medium uppercase tracking-wider mb-8" style={{ color: 'var(--color-text-muted)' }}>Speakers</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {SPEAKERS.map((speaker, i) => {
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            {SPEAKERS.map((speaker) => {
               const trackColor = TRACK_COLORS[TRACKS.indexOf(speaker.track) % TRACK_COLORS.length] || accentColor;
               return (
-                <div key={i} className="card group">
+                <Link key={speaker.id} href={`/speakers/${speaker.id}`} className="card group block">
                   <div className="relative w-full aspect-[4/5] rounded-lg mb-4 overflow-hidden">
                     <Image
                       src={speaker.img}
                       alt={speaker.name}
                       fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 50vw, 25vw"
+                      className="object-cover transition-transform group-hover:scale-105"
+                      sizes="(max-width: 768px) 50vw, 20vw"
                     />
                   </div>
-                  <h3 className="font-semibold mb-1">{speaker.name}</h3>
+                  <h3 className="font-semibold mb-1 group-hover:text-[var(--color-accent)] transition-colors">{speaker.name}</h3>
                   <p className="text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>{speaker.role}</p>
                   <p className="text-sm font-medium mb-1" style={{ color: accentColor }}>{speaker.talk}</p>
                   <span className="text-xs px-2 py-0.5 rounded"
                     style={{ background: `${trackColor}20`, color: trackColor }}>
                     {speaker.track}
                   </span>
-                </div>
+                </Link>
               );
             })}
           </div>

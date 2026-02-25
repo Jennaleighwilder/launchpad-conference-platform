@@ -18,7 +18,6 @@ export default function EventPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
-  const [bgVideoReady, setBgVideoReady] = useState(true);
 
   useEffect(() => {
     async function fetchEvent() {
@@ -117,21 +116,34 @@ export default function EventPage() {
 
   return (
     <main className="min-h-screen relative" style={{ background: 'var(--color-bg)' }}>
-      {/* Conference background reel — add /public/conference-bg.mp4 for full effect */}
-      {bgVideoReady && (
-        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover opacity-30"
-            onError={() => setBgVideoReady(false)}
-          >
-            <source src="/conference-bg.mp4" type="video/mp4" />
-          </video>
-        </div>
-      )}
+      {/* Cinematic hero background — same premium treatment as landing & demo */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'url("https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          animation: 'kenBurns 20s ease-in-out infinite',
+          willChange: 'transform',
+        }} />
+        <div className="absolute inset-0" style={{
+          background: 'linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.4) 50%, rgba(10,10,10,0.95) 100%)',
+        }} />
+        <div className="absolute inset-0 opacity-30" style={{
+          background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}26 0%, transparent 70%)`,
+        }} />
+        {[...Array(25)].map((_, i) => (
+          <div key={i} className="absolute rounded-full bg-white" style={{
+            width: 2 + (i % 3),
+            height: 2 + (i % 3),
+            left: `${(i * 7) % 100}%`,
+            bottom: 0,
+            opacity: 0.1 + (i % 4) * 0.1,
+            animation: `floatUp ${15 + (i % 15)}s linear infinite`,
+            animationDelay: `${i * 0.8}s`,
+            zIndex: 1,
+          }} />
+        ))}
+      </div>
 
       {/* Hero */}
       <section className="relative px-6 pt-8 pb-20">

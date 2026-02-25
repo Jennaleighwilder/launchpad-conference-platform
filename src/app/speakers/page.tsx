@@ -2,19 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-
-const SPEAKERS = [
-  { id: 'sarah-chen', name: 'Sarah Chen', role: 'CTO, TechForge', flag: '🇺🇸', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop' },
-  { id: 'marcus-berg', name: 'Marcus Berg', role: 'CEO, EventScale', flag: '🇩🇪', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=500&fit=crop' },
-  { id: 'priya-sharma', name: 'Priya Sharma', role: 'VP Engineering, CloudNova', flag: '🇮🇳', img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=500&fit=crop' },
-  { id: 'james-wright', name: 'James Wright', role: 'Founder, LaunchLab', flag: '🇬🇧', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop' },
-  { id: 'ana-costa', name: 'Ana Costa', role: 'Director of AI, FutureConf', flag: '🇧🇷', img: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=500&fit=crop' },
-  { id: 'david-kim', name: 'David Kim', role: 'Head of Growth, ScaleUp', flag: '🇺🇸', img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop' },
-  { id: 'elena-vasquez', name: 'Elena Vasquez', role: 'Chief Product Officer, DataPulse', flag: '🇪🇸', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop' },
-  { id: 'thomas-muller', name: 'Thomas Muller', role: 'VP Engineering, Innovate Corp', flag: '🇩🇪', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop' },
-  { id: 'aisha-patel', name: 'Aisha Patel', role: 'Director of AI, StackAI', flag: '🇮🇳', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop' },
-  { id: 'ryan-obrien', name: 'Ryan O\'Brien', role: 'Founder, GrowthHub', flag: '🇮🇪', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop' },
-];
+import { SPEAKERS } from '@/data/speakers';
 
 export default function SpeakersPage() {
   return (

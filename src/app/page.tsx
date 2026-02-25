@@ -153,9 +153,11 @@ export default function HomePage() {
         </div>
         <div className="flex items-center gap-6">
           <a href="#how-it-works" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }} onClick={(e) => { e.preventDefault(); document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }); }}>How It Works</a>
-          <Link href="/e/demo-conference" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Demo Events</Link>
+          <Link href="/features" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Features</Link>
+          <Link href="/speakers" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Speakers</Link>
+          <Link href="/e/demo-conference" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Demo</Link>
           <Link href="/sponsor" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Sponsor</Link>
-          <Link href="/affiliate" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Affiliate</Link>
+          <Link href="/pricing" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Pricing</Link>
           <Link href="/create" className="btn-primary" style={{ padding: '0.5rem 1.5rem', fontSize: '0.875rem' }}>Create Event →</Link>
         </div>
       </nav>
@@ -314,14 +316,14 @@ export default function HomePage() {
             <div>
               <h2 className="text-4xl md:text-5xl font-normal mb-4" style={{ fontFamily: 'var(--font-display)' }}>Experience the Energy</h2>
               <p className="text-xl" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
-                See what AI-powered conference generation looks like in action.
+                High-energy keynotes, packed stages, and the buzz of thousands of innovators — that&apos;s the energy we bring to every event.
               </p>
             </div>
             <div className="rounded-xl overflow-hidden shadow-2xl" style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
               <div className="aspect-video w-full">
                 <iframe
-                  src="https://www.youtube.com/embed/jfKfPfyJRdk"
-                  title="Launchpad in action"
+                  src="https://www.youtube.com/embed/XEzRZ35urlk?autoplay=0&mute=1"
+                  title="Tech conference energy — Google I/O 2024"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   className="w-full h-full rounded-xl"
@@ -516,11 +518,13 @@ export default function HomePage() {
             <div>
               <div className="text-xs uppercase tracking-wider mb-4" style={{ color: 'var(--color-text-muted)' }}>Product</div>
               <div className="space-y-2">
+                <Link href="/features" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Features</Link>
+                <Link href="/integrations" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Integrations</Link>
                 <Link href="/create" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Generate Event</Link>
                 <Link href="/e/demo-conference" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Demo Events</Link>
+                <Link href="/speakers" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Speakers</Link>
                 <Link href="/sponsor" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Sponsor</Link>
-                <Link href="/create" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>AI Engine</Link>
-                <Link href="/create" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Swarm Mode</Link>
+                <Link href="/pricing" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Pricing</Link>
               </div>
             </div>
             <div>
@@ -535,7 +539,7 @@ export default function HomePage() {
               <div className="text-xs uppercase tracking-wider mb-4" style={{ color: 'var(--color-text-muted)' }}>Company</div>
               <div className="space-y-2">
                 <button type="button" onClick={() => alert('About coming soon!')} className="block text-sm hover:text-white transition-colors text-left w-full bg-transparent border-none cursor-pointer p-0" style={{ color: '#666' }}>About</button>
-                <button type="button" onClick={() => alert('Contact coming soon!')} className="block text-sm hover:text-white transition-colors text-left w-full bg-transparent border-none cursor-pointer p-0" style={{ color: '#666' }}>Contact</button>
+                <Link href="/contact" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Contact</Link>
               </div>
             </div>
             <div>
