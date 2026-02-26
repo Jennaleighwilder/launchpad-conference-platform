@@ -51,8 +51,10 @@ export async function POST(request: NextRequest) {
         speakers_hint: body.speakers_hint,
       });
 
+      const slug = makeSlug(body.topic, body.city);
+      const { getUniqueHeroForEvent } = await import('@/lib/hero-images');
       eventData = {
-        slug: makeSlug(body.topic, body.city),
+        slug,
         name: swarmResult.branding.name,
         topic: body.topic,
         city: body.city,
@@ -68,6 +70,8 @@ export async function POST(request: NextRequest) {
         speakers: swarmResult.speakers,
         schedule: swarmResult.schedule,
         pricing: swarmResult.pricing,
+        hero_image_url: getUniqueHeroForEvent(body.topic, body.city, slug),
+        hero_media_type: 'image',
         _swarm: { timings: swarmResult.agentTimings, errors: swarmResult.errors },
       };
       console.log('[swarm] Complete:', swarmResult.agentTimings);
@@ -95,7 +99,19 @@ export async function POST(request: NextRequest) {
     if (hasSupabase()) {
       try {
         const { createServiceClient } = await import('@/lib/supabase');
+        const { generateHeroForEvent } = await import('@/lib/generate');
         const supabase = createServiceClient();
+
+        // Fetch used provider_asset_ids to prevent stock reuse
+        const { data: usedRows } = await supabase.from('hero_assets').select('provider_asset_id').not('provider_asset_id', 'is', null);
+        const usedIds = new Set((usedRows || []).map((r) => r.provider_asset_id as string).filter(Boolean));
+
+        // Generate relevant hero (AI → Unsplash → Picsum)
+        const hero = await generateHeroForEvent(
+          { name: fullEvent.name, topic: fullEvent.topic, city: fullEvent.city, slug: fullEvent.slug, vibe: fullEvent.vibe },
+          usedIds
+        );
+
         const { data, error } = await supabase
           .from('events')
           .insert({
@@ -115,6 +131,9 @@ export async function POST(request: NextRequest) {
             description: fullEvent.description,
             tagline: fullEvent.tagline,
             topic_key: fullEvent.topic_key,
+            hero_image_url: hero.image_url,
+            hero_video_url: null,
+            hero_media_type: 'image',
             status: 'draft',
           })
           .select()
@@ -124,6 +143,20 @@ export async function POST(request: NextRequest) {
           console.error('[Supabase] Insert error:', JSON.stringify(error));
         }
         if (!error && data) {
+          // Create hero_asset and link (hero_assets table enforces no reuse)
+          const { data: heroAsset } = await supabase
+            .from('hero_assets')
+            .insert({
+              event_id: data.id,
+              image_url: hero.image_url,
+              provider: hero.provider,
+              provider_asset_id: hero.provider_asset_id ?? null,
+            })
+            .select('id')
+            .single();
+          if (heroAsset) {
+            await supabase.from('events').update({ hero_asset_id: heroAsset.id }).eq('id', data.id);
+          }
           // Record affiliate conversion if tagged
           const affiliate = request.headers.get('cookie')?.match(/affiliate=([^;]+)/)?.[1];
           if (affiliate && hasSupabase()) {

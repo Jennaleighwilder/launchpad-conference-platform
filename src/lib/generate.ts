@@ -1,5 +1,7 @@
 import OpenAI from 'openai';
 import type { EventData, CreateEventInput, SpeakerData, ScheduleItem, VenueData, PricingData } from './types';
+import { getUniqueHeroForEvent } from './hero-images';
+import { generateRelevantHero } from './hero-generation';
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
@@ -94,6 +96,8 @@ function mapAIResponse(data: any, input: CreateEventInput, slug: string): Omit<E
     description: data.description || '',
     tagline: data.tagline || '',
     topic_key: data.topic_key || detectTopicKey(input.topic),
+    hero_image_url: getUniqueHeroForEvent(input.topic, input.city, slug),
+    hero_media_type: 'image',
   };
 }
 
@@ -127,6 +131,8 @@ function fallbackGenerate(input: CreateEventInput, slug: string): Omit<EventData
     description: `Join ${input.capacity} leaders in ${input.topic.toLowerCase()} for a ${input.vibe} experience in ${input.city}. Featuring world-class speakers, hands-on workshops, and unmatched networking.`,
     tagline,
     topic_key: topicKey,
+    hero_image_url: getUniqueHeroForEvent(input.topic, input.city, slug),
+    hero_media_type: 'image',
   };
 }
 
@@ -299,4 +305,12 @@ function buildSchedule(topic: string, speakers: SpeakerData[], tracks: string[])
     speaker: speakers[i % speakers.length]?.name || 'TBA',
     track: tracks[i % tracks.length],
   }));
+}
+
+/** Generate relevant hero (AI → stock → Picsum). Used when persisting to Supabase. */
+export async function generateHeroForEvent(
+  event: { name: string; topic: string; city: string; slug: string; vibe?: string },
+  usedProviderIds?: Set<string>
+): Promise<{ image_url: string; provider: string; provider_asset_id?: string | null }> {
+  return generateRelevantHero(event, usedProviderIds ?? new Set());
 }

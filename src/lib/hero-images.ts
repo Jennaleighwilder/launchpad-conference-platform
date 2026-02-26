@@ -137,3 +137,13 @@ export function getHeroImages(seed?: string): string[] {
 }
 
 export const HERO_POOL_FOR_THEMES = PICSUM_POOL;
+
+/**
+ * Assign a unique hero image per event. Deterministic: same event = same image.
+ * Different events get different images (no reuse). Uses hash of topic+city+slug.
+ */
+export function getUniqueHeroForEvent(topic: string, city: string, slug: string): string {
+  const seed = `${topic}|${city}|${slug}`;
+  const idx = simpleHash(seed) % PICSUM_POOL.length;
+  return PICSUM_POOL[idx];
+}
