@@ -27,6 +27,116 @@ const EVENT_FAQ = [
   { q: 'Is parking available?', a: 'Yes. The venue offers on-site parking. Electric vehicle charging stations are available. Carpooling is encouraged.' },
 ];
 
+const HOTEL_IMGS = [
+  'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop',
+  'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop',
+  'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=400&h=300&fit=crop',
+];
+
+const CITY_HOTELS: Record<string, { name: string; distance: string; price: string; stars: number }[]> = {
+  amsterdam: [
+    { name: 'NH Collection Grand Hotel Krasnapolsky', distance: '0.3 km', price: '€189', stars: 5 },
+    { name: 'Hotel TwentySeven', distance: '0.5 km', price: '€450', stars: 5 },
+    { name: 'Hotel Estheréa', distance: '0.7 km', price: '€165', stars: 4 },
+  ],
+  ghent: [
+    { name: 'Hotel Harmony', distance: '0.2 km', price: '€145', stars: 4 },
+    { name: 'Marriott Ghent', distance: '0.5 km', price: '€220', stars: 5 },
+    { name: 'B&B The Verhaegen', distance: '0.8 km', price: '€95', stars: 4 },
+  ],
+  brussels: [
+    { name: 'Hotel Amigo', distance: '0.3 km', price: '€320', stars: 5 },
+    { name: 'The Dominican', distance: '0.5 km', price: '€195', stars: 5 },
+    { name: 'Ibis Brussels Centre', distance: '0.6 km', price: '€89', stars: 3 },
+  ],
+  berlin: [
+    { name: 'Hotel Adlon Kempinski', distance: '0.4 km', price: '€450', stars: 5 },
+    { name: 'The Circus Hotel', distance: '0.6 km', price: '€120', stars: 4 },
+    { name: 'Mitte Design Hotel', distance: '0.8 km', price: '€135', stars: 4 },
+  ],
+  london: [
+    { name: 'The Savoy', distance: '0.3 km', price: '£520', stars: 5 },
+    { name: 'Zedwell Piccadilly', distance: '0.5 km', price: '£145', stars: 4 },
+    { name: 'Hub by Premier Inn', distance: '0.7 km', price: '£89', stars: 4 },
+  ],
+  paris: [
+    { name: 'Le Meurice', distance: '0.3 km', price: '€680', stars: 5 },
+    { name: 'Hôtel des Grands Boulevards', distance: '0.5 km', price: '€220', stars: 4 },
+    { name: 'Ibis Paris Opéra', distance: '0.6 km', price: '€110', stars: 3 },
+  ],
+  stockholm: [
+    { name: 'Grand Hôtel Stockholm', distance: '0.2 km', price: '€380', stars: 5 },
+    { name: 'Clarion Hotel Stockholm', distance: '0.5 km', price: '€165', stars: 4 },
+    { name: 'Scandic Klara', distance: '0.7 km', price: '€125', stars: 4 },
+  ],
+  copenhagen: [
+    { name: 'Nimb Hotel', distance: '0.2 km', price: '€420', stars: 5 },
+    { name: 'Hotel Sanders', distance: '0.4 km', price: '€280', stars: 5 },
+    { name: 'Wakeup Copenhagen', distance: '0.6 km', price: '€95', stars: 3 },
+  ],
+};
+
+const CITY_RESTAURANTS: Record<string, { name: string; cuisine: string; distance: string; price: string }[]> = {
+  amsterdam: [
+    { name: 'The Seafood Bar', cuisine: 'Seafood', distance: '0.2 km', price: '€€€' },
+    { name: 'Café de Jaren', cuisine: 'Dutch', distance: '0.4 km', price: '€€' },
+    { name: 'Restaurant Adam', cuisine: 'Fine Dining', distance: '0.6 km', price: '€€€€' },
+    { name: 'Foodhallen', cuisine: 'Street Food', distance: '1.2 km', price: '€€' },
+  ],
+  ghent: [
+    { name: 'Publiek', cuisine: 'Belgian', distance: '0.3 km', price: '€€€' },
+    { name: 'Holy Food Market', cuisine: 'International', distance: '0.5 km', price: '€€' },
+    { name: 'Greenway', cuisine: 'Vegetarian', distance: '0.4 km', price: '€€' },
+    { name: 'Bar Bassie', cuisine: 'Cocktails & Bites', distance: '0.2 km', price: '€€' },
+  ],
+  brussels: [
+    { name: 'Comme Chez Soi', cuisine: 'Belgian', distance: '0.4 km', price: '€€€€' },
+    { name: 'Nüetnigenough', cuisine: 'Belgian', distance: '0.3 km', price: '€€' },
+    { name: 'Le Cirio', cuisine: 'Brasserie', distance: '0.5 km', price: '€€' },
+    { name: 'Tonton Garby', cuisine: 'Sandwiches', distance: '0.6 km', price: '€' },
+  ],
+  berlin: [
+    { name: 'Katz Orange', cuisine: 'German', distance: '0.3 km', price: '€€€' },
+    { name: 'Mustafa\'s Gemüse Kebap', cuisine: 'Street Food', distance: '0.8 km', price: '€' },
+    { name: 'Coda Dessert Bar', cuisine: 'Desserts', distance: '0.5 km', price: '€€€' },
+    { name: 'Markthalle Neun', cuisine: 'Food Hall', distance: '1.0 km', price: '€€' },
+  ],
+  london: [
+    { name: 'Dishoom', cuisine: 'Indian', distance: '0.4 km', price: '€€€' },
+    { name: 'The Wolseley', cuisine: 'Brasserie', distance: '0.3 km', price: '€€€€' },
+    { name: 'Borough Market', cuisine: 'Street Food', distance: '1.2 km', price: '€€' },
+    { name: 'Flat Iron', cuisine: 'Steakhouse', distance: '0.5 km', price: '€€' },
+  ],
+  paris: [
+    { name: 'L\'Ambroisie', cuisine: 'French', distance: '0.3 km', price: '€€€€' },
+    { name: 'Breizh Café', cuisine: 'Crêpes', distance: '0.5 km', price: '€€' },
+    { name: 'Du Pain et des Idées', cuisine: 'Bakery', distance: '0.6 km', price: '€' },
+    { name: 'Le Comptoir du Relais', cuisine: 'Bistro', distance: '0.4 km', price: '€€€' },
+  ],
+  stockholm: [
+    { name: 'Frantzén', cuisine: 'Nordic', distance: '0.3 km', price: '€€€€' },
+    { name: 'Meatballs for the People', cuisine: 'Swedish', distance: '0.7 km', price: '€€' },
+    { name: 'Vete-Katten', cuisine: 'Café', distance: '0.4 km', price: '€€' },
+    { name: 'Östermalms Saluhall', cuisine: 'Food Hall', distance: '0.8 km', price: '€€€' },
+  ],
+  copenhagen: [
+    { name: 'Noma', cuisine: 'Nordic', distance: '0.5 km', price: '€€€€' },
+    { name: 'Torvehallerne', cuisine: 'Food Hall', distance: '0.6 km', price: '€€' },
+    { name: 'Reffen', cuisine: 'Street Food', distance: '1.5 km', price: '€€' },
+    { name: 'Mad & Kaffe', cuisine: 'Brunch', distance: '0.4 km', price: '€€' },
+  ],
+};
+
+const PHOTO_GALLERY = [
+  { src: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop', label: 'Main stage' },
+  { src: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&h=600&fit=crop', label: 'Networking' },
+  { src: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&h=600&fit=crop', label: 'Workshop' },
+  { src: 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800&h=600&fit=crop', label: 'Exhibition' },
+  { src: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800&h=600&fit=crop', label: 'Keynote' },
+];
+
+const DEFAULT_VIDEO_ID = 'f8DKD78BrQA';
+
 export default function EventPage() {
   const params = useParams();
   const router = useRouter();
@@ -41,10 +151,10 @@ export default function EventPage() {
   const [customTagline, setCustomTagline] = useState('');
   const [customAccent, setCustomAccent] = useState<string | null>(null);
   const [sectionOrder, setSectionOrder] = useState<string[]>([
-    'speakers', 'schedule', 'venue', 'travel', 'engagement', 'pricing', 'sponsor', 'share', 'faq',
+    'speakers', 'schedule', 'venue', 'travel', 'gallery', 'video', 'engagement', 'pricing', 'sponsor', 'share', 'faq',
   ]);
   const [sectionVisible, setSectionVisible] = useState<Record<string, boolean>>({
-    speakers: true, schedule: true, venue: true, travel: true, engagement: true, pricing: true, sponsor: true, share: true, faq: true,
+    speakers: true, schedule: true, venue: true, travel: true, gallery: true, video: true, engagement: true, pricing: true, sponsor: true, share: true, faq: true,
   });
   const shareUrl = typeof window !== 'undefined' ? window.location.href : `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/e/${slug}`;
 
@@ -353,6 +463,9 @@ export default function EventPage() {
       <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto">
           <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Venue</h2>
+          <div className="rounded-xl overflow-hidden mb-4" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
+            <Image src={HERO_IMAGES[0]} alt={venue.name} width={800} height={400} className="w-full h-48 object-cover" unoptimized />
+          </div>
           <div className="card mb-6">
             <h3 className="text-xl font-semibold mb-2">{venue.name}</h3>
             <p className="mb-2" style={{ color: 'var(--color-text-muted)' }}>{venue.address}</p>
@@ -376,24 +489,39 @@ export default function EventPage() {
       </section>
       )}
 
-      {/* Travel & Accommodation */}
+      {/* Stay & Dine + Getting There */}
       {sectionVisible.travel && (
       <section className="px-6 py-16">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Travel & Accommodation</h2>
-          <div className="grid sm:grid-cols-3 gap-4">
-            <a
-              href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(event.city)}&checkin=${event.date}&checkout=${event.date}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="card flex items-center gap-4 hover:border-[var(--color-accent)] transition-colors group"
-            >
-              <span className="text-2xl">🏨</span>
-              <div className="text-left">
-                <div className="font-semibold group-hover:text-[var(--color-accent)] transition-colors">Hotels</div>
-                <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Book stays in {event.city}</div>
+          <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Stay & Dine</h2>
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            {(getHotelsForCity(event.city)).map((h, i) => (
+              <a
+                key={h.name}
+                href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(event.city)}&checkin=${event.date}&checkout=${event.date}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="card overflow-hidden hover:border-[var(--color-accent)] transition-colors block"
+              >
+                <div className="relative h-32 -m-6 mb-4">
+                  <Image src={HOTEL_IMGS[i % HOTEL_IMGS.length]} alt={h.name} fill className="object-cover" unoptimized />
+                </div>
+                <h3 className="font-semibold mb-1">{h.name}</h3>
+                <p className="text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>{h.distance} · {'★'.repeat(h.stars)}</p>
+                <p className="text-sm font-medium" style={{ color: accentColor }}>{h.price}/night</p>
+              </a>
+            ))}
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+            {(getRestaurantsForCity(event.city)).map((r) => (
+              <div key={r.name} className="card">
+                <h3 className="font-semibold mb-1">{r.name}</h3>
+                <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>{r.cuisine} · {r.distance} · {r.price}</p>
               </div>
-            </a>
+            ))}
+          </div>
+          <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Getting There</h2>
+          <div className="grid sm:grid-cols-3 gap-4">
             <a
               href={`https://www.google.com/travel/flights?q=Flights%20to%20${encodeURIComponent(event.city)}%20on%20${event.date}`}
               target="_blank"
@@ -403,21 +531,78 @@ export default function EventPage() {
               <span className="text-2xl">✈️</span>
               <div className="text-left">
                 <div className="font-semibold group-hover:text-[var(--color-accent)] transition-colors">Flights</div>
-                <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Find flights to {event.city}</div>
+                <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Google Flights → {event.city}</div>
               </div>
             </a>
             <a
-              href={`https://www.google.com/maps/search/restaurants+near+${encodeURIComponent(venue.address)}`}
+              href={`https://www.thetrainline.com/trains/to/${encodeURIComponent(event.city.toLowerCase().replace(/\s/g, '-'))}`}
               target="_blank"
               rel="noopener noreferrer"
               className="card flex items-center gap-4 hover:border-[var(--color-accent)] transition-colors group"
             >
-              <span className="text-2xl">🍽️</span>
+              <span className="text-2xl">🚂</span>
               <div className="text-left">
-                <div className="font-semibold group-hover:text-[var(--color-accent)] transition-colors">Dining</div>
-                <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Restaurants near venue</div>
+                <div className="font-semibold group-hover:text-[var(--color-accent)] transition-colors">Trains</div>
+                <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Trainline → {event.city}</div>
               </div>
             </a>
+            <a
+              href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(venue.address)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="card flex items-center gap-4 hover:border-[var(--color-accent)] transition-colors group"
+            >
+              <span className="text-2xl">🚇</span>
+              <div className="text-left">
+                <div className="font-semibold group-hover:text-[var(--color-accent)] transition-colors">Local transport</div>
+                <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Directions to venue</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+      )}
+
+      {/* Photo Gallery */}
+      {sectionVisible.gallery && (
+      <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>At the event</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {PHOTO_GALLERY.map((p, i) => (
+              <div key={i} className="card overflow-hidden p-0">
+                <div className="relative aspect-[4/3]">
+                  <Image src={p.src} alt={p.label} fill className="object-cover" unoptimized />
+                </div>
+                <div className="p-3">
+                  <span className="text-xs font-medium" style={{ color: accentColor }}>{p.label}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      )}
+
+      {/* Video Highlight */}
+      {sectionVisible.video && (
+      <section className="px-6 py-16">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Watch</h2>
+          <div className="card overflow-hidden p-0">
+            <div className="relative aspect-video">
+              <iframe
+                src={`https://www.youtube.com/embed/${DEFAULT_VIDEO_ID}?rel=0`}
+                title="Conference highlight"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+              />
+            </div>
+            <div className="p-4">
+              <h3 className="font-semibold mb-1">Conference highlight reel</h3>
+              <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>See what past attendees experienced</p>
+            </div>
           </div>
         </div>
       </section>
@@ -682,7 +867,8 @@ export default function EventPage() {
 const ACCENT_COLORS = ['#4FFFDF', '#A78BFA', '#34D399', '#F472B6', '#FBBF24', '#60A5FA', '#EF4444', '#22C55E'];
 
 const SECTION_LABELS: Record<string, string> = {
-  speakers: 'Speakers', schedule: 'Schedule', venue: 'Venue + Map', travel: 'Travel & Accommodation',
+  speakers: 'Speakers', schedule: 'Schedule', venue: 'Venue + Map', travel: 'Stay & Dine',
+  gallery: 'Photo Gallery', video: 'Video Highlight',
   engagement: 'Networking & Live Engagement', pricing: 'Tickets', sponsor: 'Sponsor CTA', share: 'Share & Calendar', faq: 'Event FAQ',
 };
 
@@ -777,6 +963,29 @@ function CustomizeModal({
       </div>
     </div>
   );
+}
+
+function getHotelsForCity(city: string): { name: string; distance: string; price: string; stars: number }[] {
+  const key = city.toLowerCase().replace(/\s/g, '');
+  const match = Object.keys(CITY_HOTELS).find((k) => key.includes(k) || k.includes(key));
+  if (match) return CITY_HOTELS[match];
+  return [
+    { name: `${city} Grand Hotel`, distance: '0.3 km', price: '$189', stars: 5 },
+    { name: `${city} Central Inn`, distance: '0.5 km', price: '$129', stars: 4 },
+    { name: `${city} Boutique Stay`, distance: '0.8 km', price: '$95', stars: 4 },
+  ];
+}
+
+function getRestaurantsForCity(city: string): { name: string; cuisine: string; distance: string; price: string }[] {
+  const key = city.toLowerCase().replace(/\s/g, '');
+  const match = Object.keys(CITY_RESTAURANTS).find((k) => key.includes(k) || k.includes(key));
+  if (match) return CITY_RESTAURANTS[match];
+  return [
+    { name: 'The Local Bistro', cuisine: 'Local', distance: '0.2 km', price: '€€' },
+    { name: 'Café Central', cuisine: 'Café', distance: '0.4 km', price: '€' },
+    { name: 'Market Kitchen', cuisine: 'International', distance: '0.6 km', price: '€€€' },
+    { name: 'Street Food Hall', cuisine: 'Street Food', distance: '1.0 km', price: '€€' },
+  ];
 }
 
 function getTopicColor(topicKey: string | null): string {
