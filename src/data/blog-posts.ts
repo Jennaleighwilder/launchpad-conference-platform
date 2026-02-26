@@ -1,5 +1,23 @@
 export const BLOG_POSTS = [
   {
+    slug: 'meet-jennifer-west',
+    title: 'Meet Jennifer West',
+    excerpt: 'From rural Tennessee to 24M tokens in 63 days. The story behind Launchpad\'s founder — neurodivergent cognition, Mirror Protocol™, The Forgotten Code Research Institute, and building the future of events.',
+    category: 'Company',
+    date: '2026-02-24',
+    author: 'Launchpad Team',
+    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&h=450&fit=crop',
+  },
+  {
+    slug: 'murderers-lock-build',
+    title: 'The Murderer\'s Lock: A Technical Deep Dive',
+    excerpt: 'Argon2id (64MB), AES-256-GCM, WebAuthn with counter enforcement, atomic single-use challenges. How we built an unbreakable lock — and proved it with Playwright red-team CI.',
+    category: 'Engineering',
+    date: '2026-02-23',
+    author: 'Jennifer West',
+    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=450&fit=crop',
+  },
+  {
     slug: 'ai-replacing-event-planning',
     title: 'How AI Is Replacing 6-Month Event Planning Cycles',
     excerpt: 'What used to take half a year now takes 60 seconds. Here\'s how AI is reshaping the conference industry.',
@@ -61,6 +79,15 @@ export const BLOG_POSTS = [
     date: '2026-01-15',
     author: 'Launchpad Team',
     image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=450&fit=crop',
+  },
+  {
+    slug: 'zero-to-production',
+    title: 'Zero to Production: Building Launchpad',
+    excerpt: 'The engineering story — stack decisions, swarm architecture, fallback system, 34 pages. What it proves about AI-assisted development.',
+    category: 'Engineering',
+    date: '2026-01-08',
+    author: 'Launchpad Team',
+    image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=450&fit=crop',
   },
   {
     slug: 'launch-announcement',

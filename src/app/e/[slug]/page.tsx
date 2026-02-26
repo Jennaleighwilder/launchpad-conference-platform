@@ -28,6 +28,16 @@ export default function EventPage() {
   const [error, setError] = useState('');
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
+  const [customizeOpen, setCustomizeOpen] = useState(false);
+  const [customName, setCustomName] = useState('');
+  const [customTagline, setCustomTagline] = useState('');
+  const [customAccent, setCustomAccent] = useState<string | null>(null);
+  const [sectionOrder, setSectionOrder] = useState<string[]>([
+    'speakers', 'schedule', 'venue', 'travel', 'engagement', 'pricing', 'sponsor', 'share', 'faq',
+  ]);
+  const [sectionVisible, setSectionVisible] = useState<Record<string, boolean>>({
+    speakers: true, schedule: true, venue: true, travel: true, engagement: true, pricing: true, sponsor: true, share: true, faq: true,
+  });
   const shareUrl = typeof window !== 'undefined' ? window.location.href : `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/e/${slug}`;
 
   useEffect(() => {
@@ -115,7 +125,9 @@ export default function EventPage() {
   const schedule = (event.schedule || []) as ScheduleItem[];
   const pricing = event.pricing as PricingData;
   const tracks = (event.tracks || []) as string[];
-  const accentColor = getTopicColor(event.topic_key);
+  const accentColor = customAccent || getTopicColor(event.topic_key);
+  const displayName = customName || event.name;
+  const displayTagline = customTagline !== undefined ? customTagline : event.tagline;
   const ticketsAvailable = event.status === 'ticket_sales' || event.status === 'live';
   const formattedDate = formatDate(event.date);
 
@@ -159,10 +171,16 @@ export default function EventPage() {
       {/* Hero */}
       <section className="relative px-6 pt-8 pb-20">
         <div className="max-w-5xl mx-auto">
-          <Link href="/" className="inline-flex items-center gap-2 mb-8 text-sm transition-colors hover:text-[var(--color-accent)]"
-            style={{ color: 'var(--color-text-muted)' }}>
-            ← Back to Launchpad
-          </Link>
+          <div className="flex items-center justify-between mb-8">
+            <Link href="/" className="inline-flex items-center gap-2 text-sm transition-colors hover:text-[var(--color-accent)]"
+              style={{ color: 'var(--color-text-muted)' }}>
+              ← Back to Launchpad
+            </Link>
+            <button onClick={() => setCustomizeOpen(true)} className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+              style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: 'var(--color-text)' }}>
+              ✏️ Customize Event
+            </button>
+          </div>
 
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6"
             style={{ background: `${accentColor}15`, border: `1px solid ${accentColor}40` }}>
@@ -177,12 +195,12 @@ export default function EventPage() {
             fontSize: 'clamp(2rem, 5vw, 3.5rem)',
             lineHeight: 1.1,
           }}>
-            {event.name}
+            {displayName}
           </h1>
 
-          {event.tagline && (
+          {displayTagline && (
             <p className="mb-6" style={{ color: accentColor, fontSize: '1.25rem', fontFamily: 'var(--font-mono)' }}>
-              {event.tagline}
+              {displayTagline}
             </p>
           )}
 
@@ -222,7 +240,7 @@ export default function EventPage() {
       </section>
 
       {/* Speakers */}
-      {speakers.length > 0 && (
+      {sectionVisible.speakers && speakers.length > 0 && (
         <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="max-w-5xl mx-auto">
             <h2 className="text-sm font-medium uppercase tracking-wider mb-8" style={{ color: 'var(--color-text-muted)' }}>Speakers</h2>
@@ -262,7 +280,7 @@ export default function EventPage() {
       )}
 
       {/* Schedule */}
-      {schedule.length > 0 && (
+      {sectionVisible.schedule && schedule.length > 0 && (
         <section className="px-6 py-16">
           <div className="max-w-5xl mx-auto">
             <div className="flex items-center justify-between mb-8">
@@ -298,6 +316,7 @@ export default function EventPage() {
       )}
 
       {/* Venue + Map */}
+      {sectionVisible.venue && (
       <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto">
           <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Venue</h2>
@@ -322,8 +341,10 @@ export default function EventPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Travel & Accommodation */}
+      {sectionVisible.travel && (
       <section className="px-6 py-16">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Travel & Accommodation</h2>
@@ -367,8 +388,10 @@ export default function EventPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Networking & Live Engagement */}
+      {sectionVisible.engagement && (
       <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto">
           <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Networking & Live Engagement</h2>
@@ -406,8 +429,10 @@ export default function EventPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Pricing */}
+      {sectionVisible.pricing && (
       <section className="px-6 py-16">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-sm font-medium uppercase tracking-wider mb-8" style={{ color: 'var(--color-text-muted)' }}>Tickets</h2>
@@ -471,8 +496,10 @@ export default function EventPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Sponsor CTA */}
+      {sectionVisible.sponsor && (
       <section className="px-6 py-12" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto text-center mb-8">
           <Link href="/sponsor" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all"
@@ -481,8 +508,10 @@ export default function EventPage() {
           </Link>
         </div>
       </section>
+      )}
 
       {/* Share & Calendar */}
+      {sectionVisible.share && (
       <section className="px-6 py-12" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto">
           <p className="mb-4 text-center" style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>Share & Add to Calendar</p>
@@ -542,8 +571,10 @@ export default function EventPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Event FAQ */}
+      {sectionVisible.faq && (
       <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-3xl mx-auto">
           <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>FAQ</h2>
@@ -567,6 +598,7 @@ export default function EventPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Footer */}
       <footer className="px-6 py-8 text-center" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
@@ -574,7 +606,127 @@ export default function EventPage() {
           Generated by <Link href="/" className="hover:text-[var(--color-accent)] transition-colors">Launchpad</Link> — AI-powered conference generation
         </p>
       </footer>
+
+      {customizeOpen && (
+        <CustomizeModal
+          event={event}
+          initialName={customName || event.name}
+          initialTagline={customTagline !== undefined ? customTagline : (event.tagline || '')}
+          initialAccent={customAccent}
+          sectionOrder={sectionOrder}
+          sectionVisible={sectionVisible}
+          onClose={() => setCustomizeOpen(false)}
+          onSave={(name, tagline, accent, order, visible) => {
+            setCustomName(name);
+            setCustomTagline(tagline);
+            setCustomAccent(accent);
+            setSectionOrder(order);
+            setSectionVisible(visible);
+            setCustomizeOpen(false);
+          }}
+        />
+      )}
     </main>
+  );
+}
+
+const ACCENT_COLORS = ['#4FFFDF', '#A78BFA', '#34D399', '#F472B6', '#FBBF24', '#60A5FA', '#EF4444', '#22C55E'];
+
+const SECTION_LABELS: Record<string, string> = {
+  speakers: 'Speakers', schedule: 'Schedule', venue: 'Venue + Map', travel: 'Travel & Accommodation',
+  engagement: 'Networking & Live Engagement', pricing: 'Tickets', sponsor: 'Sponsor CTA', share: 'Share & Calendar', faq: 'Event FAQ',
+};
+
+function CustomizeModal({
+  event,
+  initialName,
+  initialTagline,
+  initialAccent,
+  sectionOrder,
+  sectionVisible,
+  onClose,
+  onSave,
+}: {
+  event: EventData;
+  initialName: string;
+  initialTagline: string;
+  initialAccent: string | null;
+  sectionOrder: string[];
+  sectionVisible: Record<string, boolean>;
+  onClose: () => void;
+  onSave: (name: string, tagline: string, accent: string | null, order: string[], visible: Record<string, boolean>) => void;
+}) {
+  const [name, setName] = useState(initialName);
+  const [tagline, setTagline] = useState(initialTagline);
+  const [accent, setAccent] = useState<string | null>(initialAccent);
+  const [order, setOrder] = useState(sectionOrder);
+  const [visible, setVisible] = useState(sectionVisible);
+  const [dragged, setDragged] = useState<string | null>(null);
+
+  const handleDragStart = (id: string) => setDragged(id);
+  const handleDragOver = (e: React.DragEvent) => e.preventDefault();
+  const handleDrop = (targetId: string) => {
+    if (!dragged) return;
+    const idx = order.indexOf(dragged);
+    const targetIdx = order.indexOf(targetId);
+    if (idx === -1 || targetIdx === -1) return;
+    const next = [...order];
+    next.splice(idx, 1);
+    next.splice(targetIdx, 0, dragged);
+    setOrder(next);
+    setDragged(null);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.8)' }} onClick={onClose}>
+      <div className="max-w-lg w-full max-h-[90vh] overflow-y-auto rounded-2xl p-6" style={{ background: 'var(--color-bg)', border: '1px solid rgba(255,255,255,0.1)' }} onClick={(e) => e.stopPropagation()}>
+        <h3 className="text-xl font-bold mb-6" style={{ fontFamily: 'var(--font-display)' }}>Customize Event</h3>
+        <div className="space-y-4 mb-6">
+          <div>
+            <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Event name</label>
+            <input value={name} onChange={(e) => setName(e.target.value)} className="w-full px-4 py-3 rounded-lg bg-transparent border" style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }} />
+          </div>
+          <div>
+            <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Tagline</label>
+            <input value={tagline} onChange={(e) => setTagline(e.target.value)} className="w-full px-4 py-3 rounded-lg bg-transparent border" style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }} />
+          </div>
+          <div>
+            <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Accent color</label>
+            <div className="flex gap-2 flex-wrap">
+              {ACCENT_COLORS.map((c) => (
+                <button key={c} onClick={() => setAccent(accent === c ? null : c)} className="w-10 h-10 rounded-full border-2 transition-transform" style={{ background: c, borderColor: accent === c ? '#fff' : 'transparent', transform: accent === c ? 'scale(1.1)' : 'scale(1)' }} />
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="mb-6">
+          <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Section order (drag to reorder)</label>
+          <div className="space-y-2">
+            {order.map((id) => (
+              <div
+                key={id}
+                draggable
+                onDragStart={() => handleDragStart(id)}
+                onDragOver={handleDragOver}
+                onDrop={() => handleDrop(id)}
+                className="flex items-center gap-3 p-3 rounded-lg cursor-grab active:cursor-grabbing"
+                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+              >
+                <span className="text-gray-500">⋮⋮</span>
+                <span className="flex-1">{SECTION_LABELS[id] || id}</span>
+                <button onClick={() => setVisible((v) => ({ ...v, [id]: !v[id] }))} className="text-sm" style={{ color: visible[id] ? 'var(--color-accent)' : 'var(--color-text-muted)' }}>
+                  {visible[id] ? 'Visible' : 'Hidden'}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="flex gap-3">
+          <button onClick={() => onSave(name, tagline, accent, order, visible)} className="flex-1 py-3 rounded-lg font-semibold" style={{ background: 'var(--color-accent)', color: 'var(--color-bg)' }}>Save</button>
+          <button onClick={onClose} className="flex-1 py-3 rounded-lg font-semibold" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)' }}>Cancel</button>
+        </div>
+      </div>
+    </div>
   );
 }
 

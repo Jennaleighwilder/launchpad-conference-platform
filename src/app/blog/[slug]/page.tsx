@@ -4,6 +4,22 @@ import { notFound } from 'next/navigation';
 import { BLOG_POSTS } from '@/data/blog-posts';
 
 const ARTICLE_CONTENT: Record<string, string> = {
+  'meet-jennifer-west': `
+Jennifer West grew up in rural Tennessee. Neurodivergent cognition shaped how she learns and builds — pattern-first, systems-oriented, with an ability to hold complex architectures in her head.
+
+**24 million tokens in 63 days.** That's the scale of her work on Mirror Protocol™ and The Forgotten Code Research Institute — cross-platform AI modification, security research, and infrastructure that doesn't break.
+
+The Murderer's Lock is her most recent build: an unbreakable lock using Argon2id (64MB memory), AES-256-GCM, WebAuthn with counter enforcement, and atomic single-use challenges. No downgrade attacks. No replay. Red-team tested with Playwright CI.
+
+Launchpad is the next chapter — AI-powered conference generation that replaces 6-month planning cycles with 60-second drafts. Same rigor. Same obsession with systems that work.
+  `,
+  'murderers-lock-build': `
+The Murderer's Lock is a security research project demonstrating what "unbreakable" looks like when you design for threat models most products ignore.
+
+**Argon2id at 64MB** — memory-hard hashing that makes GPU/ASIC attacks impractical. **AES-256-GCM** — authenticated encryption with no room for tampering. **WebAuthn with counter enforcement** — hardware-backed auth that detects cloning. **Atomic single-use challenges** — no replay, no downgrade. **Graduated lockjaw** — escalation from soft to hard lock. **Shamir recovery** — distributed key recovery without a single point of failure.
+
+We ran Playwright-based red-team CI. Every attack vector we could think of — replay, downgrade, timing — gets tested on every commit. The live demo is available for security researchers.
+  `,
   'ai-replacing-event-planning': `
 Event planning used to mean months of spreadsheets, venue hunting, and speaker outreach. Today, AI can generate a complete conference — name, venue, speakers, schedule, pricing — in under a minute.
 
@@ -11,7 +27,12 @@ Event planning used to mean months of spreadsheets, venue hunting, and speaker o
 
 We built Launchpad to bridge that gap. Our AI understands conference structure: keynote slots, panel formats, workshop tracks, networking breaks. It knows real venues in major cities. It generates diverse, credible speaker rosters. And it does it all in parallel — 5 specialized agents working simultaneously.
 
-The result isn't a generic template. It's a tailored conference that matches your topic, vibe, and budget. Investors, startups, and enterprises are already using it to ship events 10x faster.
+The result isn't a generic template. It's a tailored conference that matches your topic, vibe, and budget. **90% of event planning is mechanical** — venue research, speaker outreach, schedule drafting, pricing tiers. AI can do that in parallel. Our swarm architecture runs 5 agents at once. The new customize layer lets you tweak name, tagline, accent color, and section order without regenerating. Industry cost analysis: $50K–150K per 500-person event in coordination alone. Launchpad collapses that to minutes.
+
+Investors, startups, and enterprises are already using it to ship events 10x faster.
+  `,
+  'zero-to-production': `
+We built Launchpad to prove a point: AI-assisted development can ship production software fast. **Stack:** Next.js 16, Vercel, Stripe, Supabase. **Architecture:** 5 parallel swarm agents (speakers, venue, schedule, pricing, branding), smart fallback when OpenAI isn't configured, in-memory store when Supabase isn't. **Scope:** 34 pages, 11 API routes, 0 TypeScript errors. **What it proves:** A single developer with the right tools can build a full SaaS in weeks, not months. The customize layer, blog, community, ROI calculator — all added in days. This is the new normal.
   `,
   'swarm-ai-deep-dive': `
 Launchpad's Swarm AI runs 5 specialized agents in parallel. Each agent owns one domain: speakers, venue, schedule, pricing, branding. They don't wait for each other — they all fire at once.

@@ -524,6 +524,8 @@ export default function HomePage() {
                 <Link href="/features" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Features</Link>
                 <Link href="/integrations" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Integrations</Link>
                 <Link href="/create" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Generate Event</Link>
+                <Link href="/demo" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Live Demo</Link>
+                <Link href="/templates" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Templates</Link>
                 <Link href="/e/demo-conference" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Demo Events</Link>
                 <Link href="/speakers" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Speakers</Link>
                 <Link href="/sponsor" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Sponsor</Link>
@@ -536,6 +538,10 @@ export default function HomePage() {
                 <Link href="/docs" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Documentation</Link>
                 <Link href="/docs" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>API</Link>
                 <Link href="/blog" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Blog</Link>
+                <Link href="/community" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Community</Link>
+                <Link href="/showcase" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Showcase</Link>
+                <Link href="/roi" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>ROI Calculator</Link>
+                <Link href="/status" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Status</Link>
               </div>
             </div>
             <div>

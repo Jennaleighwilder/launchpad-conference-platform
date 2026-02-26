@@ -3,8 +3,8 @@ import Image from 'next/image';
 import { BLOG_POSTS } from '@/data/blog-posts';
 
 export default function BlogPage() {
-  const featured = BLOG_POSTS[0];
-  const rest = BLOG_POSTS.slice(1);
+  const featured = BLOG_POSTS.find((p) => p.slug === 'meet-jennifer-west') || BLOG_POSTS[0];
+  const rest = BLOG_POSTS.filter((p) => p.slug !== featured.slug);
 
   return (
     <main className="min-h-screen" style={{ background: 'var(--color-bg)' }}>
