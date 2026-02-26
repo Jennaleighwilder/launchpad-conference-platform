@@ -7,6 +7,7 @@ import { IndustryStats } from '@/components/IndustryStats';
 import { PromotionEngine } from '@/components/PromotionEngine';
 import { AnimatedTerminal } from '@/components/AnimatedTerminal';
 import { SocialProofTicker } from '@/components/SocialProofTicker';
+import { KenBurnsSlideshow } from '@/components/demo-event/DemoEventLayout';
 
 const DEMO_EVENTS = [
   { slug: 'the-future-forum', name: 'The Future Forum', date: 'March 23, 2026', desc: 'Gen Z energy · Tokyo · Matrix rain', color: '#EC4899', img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop' },
@@ -39,6 +40,14 @@ const PARTNER_TIERS = [
 ];
 
 const PARTNER_WEIGHTS = [100, 200, 300, 400, 500, 600, 700, 800, 900];
+
+const HERO_IMAGES = [
+  'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop',
+  'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=1920&h=1080&fit=crop',
+  'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=1920&h=1080&fit=crop',
+  'https://images.unsplash.com/photo-1511578314322-379afb476865?w=1920&h=1080&fit=crop',
+  'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1920&h=1080&fit=crop',
+];
 
 /** Early bird countdown — free until March 28, 2026 */
 function EarlyBirdCountdownCard() {
@@ -204,21 +213,18 @@ export default function HomePage() {
           <Link href="/speakers" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Speakers</Link>
           <Link href="/demo" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Demos</Link>
           <Link href="/sponsor" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Sponsor</Link>
+          <Link href="/affiliate" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Affiliate</Link>
+          <Link href="/careers" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Careers</Link>
           <Link href="/pricing" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Pricing</Link>
           <Link href="/create" className="btn-primary" style={{ padding: '0.5rem 1.5rem', fontSize: '0.875rem' }}>Create Event →</Link>
         </div>
       </nav>
 
-      {/* Hero — big conference photo (Ken Burns), centered layout, early bird countdown (Twan's preferred look) */}
+      {/* Hero — 5-photo reel with Ken Burns, centered layout, early bird countdown (Twan's preferred look) */}
       <section className="min-h-screen flex flex-col justify-center items-center relative px-6 py-32 overflow-hidden">
-        {/* Hero picture — conference photo with Ken Burns zoom */}
+        {/* Hero image reel — 5 photos cycle every 6s with crossfade + Ken Burns */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'url(https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            animation: 'kenBurns 20s ease-in-out infinite',
-          }} />
+          <KenBurnsSlideshow images={HERO_IMAGES} />
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(5,5,8,0.5) 0%, rgba(5,5,8,0.6) 40%, rgba(5,5,8,0.9) 100%)' }} />
         </div>
         <div className="absolute inset-0" style={{
@@ -258,12 +264,65 @@ export default function HomePage() {
 
       <SocialProofTicker />
 
-      <IndustryStats />
-
       {/* Promotion Engine — AI street team */}
       <div id="promotion">
         <PromotionEngine />
       </div>
+
+      {/* GDPR + EU AI Act Trust Section — between promo and industry data */}
+      <section className="px-6 py-24" style={{ background: 'rgba(10,10,10,0.98)', borderTop: '1px solid rgba(79,255,223,0.1)', borderBottom: '1px solid rgba(79,255,223,0.1)' }}>
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center text-xs uppercase tracking-[0.2em] mb-6" style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-mono)' }}>Privacy & Trust</div>
+          <h2 className="text-center text-3xl md:text-4xl font-semibold mb-4" style={{ fontFamily: 'var(--font-display)' }}>
+            GDPR compliant. EU AI Act ready.
+          </h2>
+          <p className="text-center max-w-2xl mx-auto mb-16" style={{ color: 'var(--color-text-muted)', fontSize: '1.125rem', lineHeight: 1.7 }}>
+            Built for EU investors and enterprise customers. No dark patterns, no data selling, no shortcuts.
+          </p>
+          <div className="grid md:grid-cols-2 gap-8 mb-16">
+            <div className="rounded-2xl p-8" style={{ background: 'rgba(79,255,223,0.06)', border: '1px solid rgba(79,255,223,0.2)' }}>
+              <h3 className="text-xl font-semibold mb-4" style={{ color: 'var(--color-accent)' }}>GDPR Compliant</h3>
+              <ul className="space-y-3" style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                <li><strong style={{ color: 'var(--color-text)' }}>Data minimization</strong> — no tracking, no profiling, no selling data</li>
+                <li><strong style={{ color: 'var(--color-text)' }}>Right to erasure</strong> — one click, gone forever</li>
+                <li><strong style={{ color: 'var(--color-text)' }}>EU data residency</strong> — Frankfurt, Germany via Supabase</li>
+                <li><strong style={{ color: 'var(--color-text)' }}>Consent-first design</strong> — no dark patterns, explicit consent required</li>
+                <li><strong style={{ color: 'var(--color-text)' }}>DPAs available</strong> — Data Processing Agreements available and auditable</li>
+              </ul>
+            </div>
+            <div className="rounded-2xl p-8" style={{ background: 'rgba(167,123,250,0.06)', border: '1px solid rgba(167,123,250,0.2)' }}>
+              <h3 className="text-xl font-semibold mb-4" style={{ color: '#A78BFA' }}>EU AI Act Ready</h3>
+              <p className="text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>Regulation 2024/1689 · enforced August 2026</p>
+              <ul className="space-y-3" style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                <li><strong style={{ color: 'var(--color-text)' }}>Minimal risk</strong> — event generation AI does not trigger high-risk obligations</li>
+                <li><strong style={{ color: 'var(--color-text)' }}>Full transparency</strong> — AI-generated content clearly labeled</li>
+                <li><strong style={{ color: 'var(--color-text)' }}>Human oversight</strong> — every output editable, organizers approve everything</li>
+                <li><strong style={{ color: 'var(--color-text)' }}>No prohibited practices</strong> — no social scoring, manipulation, biometric ID</li>
+                <li><strong style={{ color: 'var(--color-text)' }}>Documented & auditable</strong> — risk assessments and technical docs maintained</li>
+              </ul>
+            </div>
+          </div>
+          <div className="flex flex-wrap justify-center gap-6" style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
+            <span className="flex items-center gap-2">
+              <span style={{ color: 'var(--color-accent)' }}>🔒</span> End-to-End Encryption (TLS 1.3 + AES-256)
+            </span>
+            <span className="flex items-center gap-2">
+              <span style={{ color: 'var(--color-accent)' }}>🚫</span> No Data Selling (Ever. Period.)
+            </span>
+            <span className="flex items-center gap-2">
+              <span style={{ color: 'var(--color-accent)' }}>✓</span> SOC 2 Type II (via Supabase + Vercel)
+            </span>
+            <span className="flex items-center gap-2">
+              <span style={{ color: 'var(--color-accent)' }}>🇪🇺</span> EU Data Residency (Frankfurt)
+            </span>
+            <span className="flex items-center gap-2">
+              <span style={{ color: 'var(--color-accent)' }}>🗑</span> Right to Delete (one-click erasure)
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <IndustryStats />
 
       {/* Why Launchpad — split layout */}
       <section className="px-6 py-32" style={{ background: '#0A0A0A' }}>
@@ -630,7 +689,18 @@ export default function HomePage() {
       <section className="px-6 py-24 text-center" style={{ background: 'var(--color-surface)' }}>
         <h2 className="mb-6" style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem' }}>Ready to launch?</h2>
         <p className="mb-8" style={{ color: 'var(--color-text-muted)', fontSize: '1.125rem' }}>Your next conference is 60 seconds away.</p>
-        <Link href="/create" className="btn-primary" style={{ fontSize: '1.125rem' }}>Create Your Event →</Link>
+        <div className="flex flex-wrap justify-center gap-4">
+          <Link href="/create" className="btn-primary" style={{ fontSize: '1.125rem' }}>Create Your Event →</Link>
+          <Link href="/affiliate" className="px-6 py-3 rounded-lg font-semibold border transition-all hover:border-[var(--color-accent)]" style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'var(--color-text)' }}>Earn 40% as Affiliate →</Link>
+        </div>
+      </section>
+
+      {/* Affiliate CTA — before footer */}
+      <section className="px-6 py-16 text-center" style={{ background: 'rgba(79,255,223,0.06)', borderTop: '1px solid rgba(79,255,223,0.15)' }}>
+        <div className="max-w-2xl mx-auto">
+          <p className="text-lg mb-4" style={{ color: 'var(--color-text)' }}>Influencers, podcasters, event creators — earn <strong style={{ color: 'var(--color-accent)' }}>40% recurring</strong> on every Pro referral.</p>
+          <Link href="/affiliate" className="text-sm font-medium" style={{ color: 'var(--color-accent)' }}>Join the affiliate program →</Link>
+        </div>
       </section>
 
       {/* Footer */}
@@ -649,6 +719,8 @@ export default function HomePage() {
                 <Link href="/e/demo-conference" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Demo Events</Link>
                 <Link href="/speakers" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Speakers</Link>
                 <Link href="/sponsor" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Sponsor</Link>
+                <Link href="/affiliate" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Affiliate</Link>
+                <Link href="/careers" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Careers</Link>
                 <Link href="/pricing" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Pricing</Link>
               </div>
             </div>

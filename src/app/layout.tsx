@@ -4,6 +4,7 @@ import { DemoBanner } from "./DemoBanner";
 import { AccessibilityProvider } from "@/contexts/AccessibilityContext";
 import { AccessibilityToggle } from "@/components/AccessibilityToggle";
 import { AccessibilityBody } from "@/components/AccessibilityBody";
+import { LiveChat } from "@/components/LiveChat";
 
 export const metadata: Metadata = {
   title: "Launchpad — AI-Powered Conference Generator",
@@ -35,6 +36,7 @@ export default function RootLayout({
           <DemoBanner />
           {children}
           <AccessibilityToggle />
+          <LiveChat />
         </AccessibilityProvider>
       </body>
     </html>
