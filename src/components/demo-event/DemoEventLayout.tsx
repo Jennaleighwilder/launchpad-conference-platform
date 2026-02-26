@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { FALLBACK_HERO_POOL } from '@/lib/hero-images';
 
 export function ScanlineOverlay({ color = '79,255,223' }: { color?: string }) {
   return (
@@ -16,22 +17,23 @@ export function ScanlineOverlay({ color = '79,255,223' }: { color?: string }) {
 
 export function KenBurnsSlideshow({ images }: { images: string[] }) {
   const [idx, setIdx] = useState(0);
+  const pool = images?.length ? images : FALLBACK_HERO_POOL;
 
   useEffect(() => {
-    images.forEach((src) => {
+    pool.slice(0, 8).forEach((src) => {
       const img = new window.Image();
       img.src = src;
     });
-  }, [images]);
+  }, [pool]);
 
   useEffect(() => {
-    const id = setInterval(() => setIdx((i) => (i + 1) % images.length), 6000);
+    const id = setInterval(() => setIdx((i) => (i + 1) % pool.length), 6000);
     return () => clearInterval(id);
-  }, [images.length]);
+  }, [pool.length]);
 
   return (
-    <div className="absolute inset-0">
-      {images.map((src, i) => (
+    <div className="absolute inset-0" style={{ background: '#0a0a0a' }}>
+      {pool.map((src, i) => (
         <div
           key={i}
           className="absolute inset-0"

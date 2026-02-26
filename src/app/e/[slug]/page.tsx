@@ -144,6 +144,9 @@ export default function EventPage() {
   const [customName, setCustomName] = useState('');
   const [customTagline, setCustomTagline] = useState('');
   const [customAccent, setCustomAccent] = useState<string | null>(null);
+  const [customHeroImages, setCustomHeroImages] = useState<string[]>([]);
+  const [customVideoUrl, setCustomVideoUrl] = useState('');
+  const [customDescription, setCustomDescription] = useState('');
   const [sectionOrder, setSectionOrder] = useState<string[]>([
     'speakers', 'schedule', 'venue', 'travel', 'gallery', 'video', 'engagement', 'pricing', 'sponsor', 'share', 'faq',
   ]);
@@ -159,6 +162,22 @@ export default function EventPage() {
         const data = await res.json();
         if (data.event) {
           setEvent(data.event);
+          // Load saved customizations from localStorage
+          try {
+            const key = `event-customize-${slug}`;
+            const saved = localStorage.getItem(key);
+            if (saved) {
+              const parsed = JSON.parse(saved);
+              if (parsed.name) setCustomName(parsed.name);
+              if (parsed.tagline) setCustomTagline(parsed.tagline);
+              if (parsed.accent) setCustomAccent(parsed.accent);
+              if (parsed.heroImages?.length) setCustomHeroImages(parsed.heroImages);
+              if (parsed.videoUrl) setCustomVideoUrl(parsed.videoUrl);
+              if (parsed.description) setCustomDescription(parsed.description);
+              if (parsed.sectionOrder?.length) setSectionOrder(parsed.sectionOrder);
+              if (parsed.sectionVisible) setSectionVisible((v) => ({ ...v, ...parsed.sectionVisible }));
+            }
+          } catch { /* ignore */ }
         } else {
           setError('Event not found');
         }
@@ -241,6 +260,16 @@ export default function EventPage() {
   const accentColor = customAccent || theme.accent;
   const displayName = customName || event.name;
   const displayTagline = customTagline !== undefined ? customTagline : event.tagline;
+  const heroImages = customHeroImages.length > 0 ? customHeroImages : theme.heroImages;
+  const displayDescription = customDescription || event.description || '';
+  const videoEmbedId = (() => {
+    if (!customVideoUrl.trim()) return DEFAULT_VIDEO_ID;
+    const yt = customVideoUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+    if (yt) return yt[1];
+    const vimeo = customVideoUrl.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+    if (vimeo) return `vimeo:${vimeo[1]}`;
+    return DEFAULT_VIDEO_ID;
+  })();
   const ticketsAvailable = event.status === 'ticket_sales' || event.status === 'live';
   const formattedDate = formatDate(event.date);
 
@@ -268,10 +297,10 @@ export default function EventPage() {
   } as React.CSSProperties;
 
   return (
-    <main className="min-h-screen relative" style={{ ...themeVars, background: theme.bg, color: theme.text }}>
+    <main className="min-h-screen relative" style={{ ...themeVars, background: 'transparent', color: theme.text }}>
       {/* Theme-driven hero — 85vh full-bleed Ken Burns */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <KenBurnsSlideshow images={theme.heroImages} />
+        <KenBurnsSlideshow images={heroImages} />
         <div className="absolute inset-0" style={{ background: theme.heroOverlay }} />
         <div className="absolute inset-0 opacity-20" style={{
           background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}30 0%, transparent 70%)`,
@@ -355,7 +384,7 @@ export default function EventPage() {
       </section>
 
       {/* Why you should attend */}
-      {event.description && (
+      {displayDescription && (
         <section className="px-6 py-16" style={{ background: theme.cardBg, borderTop: `1px solid ${theme.cardBorder}` }}>
           <div className="max-w-5xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-semibold mb-6" style={{ fontFamily: theme.fontDisplay, color: theme.text }}>
@@ -363,7 +392,7 @@ export default function EventPage() {
             </h2>
             <div className="grid md:grid-cols-2 gap-12">
               <p className="text-lg" style={{ color: theme.textMuted, lineHeight: 1.7 }}>
-                {event.description}
+                {displayDescription}
               </p>
               <div className="flex flex-wrap gap-3">
                 <a href="#schedule" className="px-6 py-4 transition-colors" style={{ background: theme.cardBg, border: `1px solid ${theme.cardBorder}`, borderRadius: theme.buttonRadius }}>
@@ -602,7 +631,7 @@ export default function EventPage() {
           <div className="card overflow-hidden p-0">
             <div className="relative aspect-video">
               <iframe
-                src={`https://www.youtube.com/embed/${DEFAULT_VIDEO_ID}?rel=0`}
+                src={videoEmbedId.startsWith('vimeo:') ? `https://player.vimeo.com/video/${videoEmbedId.slice(6)}` : `https://www.youtube.com/embed/${videoEmbedId}?rel=0`}
                 title="Conference highlight"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
@@ -857,15 +886,24 @@ export default function EventPage() {
           initialName={customName || event.name}
           initialTagline={customTagline !== undefined ? customTagline : (event.tagline || '')}
           initialAccent={customAccent}
+          initialHeroImages={customHeroImages}
+          initialVideoUrl={customVideoUrl}
+          initialDescription={customDescription || event.description || ''}
           sectionOrder={sectionOrder}
           sectionVisible={sectionVisible}
           onClose={() => setCustomizeOpen(false)}
-          onSave={(name, tagline, accent, order, visible) => {
+          onSave={(name, tagline, accent, heroImages, videoUrl, description, order, visible) => {
             setCustomName(name);
             setCustomTagline(tagline);
             setCustomAccent(accent);
+            setCustomHeroImages(heroImages);
+            setCustomVideoUrl(videoUrl);
+            setCustomDescription(description);
             setSectionOrder(order);
             setSectionVisible(visible);
+            try {
+              localStorage.setItem(`event-customize-${slug}`, JSON.stringify({ name, tagline, accent, heroImages, videoUrl, description, sectionOrder: order, sectionVisible: visible }));
+            } catch { /* ignore */ }
             setCustomizeOpen(false);
           }}
         />
@@ -887,6 +925,9 @@ function CustomizeModal({
   initialName,
   initialTagline,
   initialAccent,
+  initialHeroImages,
+  initialVideoUrl,
+  initialDescription,
   sectionOrder,
   sectionVisible,
   onClose,
@@ -896,14 +937,20 @@ function CustomizeModal({
   initialName: string;
   initialTagline: string;
   initialAccent: string | null;
+  initialHeroImages: string[];
+  initialVideoUrl: string;
+  initialDescription: string;
   sectionOrder: string[];
   sectionVisible: Record<string, boolean>;
   onClose: () => void;
-  onSave: (name: string, tagline: string, accent: string | null, order: string[], visible: Record<string, boolean>) => void;
+  onSave: (name: string, tagline: string, accent: string | null, heroImages: string[], videoUrl: string, description: string, order: string[], visible: Record<string, boolean>) => void;
 }) {
   const [name, setName] = useState(initialName);
   const [tagline, setTagline] = useState(initialTagline);
   const [accent, setAccent] = useState<string | null>(initialAccent);
+  const [heroImagesText, setHeroImagesText] = useState(initialHeroImages.join('\n'));
+  const [videoUrl, setVideoUrl] = useState(initialVideoUrl);
+  const [description, setDescription] = useState(initialDescription);
   const [order, setOrder] = useState(sectionOrder);
   const [visible, setVisible] = useState(sectionVisible);
   const [dragged, setDragged] = useState<string | null>(null);
@@ -943,6 +990,18 @@ function CustomizeModal({
               ))}
             </div>
           </div>
+          <div>
+            <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Hero images (one URL per line)</label>
+            <textarea value={heroImagesText} onChange={(e) => setHeroImagesText(e.target.value)} rows={3} placeholder="Paste image URLs, one per line. Leave empty to use theme defaults." className="w-full px-4 py-3 rounded-lg bg-transparent border text-sm" style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }} />
+          </div>
+          <div>
+            <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Video URL (YouTube or Vimeo)</label>
+            <input value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://youtube.com/watch?v=... or https://vimeo.com/..." className="w-full px-4 py-3 rounded-lg bg-transparent border text-sm" style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }} />
+          </div>
+          <div>
+            <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Event description</label>
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} placeholder="Custom description for the &quot;Why attend&quot; section" className="w-full px-4 py-3 rounded-lg bg-transparent border text-sm" style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }} />
+          </div>
         </div>
         <div className="mb-6">
           <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Section order (drag to reorder)</label>
@@ -967,7 +1026,10 @@ function CustomizeModal({
           </div>
         </div>
         <div className="flex gap-3">
-          <button onClick={() => onSave(name, tagline, accent, order, visible)} className="flex-1 py-3 rounded-lg font-semibold" style={{ background: 'var(--color-accent)', color: 'var(--color-bg)' }}>Save</button>
+          <button onClick={() => {
+            const heroImages = heroImagesText.split('\n').map((u) => u.trim()).filter(Boolean);
+            onSave(name, tagline, accent, heroImages, videoUrl.trim(), description.trim(), order, visible);
+          }} className="flex-1 py-3 rounded-lg font-semibold" style={{ background: 'var(--color-accent)', color: 'var(--color-bg)' }}>Save</button>
           <button onClick={onClose} className="flex-1 py-3 rounded-lg font-semibold" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)' }}>Cancel</button>
         </div>
       </div>
