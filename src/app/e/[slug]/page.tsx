@@ -5,6 +5,14 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { EventData, SpeakerData, ScheduleItem, PricingData, VenueData } from '@/lib/types';
+import { KenBurnsSlideshow, CountdownTimer } from '@/components/demo-event/DemoEventLayout';
+
+const HERO_IMAGES = [
+  'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop',
+  'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1920&h=1080&fit=crop',
+  'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1920&h=1080&fit=crop',
+  'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1920&h=1080&fit=crop',
+];
 
 const TRACK_COLORS = ['#4FFFDF', '#A78BFA', '#34D399', '#F472B6', '#FBBF24', '#60A5FA'];
 
@@ -137,41 +145,26 @@ export default function EventPage() {
     return acc;
   }, {});
 
+  const heroBreadcrumb = `${venue.name}, ${event.city} · ${formattedDate}`;
+  const countdownEnd = `${event.date}T09:00:00`;
+
   return (
     <main className="min-h-screen relative" style={{ background: 'var(--color-bg)' }}>
-      {/* Cinematic hero background — same premium treatment as landing & demo */}
+      {/* SuperNova hero — 85vh full-bleed Ken Burns */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'url("https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          animation: 'kenBurns 20s ease-in-out infinite',
-          willChange: 'transform',
-        }} />
+        <KenBurnsSlideshow images={HERO_IMAGES} />
         <div className="absolute inset-0" style={{
           background: 'linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.4) 50%, rgba(10,10,10,0.95) 100%)',
         }} />
         <div className="absolute inset-0 opacity-30" style={{
           background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}26 0%, transparent 70%)`,
         }} />
-        {[...Array(25)].map((_, i) => (
-          <div key={i} className="absolute rounded-full bg-white" style={{
-            width: 2 + (i % 3),
-            height: 2 + (i % 3),
-            left: `${(i * 7) % 100}%`,
-            bottom: 0,
-            opacity: 0.1 + (i % 4) * 0.1,
-            animation: `floatUp ${15 + (i % 15)}s linear infinite`,
-            animationDelay: `${i * 0.8}s`,
-            zIndex: 1,
-          }} />
-        ))}
       </div>
 
-      {/* Hero */}
-      <section className="relative px-6 pt-8 pb-20">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
+      {/* Hero — SuperNova style */}
+      <section className="relative px-6 min-h-[85vh] flex flex-col justify-end pb-24 pt-32">
+        <div className="max-w-5xl mx-auto w-full">
+          <div className="flex items-center justify-between mb-6">
             <Link href="/" className="inline-flex items-center gap-2 text-sm transition-colors hover:text-[var(--color-accent)]"
               style={{ color: 'var(--color-text-muted)' }}>
               ← Back to Launchpad
@@ -182,66 +175,98 @@ export default function EventPage() {
             </button>
           </div>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6"
-            style={{ background: `${accentColor}15`, border: `1px solid ${accentColor}40` }}>
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: accentColor }}></span>
-            <span style={{ color: accentColor, fontSize: '0.75rem', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              {event.status === 'ticket_sales' || event.status === 'live' ? 'Tickets Available' : event.status === 'draft' ? 'Draft' : event.status === 'planning' ? 'Planning' : event.status === 'announcing' ? 'Coming Soon' : event.status === 'completed' ? 'Completed' : event.status}
-            </span>
-          </div>
+          <p className="mb-4 text-sm" style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>
+            {heroBreadcrumb}
+          </p>
 
           <h1 className="mb-4" style={{
             fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-            lineHeight: 1.1,
+            fontSize: 'clamp(2.5rem, 6vw, 5.5rem)',
+            lineHeight: 1.05,
+            letterSpacing: '-0.02em',
           }}>
             {displayName}
           </h1>
 
           {displayTagline && (
-            <p className="mb-6" style={{ color: accentColor, fontSize: '1.25rem', fontFamily: 'var(--font-mono)' }}>
+            <p className="mb-8 max-w-2xl" style={{ color: accentColor, fontSize: '1.25rem', fontFamily: 'var(--font-mono)' }}>
               {displayTagline}
             </p>
           )}
 
-          <div className="flex flex-wrap gap-6 mb-8" style={{ color: 'var(--color-text-muted)', fontSize: '1rem' }}>
-            <div className="flex items-center gap-2">
-              <span>📍</span><span>{event.city}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span>📅</span><span>{formattedDate}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span>👥</span><span>{event.capacity} attendees</span>
-            </div>
+          <div className="flex flex-wrap gap-4 mb-8">
+            <Link href="#pricing" className="btn-primary inline-flex items-center gap-2">
+              Get your ticket →
+            </Link>
+            <a href="#schedule" className="btn-secondary inline-flex items-center gap-2">
+              Explore the program
+            </a>
           </div>
 
-          {event.description && (
-            <p className="max-w-3xl mb-8" style={{ color: 'var(--color-text-muted)', fontSize: '1.125rem', lineHeight: 1.7 }}>
-              {event.description}
-            </p>
-          )}
-
-          {tracks.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {tracks.map((track, i) => (
-                <span key={track} className="px-3 py-1.5 rounded-full text-sm font-medium"
-                  style={{
-                    background: `${TRACK_COLORS[i % TRACK_COLORS.length]}20`,
-                    border: `1px solid ${TRACK_COLORS[i % TRACK_COLORS.length]}50`,
-                    color: TRACK_COLORS[i % TRACK_COLORS.length],
-                  }}>
-                  {track}
-                </span>
-              ))}
-            </div>
-          )}
+          <div className="mb-4">
+            <p className="text-xs uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-muted)' }}>Event starts in</p>
+            <CountdownTimer endDate={countdownEnd} accentColor={accentColor} />
+          </div>
         </div>
       </section>
 
-      {/* Speakers */}
-      {sectionVisible.speakers && speakers.length > 0 && (
+      {/* Impact strip — SuperNova stats */}
+      <section className="px-6 py-12" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(10,10,10,0.9) 100%)', borderTop: `1px solid ${accentColor}26` }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div>
+              <div className="text-3xl md:text-4xl font-bold mb-1" style={{ fontFamily: 'var(--font-display)', color: accentColor }}>{speakers.length}</div>
+              <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Speakers</div>
+            </div>
+            <div>
+              <div className="text-3xl md:text-4xl font-bold mb-1" style={{ fontFamily: 'var(--font-display)', color: accentColor }}>{tracks.length || 4}</div>
+              <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Tracks</div>
+            </div>
+            <div>
+              <div className="text-3xl md:text-4xl font-bold mb-1" style={{ fontFamily: 'var(--font-display)', color: accentColor }}>{event.capacity}</div>
+              <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Attendees</div>
+            </div>
+            <div>
+              <div className="text-3xl md:text-4xl font-bold mb-1" style={{ fontFamily: 'var(--font-display)', color: accentColor }}>{schedule.length}</div>
+              <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Sessions</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why you should attend — SuperNova */}
+      {event.description && (
         <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-semibold mb-6" style={{ fontFamily: 'var(--font-display)' }}>
+              The stage for ambitious minds
+            </h2>
+            <div className="grid md:grid-cols-2 gap-12">
+              <p className="text-lg" style={{ color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
+                {event.description}
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <a href="#schedule" className="card px-6 py-4 hover:border-[var(--color-accent)] transition-colors">
+                  <span className="font-medium">Program</span>
+                  <span className="block text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>View schedule</span>
+                </a>
+                <a href="#speakers" className="card px-6 py-4 hover:border-[var(--color-accent)] transition-colors">
+                  <span className="font-medium">Speakers</span>
+                  <span className="block text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>Meet the lineup</span>
+                </a>
+                <a href="#pricing" className="card px-6 py-4 hover:border-[var(--color-accent)] transition-colors">
+                  <span className="font-medium">Tickets</span>
+                  <span className="block text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>Get your ticket</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Speakers — SuperNova square cards */}
+      {sectionVisible.speakers && speakers.length > 0 && (
+        <section id="speakers" className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="max-w-5xl mx-auto">
             <h2 className="text-sm font-medium uppercase tracking-wider mb-8" style={{ color: 'var(--color-text-muted)' }}>Speakers</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -249,13 +274,14 @@ export default function EventPage() {
                 const talk = speakerTalks[speaker.name];
                 const trackColor = talk?.track ? TRACK_COLORS[tracks.indexOf(talk.track) % TRACK_COLORS.length] : accentColor;
                 return (
-                  <div key={i} className="card group">
-                    <div className="w-14 h-14 rounded-full mb-4 flex items-center justify-center text-lg font-bold overflow-hidden shrink-0"
-                      style={speaker.photo_url ? {} : { background: `${accentColor}20`, color: accentColor }}>
+                  <div key={i} className="card group transition-transform hover:-translate-y-1">
+                    <div className="relative w-full aspect-[4/5] rounded-lg mb-4 overflow-hidden">
                       {speaker.photo_url ? (
-                        <Image src={speaker.photo_url} alt={speaker.name} width={56} height={56} className="w-full h-full object-cover" />
+                        <Image src={speaker.photo_url} alt={speaker.name} fill className="object-cover transition-transform group-hover:scale-105" unoptimized />
                       ) : (
-                        speaker.initials
+                        <div className="w-full h-full flex items-center justify-center text-2xl font-bold" style={{ background: `${accentColor}20`, color: accentColor }}>
+                          {speaker.initials}
+                        </div>
                       )}
                     </div>
                     <h3 className="font-semibold mb-1">{speaker.name}</h3>
@@ -279,9 +305,9 @@ export default function EventPage() {
         </section>
       )}
 
-      {/* Schedule */}
+      {/* Schedule — SuperNova: JetBrains Mono + track-colored bars */}
       {sectionVisible.schedule && schedule.length > 0 && (
-        <section className="px-6 py-16">
+        <section id="schedule" className="px-6 py-16">
           <div className="max-w-5xl mx-auto">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-sm font-medium uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Schedule</h2>
@@ -290,25 +316,32 @@ export default function EventPage() {
             <div className="relative">
               <div className="absolute left-4 top-0 bottom-0 w-px" style={{ background: 'rgba(255,255,255,0.1)' }} />
               <div className="space-y-0">
-                {schedule.map((item, i) => (
-                  <div key={i} className="relative flex items-start gap-6 py-5 pl-12">
-                    <div className="absolute left-0 w-20 text-right">
-                      <span className="text-sm font-medium" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>
-                        {item.time}
-                      </span>
-                    </div>
-                    <div className="flex-1 min-w-0 card py-4">
-                      <div className="font-medium mb-1">{item.title}</div>
-                      <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>{item.speaker}</div>
-                      {item.track && (
-                        <span className="inline-block mt-2 text-xs px-2 py-0.5 rounded"
-                          style={{ background: `${accentColor}15`, color: accentColor }}>
-                          {item.track}
+                {schedule.map((item, i) => {
+                  const trackIdx = item.track ? tracks.indexOf(item.track) : -1;
+                  const barColor = trackIdx >= 0 ? TRACK_COLORS[trackIdx % TRACK_COLORS.length] : accentColor;
+                  return (
+                    <div key={i} className="relative flex items-start gap-6 py-5 pl-12">
+                      <div className="absolute left-0 w-20 text-right">
+                        <span className="text-sm font-medium" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>
+                          {item.time}
                         </span>
-                      )}
+                      </div>
+                      <div className="flex-1 min-w-0 card py-4 flex gap-4">
+                        <div className="w-1 shrink-0 rounded-full self-stretch" style={{ background: item.track ? barColor : 'rgba(255,255,255,0.2)' }} />
+                        <div>
+                          <div className="font-medium mb-1">{item.title}</div>
+                          <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>{item.speaker}</div>
+                          {item.track && (
+                            <span className="inline-block mt-2 text-xs px-2 py-0.5 rounded"
+                              style={{ background: `${barColor}20`, color: barColor }}>
+                              {item.track}
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -333,7 +366,7 @@ export default function EventPage() {
               src={`https://www.google.com/maps?q=${encodeURIComponent(venue.address)}&z=15&output=embed`}
               width="100%"
               height="100%"
-              style={{ border: 0 }}
+              style={{ border: 0, filter: 'invert(0.9) hue-rotate(180deg)' }}
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
@@ -431,28 +464,30 @@ export default function EventPage() {
       </section>
       )}
 
-      {/* Pricing */}
+      {/* Pricing — SuperNova: Choose your experience + X% sold out badges */}
       {sectionVisible.pricing && (
-      <section className="px-6 py-16">
+      <section id="pricing" className="px-6 py-16">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-sm font-medium uppercase tracking-wider mb-8" style={{ color: 'var(--color-text-muted)' }}>Tickets</h2>
+          <h2 className="text-2xl font-semibold mb-2" style={{ fontFamily: 'var(--font-display)' }}>Choose your experience</h2>
+          <p className="text-sm mb-8" style={{ color: 'var(--color-text-muted)' }}>Select the ticket that fits your goals</p>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="card text-center flex flex-col">
               <div className="text-sm uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-muted)' }}>Early Bird</div>
               <div className="text-3xl font-bold mb-2 flex-1" style={{ fontFamily: 'var(--font-display)', color: accentColor }}>
                 {pricing.early_bird}
               </div>
-              <div className="text-xs mb-2" style={{ color: 'var(--color-text-muted)' }}>Limited availability</div>
+              <div className="text-xs mb-2 px-2 py-1 rounded inline-block" style={{ background: `${accentColor}20`, color: accentColor }}>
+                {SOLD_PCT.early_bird}% sold out
+              </div>
               <div className="h-1.5 rounded-full mb-3 overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
                 <div className="h-full rounded-full" style={{ width: `${SOLD_PCT.early_bird}%`, background: accentColor }} />
               </div>
-              <p className="text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>🎫 {ticketsRemaining('early_bird')} tickets remaining</p>
               <button
                 onClick={() => handleBuyTicket('early_bird', pricing.early_bird)}
                 disabled={!!checkoutLoading || !ticketsAvailable}
                 className="btn-primary w-full py-3 text-sm disabled:opacity-50"
               >
-                {checkoutLoading === 'early_bird' ? 'Loading...' : ticketsAvailable ? 'Buy Ticket' : 'Coming Soon'}
+                {checkoutLoading === 'early_bird' ? 'Loading...' : ticketsAvailable ? 'Get your ticket' : 'Coming Soon'}
               </button>
             </div>
             <div className="card text-center flex flex-col" style={{ borderColor: 'rgba(79,255,223,0.3)', boxShadow: '0 0 20px rgba(79,255,223,0.05)' }}>
@@ -460,17 +495,18 @@ export default function EventPage() {
               <div className="text-3xl font-bold mb-2 flex-1" style={{ fontFamily: 'var(--font-display)' }}>
                 {pricing.regular}
               </div>
-              <div className="text-xs mb-2" style={{ color: 'var(--color-text-muted)' }}>Standard admission</div>
+              <div className="text-xs mb-2 px-2 py-1 rounded inline-block" style={{ background: `${accentColor}20`, color: accentColor }}>
+                {SOLD_PCT.regular}% sold out
+              </div>
               <div className="h-1.5 rounded-full mb-3 overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
                 <div className="h-full rounded-full" style={{ width: `${SOLD_PCT.regular}%`, background: accentColor }} />
               </div>
-              <p className="text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>🎫 {ticketsRemaining('regular')} tickets remaining</p>
               <button
                 onClick={() => handleBuyTicket('regular', pricing.regular)}
                 disabled={!!checkoutLoading || !ticketsAvailable}
                 className="btn-primary w-full py-3 text-sm disabled:opacity-50"
               >
-                {checkoutLoading === 'regular' ? 'Loading...' : ticketsAvailable ? 'Buy Ticket' : 'Coming Soon'}
+                {checkoutLoading === 'regular' ? 'Loading...' : ticketsAvailable ? 'Get your ticket' : 'Coming Soon'}
               </button>
             </div>
             {pricing.vip && (
@@ -479,17 +515,18 @@ export default function EventPage() {
                 <div className="text-3xl font-bold mb-2 flex-1" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-warm)' }}>
                   {pricing.vip}
                 </div>
-                <div className="text-xs mb-2" style={{ color: 'var(--color-text-muted)' }}>Premium access + perks</div>
+                <div className="text-xs mb-2 px-2 py-1 rounded inline-block" style={{ background: 'var(--color-warm-dim)', color: 'var(--color-warm)' }}>
+                  {SOLD_PCT.vip}% sold out
+                </div>
                 <div className="h-1.5 rounded-full mb-3 overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
                   <div className="h-full rounded-full" style={{ width: `${SOLD_PCT.vip}%`, background: 'var(--color-warm)' }} />
                 </div>
-                <p className="text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>🎫 {ticketsRemaining('vip')} tickets remaining</p>
                 <button
                   onClick={() => handleBuyTicket('vip', pricing.vip!)}
                   disabled={!!checkoutLoading || !ticketsAvailable}
                   className="btn-primary w-full py-3 text-sm disabled:opacity-50"
                 >
-                  {checkoutLoading === 'vip' ? 'Loading...' : ticketsAvailable ? 'Buy Ticket' : 'Coming Soon'}
+                  {checkoutLoading === 'vip' ? 'Loading...' : ticketsAvailable ? 'Get your ticket' : 'Coming Soon'}
                 </button>
               </div>
             )}
