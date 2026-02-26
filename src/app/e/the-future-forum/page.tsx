@@ -15,17 +15,12 @@ import {
   ticketsRemaining,
   ScanlineOverlay,
 } from '@/components/demo-event/DemoEventLayout';
+import { FALLBACK_HERO_POOL } from '@/lib/hero-images';
 
 const TRACK_COLORS = ['#EC4899', '#F472B6', '#FB7185', '#F9A8D4', '#FBCFE8'];
 const SOLD_PCT = { early_bird: 82, regular: 58, vip: 18 };
 const accentColor = '#EC4899';
-const SLIDESHOW_IMAGES = [
-  'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?w=1920&h=1080&fit=crop',
-];
+const SLIDESHOW_IMAGES = FALLBACK_HERO_POOL.slice(12, 24);
 
 const VENUE = {
   name: 'Tokyo International Forum',
@@ -85,11 +80,11 @@ export default function TheFutureForumPage() {
   const scheduleFiltered = SCHEDULE.filter((s) => s.day === scheduleDay);
 
   return (
-    <main className="min-h-screen relative" style={{ background: 'var(--color-bg)' }}>
+    <main className="min-h-screen relative" style={{ background: 'transparent' }}>
       <ScanlineOverlay color="236,72,153" />
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <KenBurnsSlideshow images={SLIDESHOW_IMAGES} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.4) 50%, rgba(10,10,10,0.95) 100%)' }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.35) 50%, rgba(10,10,10,0.8) 100%)' }} />
         <div className="absolute inset-0 opacity-30" style={{ background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}26 0%, transparent 70%)` }} />
         <div className="absolute inset-0 pointer-events-none">
           <MatrixRain color={accentColor} />

@@ -15,16 +15,12 @@ import {
   ticketsRemaining,
   ScanlineOverlay,
 } from '@/components/demo-event/DemoEventLayout';
+import { FALLBACK_HERO_POOL } from '@/lib/hero-images';
 
 const TRACK_COLORS = ['#D4AF37', '#E8C547', '#C9A227'];
 const SOLD_PCT = { early_bird: 62, regular: 38, vip: 8 };
 const accentColor = '#D4AF37';
-const SLIDESHOW_IMAGES = [
-  'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=1920&h=1080&fit=crop',
-];
+const SLIDESHOW_IMAGES = FALLBACK_HERO_POOL.slice(24, 36);
 
 const VENUE = {
   name: 'The Royal Institution',
@@ -64,11 +60,11 @@ export default function AnEveningWithPage() {
   const [expandedSpeaker, setExpandedSpeaker] = useState<string | null>(null);
 
   return (
-    <main className="min-h-screen relative" style={{ background: 'var(--color-bg)' }}>
+    <main className="min-h-screen relative" style={{ background: 'transparent' }}>
       <ScanlineOverlay color="212,175,55" />
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <KenBurnsSlideshow images={SLIDESHOW_IMAGES} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.4) 50%, rgba(10,10,10,0.95) 100%)' }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.35) 50%, rgba(10,10,10,0.8) 100%)' }} />
         <div className="absolute inset-0 opacity-30" style={{ background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}26 0%, transparent 70%)` }} />
         <div className="absolute inset-0 pointer-events-none">
           <HelixDNA color={accentColor} />

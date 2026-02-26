@@ -15,18 +15,13 @@ import {
   ticketsRemaining,
   ScanlineOverlay,
 } from '@/components/demo-event/DemoEventLayout';
+import { FALLBACK_HERO_POOL } from '@/lib/hero-images';
 
 const TRACK_COLORS = ['#1E3A8A', '#DC2626', '#3B82F6', '#EF4444', '#60A5FA'];
 const SOLD_PCT = { early_bird: 71, regular: 52, vip: 22 };
 const accentColor = '#3B82F6';
 const accentRed = '#DC2626';
-const SLIDESHOW_IMAGES = [
-  'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1920&h=1080&fit=crop',
-];
+const SLIDESHOW_IMAGES = FALLBACK_HERO_POOL.slice(48, 60);
 
 const VENUE = {
   name: 'STATION Berlin',
@@ -88,11 +83,11 @@ export default function CybernovaPage() {
   const scheduleFiltered = SCHEDULE.filter((s) => s.day === scheduleDay);
 
   return (
-    <main className="min-h-screen relative" style={{ background: 'var(--color-bg)' }}>
+    <main className="min-h-screen relative" style={{ background: 'transparent' }}>
       <ScanlineOverlay color="59,130,246" />
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <KenBurnsSlideshow images={SLIDESHOW_IMAGES} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.5) 50%, rgba(10,10,10,0.95) 100%)' }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.35) 50%, rgba(10,10,10,0.8) 100%)' }} />
         <div className="absolute inset-0 opacity-30" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% 50%, #1E3A8A26 0%, #DC262615 40%, transparent 70%)' }} />
         <div className="absolute inset-0 pointer-events-none">
           <RadarSweep primary="#1E3A8A" secondary="#DC2626" />

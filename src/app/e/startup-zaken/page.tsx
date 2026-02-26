@@ -15,17 +15,12 @@ import {
   ticketsRemaining,
   ScanlineOverlay,
 } from '@/components/demo-event/DemoEventLayout';
+import { FALLBACK_HERO_POOL } from '@/lib/hero-images';
 
 const TRACK_COLORS = ['#34D399', '#6EE7B7', '#5EEAD4', '#2DD4BF', '#14B8A6'];
 const SOLD_PCT = { early_bird: 74, regular: 48, vip: 15 };
 const accentColor = '#34D399';
-const SLIDESHOW_IMAGES = [
-  'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop',
-];
+const SLIDESHOW_IMAGES = FALLBACK_HERO_POOL.slice(0, 12);
 
 const VENUE = {
   name: 'Beurs van Berlage',
@@ -82,11 +77,11 @@ export default function StartupZakenPage() {
   const [expandedSpeaker, setExpandedSpeaker] = useState<string | null>(null);
 
   return (
-    <main className="min-h-screen relative" style={{ background: 'var(--color-bg)' }}>
+    <main className="min-h-screen relative" style={{ background: 'transparent' }}>
       <ScanlineOverlay color="52,211,153" />
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <KenBurnsSlideshow images={SLIDESHOW_IMAGES} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.4) 50%, rgba(10,10,10,0.95) 100%)' }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.35) 50%, rgba(10,10,10,0.8) 100%)' }} />
         <div className="absolute inset-0 opacity-30" style={{ background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}26 0%, transparent 70%)` }} />
         <div className="absolute inset-0 pointer-events-none">
           <Constellation color={accentColor} />
