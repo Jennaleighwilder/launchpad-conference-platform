@@ -40,6 +40,48 @@ const PARTNER_TIERS = [
 
 const PARTNER_WEIGHTS = [100, 200, 300, 400, 500, 600, 700, 800, 900];
 
+/** Early bird countdown — free until March 28, 2026 */
+function EarlyBirdCountdownCard() {
+  const [diff, setDiff] = useState({ d: 0, h: 0, m: 0, s: 0 });
+  useEffect(() => {
+    const end = new Date('2026-03-28T23:59:59');
+    const tick = () => {
+      const now = new Date();
+      let ms = end.getTime() - now.getTime();
+      if (ms < 0) ms = 0;
+      setDiff({
+        d: Math.floor(ms / 86400000),
+        h: Math.floor((ms % 86400000) / 3600000),
+        m: Math.floor((ms % 3600000) / 60000),
+        s: Math.floor((ms % 60000) / 1000),
+      });
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <div className="inline-block rounded-2xl p-6 text-left" style={{
+      background: 'rgba(10,10,10,0.85)',
+      border: '1px solid rgba(79,255,223,0.3)',
+      boxShadow: '0 0 30px rgba(79,255,223,0.15)',
+    }}>
+      <p className="text-sm mb-4 max-w-md" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
+        This is an early bird version of the platform for free. After the countdown ends, the pricing model applies.
+      </p>
+      <div className="flex items-baseline gap-4">
+        <span className="text-xs uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Free until March 28 —</span>
+        <div className="flex gap-3 font-mono text-2xl font-bold" style={{ color: 'var(--color-accent)' }}>
+          <span>{diff.d}d</span>
+          <span>{diff.h}h</span>
+          <span>{diff.m}m</span>
+          <span>{diff.s}s</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function CountdownWidget() {
   const [diff, setDiff] = useState({ d: 28, h: 3, m: 2, s: 17 });
   const [eventsCount, setEventsCount] = useState(0);
@@ -167,54 +209,52 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* Hero — superhero SaaS: gradient mesh + floating orbs (Linear/Vercel/Stripe energy) */}
-      <section className="min-h-screen flex flex-col justify-end relative px-6 pb-24 pt-32 overflow-hidden">
+      {/* Hero — big conference photo (Ken Burns), centered layout, early bird countdown (Twan's preferred look) */}
+      <section className="min-h-screen flex flex-col justify-center items-center relative px-6 py-32 overflow-hidden">
+        {/* Hero picture — conference photo with Ken Burns zoom */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'url(https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            animation: 'kenBurns 20s ease-in-out infinite',
+          }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(5,5,8,0.5) 0%, rgba(5,5,8,0.6) 40%, rgba(5,5,8,0.9) 100%)' }} />
+        </div>
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse 120% 80% at 50% 0%, rgba(79,255,223,0.12) 0%, transparent 50%), radial-gradient(ellipse 80% 60% at 80% 20%, rgba(167,123,250,0.08) 0%, transparent 50%), radial-gradient(ellipse 60% 80% at 20% 80%, rgba(236,72,153,0.06) 0%, transparent 50%), #050508',
+          background: 'radial-gradient(ellipse 80% 50% at 50% 30%, rgba(79,255,223,0.08) 0%, transparent 60%)',
           zIndex: 1,
         }} />
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 25% 25%, rgba(79,255,223,0.15) 0%, transparent 40%), radial-gradient(circle at 75% 75%, rgba(167,123,250,0.1) 0%, transparent 40%)',
-          zIndex: 2,
-        }} />
-        {[...Array(30)].map((_, i) => (
-          <div key={i} className="absolute rounded-full" style={{
-            width: 4 + (i % 4),
-            height: 4 + (i % 4),
-            left: `${(i * 11) % 100}%`,
-            top: `${(i * 7) % 100}%`,
-            background: ['#4FFFDF', '#A78BFA', '#EC4899', '#34D399'][i % 4],
-            opacity: 0.15 + (i % 3) * 0.05,
-            boxShadow: `0 0 20px ${['#4FFFDF', '#A78BFA', '#EC4899', '#34D399'][i % 4]}40`,
-            animation: `float-slow ${8 + (i % 6)}s ease-in-out infinite`,
-            animationDelay: `${(i * 0.2) % 4}s`,
-            zIndex: 2,
-          }} />
-        ))}
-        <div className="relative z-10 max-w-6xl mx-auto w-full flex flex-col lg:flex-row lg:items-end lg:justify-between gap-12">
-          <div className="flex-1">
-            <div className="flex gap-2 mb-6">
-              <span className="px-3 py-1 rounded-full text-xs uppercase tracking-wider" style={{ background: 'rgba(79,255,223,0.15)', border: '1px solid rgba(79,255,223,0.4)', color: 'var(--color-accent)' }}>AI-Powered</span>
-              <span className="px-3 py-1 rounded-full text-xs uppercase tracking-wider" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.9)' }}>60-Second Generation</span>
-            </div>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-normal leading-[1.05] mb-6" style={{ fontFamily: 'var(--font-display)' }}>
-              The platform that launches<br />conferences in seconds
-            </h1>
-            <p className="text-xl mb-8 max-w-xl" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
-              Generate. Promote. Fill seats. AI builds your event — then a street team of bots gets it in front of the right people.
-            </p>
-            <div className="flex gap-4 flex-wrap">
-              <Link href="/create" className="btn-primary" style={{ fontSize: '1.125rem' }}>Generate Your Event →</Link>
-              <a href="#promotion" className="px-6 py-3 rounded-lg font-semibold border transition-all hover:border-[var(--color-accent)]"
-                style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'var(--color-text)' }}
-                onClick={(e) => { e.preventDefault(); document.getElementById('promotion')?.scrollIntoView({ behavior: 'smooth' }); }}>See Promotion Engine →</a>
-            </div>
+        {/* Centered content */}
+        <div className="relative z-10 max-w-4xl mx-auto w-full text-center">
+          <div className="flex justify-center gap-2 mb-6">
+            <span className="px-3 py-1 rounded-full text-xs uppercase tracking-wider" style={{ background: 'rgba(79,255,223,0.15)', border: '1px solid rgba(79,255,223,0.4)', color: 'var(--color-accent)' }}>AI-Powered</span>
+            <span className="px-3 py-1 rounded-full text-xs uppercase tracking-wider" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.9)' }}>60-Second Generation</span>
           </div>
-          <div className="hidden lg:block w-full max-w-md flex-shrink-0">
-            <AnimatedTerminal autoPlay speed={500} />
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-normal leading-[1.05] mb-6" style={{ fontFamily: 'var(--font-display)' }}>
+            The platform that launches<br />conferences in seconds
+          </h1>
+          <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
+            Generate. Promote. Fill seats. AI builds your event — then a street team of bots gets it in front of the right people.
+          </p>
+          <div className="flex justify-center gap-4 flex-wrap mb-12">
+            <Link href="/create" className="btn-primary" style={{ fontSize: '1.125rem' }}>Generate Your Event →</Link>
+            <a href="#promotion" className="px-6 py-3 rounded-lg font-semibold border transition-all hover:border-[var(--color-accent)]"
+              style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'var(--color-text)' }}
+              onClick={(e) => { e.preventDefault(); document.getElementById('promotion')?.scrollIntoView({ behavior: 'smooth' }); }}>See Promotion Engine →</a>
           </div>
+          {/* Early bird countdown card */}
+          <EarlyBirdCountdownCard />
         </div>
       </section>
+
+      {/* Compact terminal preview — new feature layered on */}
+      <div className="px-6 py-8" style={{ background: 'rgba(0,0,0,0.4)', borderTop: '1px solid rgba(79,255,223,0.1)' }}>
+        <div className="max-w-4xl mx-auto">
+          <div className="text-xs uppercase tracking-wider mb-3 text-center" style={{ color: 'var(--color-accent)' }}>See it in action</div>
+          <AnimatedTerminal autoPlay speed={500} />
+        </div>
+      </div>
 
       <SocialProofTicker />
 
@@ -341,7 +381,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Experience the Energy — Conference video (no anime, muted) */}
+      {/* Experience the Energy — Conference video + YouTube embeds */}
       <section className="px-6 py-24" style={{ background: '#0A0A0A' }}>
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
@@ -351,7 +391,7 @@ export default function HomePage() {
                 High-energy keynotes, packed stages, and the buzz of thousands of innovators — that&apos;s the energy we bring to every event.
               </p>
             </div>
-            <div className="rounded-xl overflow-hidden shadow-2xl" style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
+            <div className="rounded-xl overflow-hidden" style={{ boxShadow: '0 0 40px rgba(79,255,223,0.2), 0 25px 50px -12px rgba(0,0,0,0.5)', border: '1px solid rgba(79,255,223,0.3)' }}>
               <div className="aspect-video w-full relative bg-black">
                 <video
                   autoPlay
@@ -364,6 +404,27 @@ export default function HomePage() {
                   <source src="https://assets.mixkit.co/videos/99786/99786-720.mp4" type="video/mp4" />
                 </video>
               </div>
+            </div>
+          </div>
+          {/* YouTube featured talks */}
+          <div className="mb-16">
+            <h3 className="text-2xl font-semibold mb-6" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-accent)', textShadow: '0 0 20px rgba(79,255,223,0.5)' }}>Featured conference talks</h3>
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { id: 'f8DKD78BrQA', title: 'Nvidia GTC 2024 Keynote', event: 'Nvidia GTC' },
+                { id: 'uFroTufv6es', title: 'Google I/O 2024 Keynote', event: 'Google I/O' },
+                { id: 'pRAhO8piBtw', title: 'RailsConf 2024 Highlights', event: 'RailsConf' },
+              ].map((v) => (
+                <div key={v.id} className="rounded-xl overflow-hidden group" style={{ border: '1px solid rgba(79,255,223,0.2)', boxShadow: '0 0 20px rgba(79,255,223,0.1)' }}>
+                  <div className="aspect-video relative">
+                    <iframe src={`https://www.youtube.com/embed/${v.id}`} title={v.title} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen className="absolute inset-0 w-full h-full" />
+                  </div>
+                  <div className="p-3" style={{ background: 'rgba(0,0,0,0.4)' }}>
+                    <div className="text-xs uppercase tracking-wider mb-1" style={{ color: 'var(--color-accent)' }}>{v.event}</div>
+                    <div className="text-sm font-medium">{v.title}</div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
           <div className="grid md:grid-cols-3 gap-8 text-center">
@@ -423,19 +484,20 @@ export default function HomePage() {
       {/* Event Showcase — neon hackers meets cool world */}
       <section id="showcase" className="px-6 py-24 relative overflow-hidden" style={{
         background: 'rgba(255,255,255,0.02)',
-        backgroundImage: 'linear-gradient(rgba(79,255,223,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(79,255,223,0.03) 1px, transparent 1px)',
+        backgroundImage: 'linear-gradient(rgba(79,255,223,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(79,255,223,0.06) 1px, transparent 1px)',
         backgroundSize: '32px 32px',
+        boxShadow: 'inset 0 0 100px rgba(79,255,223,0.03)',
       }}>
         <div className="absolute inset-0 pointer-events-none">
           {[...Array(40)].map((_, i) => (
             <div key={i} className="absolute rounded-full" style={{
-              width: 2 + (i % 3),
-              height: 2 + (i % 3),
+              width: 3 + (i % 3),
+              height: 3 + (i % 3),
               left: `${(i * 7) % 100}%`,
               top: `${(i * 5) % 100}%`,
               background: ['#4FFFDF', '#EC4899', '#A78BFA', '#34D399', '#F472B6'][i % 5],
-              opacity: 0.2 + (i % 4) * 0.1,
-              boxShadow: `0 0 12px ${['#4FFFDF', '#EC4899', '#A78BFA', '#34D399', '#F472B6'][i % 5]}`,
+              opacity: 0.3 + (i % 4) * 0.12,
+              boxShadow: `0 0 20px ${['#4FFFDF', '#EC4899', '#A78BFA', '#34D399', '#F472B6'][i % 5]}, 0 0 40px ${['#4FFFDF', '#EC4899', '#A78BFA', '#34D399', '#F472B6'][i % 5]}60`,
               animation: `floatUp ${12 + (i % 8)}s linear infinite`,
               animationDelay: `${(i * 0.3) % 5}s`,
             }} />

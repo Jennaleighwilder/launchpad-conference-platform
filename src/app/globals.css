@@ -47,7 +47,7 @@
     border: none;
     font-size: 1rem;
   }
-  .btn-primary:hover { filter: brightness(1.1); transform: scale(1.02); }
+  .btn-primary:hover { filter: brightness(1.1); transform: scale(1.02); box-shadow: 0 0 25px rgba(79,255,223,0.5); }
   .btn-primary:active { transform: scale(0.98); }
   .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
@@ -74,8 +74,8 @@
     transition: all 0.2s;
   }
   .card:hover {
-    border-color: rgba(79, 255, 223, 0.25);
-    box-shadow: 0 0 20px rgba(79, 255, 223, 0.05);
+    border-color: rgba(79, 255, 223, 0.4);
+    box-shadow: 0 0 30px rgba(79, 255, 223, 0.15), 0 0 60px rgba(79, 255, 223, 0.05);
   }
 
   .input-field {
@@ -181,12 +181,24 @@
   33% { transform: translateY(-8px) translateX(4px); }
   66% { transform: translateY(-4px) translateX(-6px); }
 }
+@keyframes gridDrift {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(60px, 30px); }
+}
+@keyframes gridDriftReverse {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-80px, -40px); }
+}
+@keyframes scanlineVertical {
+  0% { top: -10%; }
+  100% { top: 110%; }
+}
 .drift { animation: drift 6s ease-in-out infinite; }
 .glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
 .float-slow { animation: float-slow 8s ease-in-out infinite; }
 @keyframes border-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(79,255,223,0.05); }
-  50% { box-shadow: 0 0 30px rgba(79,255,223,0.15); }
+  0%, 100% { box-shadow: 0 0 25px rgba(79,255,223,0.15), 0 0 50px rgba(79,255,223,0.05); }
+  50% { box-shadow: 0 0 40px rgba(79,255,223,0.3), 0 0 80px rgba(79,255,223,0.1); }
 }
 @keyframes slide-in-up {
   from { opacity: 0; transform: translateY(24px); }
