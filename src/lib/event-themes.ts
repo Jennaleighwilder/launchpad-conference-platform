@@ -1,7 +1,10 @@
 /**
  * Event design theme system — 12 unique visual identities.
  * Theme is selected by topic × vibe × slug hash so each event gets a distinct look.
+ * Hero images from hero-images.ts (Picsum fallback, no API key).
  */
+
+import { HERO_POOL_FOR_THEMES } from './hero-images';
 
 export interface EventTheme {
   id: string;
@@ -21,17 +24,6 @@ export interface EventTheme {
   heroImages: string[];
 }
 
-const HERO_POOL = [
-  'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop',
-];
-
 export const EVENT_THEMES: EventTheme[] = [
   {
     id: 'supernova',
@@ -45,8 +37,8 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(255,255,255,0.03)',
     cardBorder: 'rgba(255,255,255,0.06)',
     buttonRadius: '0.5rem',
-    heroOverlay: 'linear-gradient(to bottom, rgba(5,5,8,0.4) 0%, rgba(5,5,8,0.5) 40%, rgba(5,5,8,0.92) 100%)',
-    heroImages: HERO_POOL,
+    heroOverlay: 'linear-gradient(to bottom, rgba(5,5,8,0.2) 0%, rgba(5,5,8,0.35) 50%, rgba(5,5,8,0.75) 100%)',
+    heroImages: HERO_POOL_FOR_THEMES,
   },
   {
     id: 'editorial',
@@ -61,8 +53,8 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(212,165,116,0.06)',
     cardBorder: 'rgba(212,165,116,0.2)',
     buttonRadius: '0.25rem',
-    heroOverlay: 'linear-gradient(to bottom, rgba(12,10,9,0.5) 0%, rgba(12,10,9,0.7) 50%, rgba(12,10,9,0.95) 100%)',
-    heroImages: HERO_POOL,
+    heroOverlay: 'linear-gradient(to bottom, rgba(12,10,9,0.25) 0%, rgba(12,10,9,0.5) 50%, rgba(12,10,9,0.85) 100%)',
+    heroImages: HERO_POOL_FOR_THEMES,
   },
   {
     id: 'neon-brutalist',
@@ -77,8 +69,8 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(255,0,110,0.08)',
     cardBorder: 'rgba(255,0,110,0.4)',
     buttonRadius: '0',
-    heroOverlay: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.95) 100%)',
-    heroImages: HERO_POOL,
+    heroOverlay: 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.85) 100%)',
+    heroImages: HERO_POOL_FOR_THEMES,
   },
   {
     id: 'luminous',
@@ -93,8 +85,8 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(45,90,39,0.06)',
     cardBorder: 'rgba(45,90,39,0.15)',
     buttonRadius: '9999px',
-    heroOverlay: 'linear-gradient(to bottom, rgba(250,250,248,0.2) 0%, rgba(250,250,248,0.5) 50%, rgba(250,250,248,0.95) 100%)',
-    heroImages: HERO_POOL,
+    heroOverlay: 'linear-gradient(to bottom, rgba(250,250,248,0.15) 0%, rgba(250,250,248,0.4) 50%, rgba(250,250,248,0.9) 100%)',
+    heroImages: HERO_POOL_FOR_THEMES,
   },
   {
     id: 'electric',
@@ -110,8 +102,8 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(139,92,246,0.08)',
     cardBorder: 'rgba(139,92,246,0.25)',
     buttonRadius: '0.5rem',
-    heroOverlay: 'linear-gradient(to bottom, rgba(8,6,28,0.4) 0%, rgba(8,6,28,0.6) 50%, rgba(8,6,28,0.95) 100%)',
-    heroImages: HERO_POOL,
+    heroOverlay: 'linear-gradient(to bottom, rgba(8,6,28,0.2) 0%, rgba(8,6,28,0.45) 50%, rgba(8,6,28,0.85) 100%)',
+    heroImages: HERO_POOL_FOR_THEMES,
   },
   {
     id: 'festival',
@@ -126,8 +118,8 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(249,115,22,0.1)',
     cardBorder: 'rgba(249,115,22,0.3)',
     buttonRadius: '9999px',
-    heroOverlay: 'linear-gradient(to bottom, rgba(26,10,0,0.4) 0%, rgba(26,10,0,0.6) 50%, rgba(26,10,0,0.95) 100%)',
-    heroImages: HERO_POOL,
+    heroOverlay: 'linear-gradient(to bottom, rgba(26,10,0,0.2) 0%, rgba(26,10,0,0.45) 50%, rgba(26,10,0,0.85) 100%)',
+    heroImages: HERO_POOL_FOR_THEMES,
   },
   {
     id: 'corporate',
@@ -143,7 +135,7 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBorder: 'rgba(15,118,110,0.15)',
     buttonRadius: '0.5rem',
     heroOverlay: 'linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.98) 100%)',
-    heroImages: HERO_POOL,
+    heroImages: HERO_POOL_FOR_THEMES,
   },
   {
     id: 'cyber',
@@ -158,8 +150,8 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(34,197,94,0.06)',
     cardBorder: 'rgba(34,197,94,0.3)',
     buttonRadius: '0.25rem',
-    heroOverlay: 'linear-gradient(to bottom, rgba(15,23,42,0.4) 0%, rgba(15,23,42,0.6) 50%, rgba(15,23,42,0.95) 100%)',
-    heroImages: HERO_POOL,
+    heroOverlay: 'linear-gradient(to bottom, rgba(15,23,42,0.2) 0%, rgba(15,23,42,0.45) 50%, rgba(15,23,42,0.85) 100%)',
+    heroImages: HERO_POOL_FOR_THEMES,
   },
   {
     id: 'warm-earth',
@@ -174,8 +166,8 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(217,119,6,0.08)',
     cardBorder: 'rgba(217,119,6,0.2)',
     buttonRadius: '9999px',
-    heroOverlay: 'linear-gradient(to bottom, rgba(26,22,18,0.4) 0%, rgba(26,22,18,0.6) 50%, rgba(26,22,18,0.95) 100%)',
-    heroImages: HERO_POOL,
+    heroOverlay: 'linear-gradient(to bottom, rgba(26,22,18,0.2) 0%, rgba(26,22,18,0.45) 50%, rgba(26,22,18,0.85) 100%)',
+    heroImages: HERO_POOL_FOR_THEMES,
   },
   {
     id: 'monochrome',
@@ -190,8 +182,8 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(255,255,255,0.03)',
     cardBorder: 'rgba(255,255,255,0.1)',
     buttonRadius: '0',
-    heroOverlay: 'linear-gradient(to bottom, rgba(17,17,17,0.3) 0%, rgba(17,17,17,0.6) 50%, rgba(17,17,17,0.95) 100%)',
-    heroImages: HERO_POOL,
+    heroOverlay: 'linear-gradient(to bottom, rgba(17,17,17,0.2) 0%, rgba(17,17,17,0.45) 50%, rgba(17,17,17,0.85) 100%)',
+    heroImages: HERO_POOL_FOR_THEMES,
   },
   {
     id: 'startup',
@@ -206,8 +198,8 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(99,102,241,0.06)',
     cardBorder: 'rgba(99,102,241,0.2)',
     buttonRadius: '0.75rem',
-    heroOverlay: 'linear-gradient(to bottom, rgba(9,9,11,0.4) 0%, rgba(9,9,11,0.6) 50%, rgba(9,9,11,0.95) 100%)',
-    heroImages: HERO_POOL,
+    heroOverlay: 'linear-gradient(to bottom, rgba(9,9,11,0.2) 0%, rgba(9,9,11,0.45) 50%, rgba(9,9,11,0.85) 100%)',
+    heroImages: HERO_POOL_FOR_THEMES,
   },
   {
     id: 'art-deco',
@@ -222,8 +214,8 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(212,175,55,0.06)',
     cardBorder: 'rgba(212,175,55,0.25)',
     buttonRadius: '0.25rem',
-    heroOverlay: 'linear-gradient(to bottom, rgba(12,25,41,0.4) 0%, rgba(12,25,41,0.6) 50%, rgba(12,25,41,0.95) 100%)',
-    heroImages: HERO_POOL,
+    heroOverlay: 'linear-gradient(to bottom, rgba(12,25,41,0.2) 0%, rgba(12,25,41,0.45) 50%, rgba(12,25,41,0.85) 100%)',
+    heroImages: HERO_POOL_FOR_THEMES,
   },
 ];
 
