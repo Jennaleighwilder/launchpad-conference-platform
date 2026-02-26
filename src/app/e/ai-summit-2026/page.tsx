@@ -15,17 +15,12 @@ import {
   ticketsRemaining,
   ScanlineOverlay,
 } from '@/components/demo-event/DemoEventLayout';
+import { FALLBACK_HERO_POOL } from '@/lib/hero-images';
 
 const TRACK_COLORS = ['#A78BFA', '#C4B5FD', '#DDD6FE', '#E9D5FF', '#EDE9FE'];
 const SOLD_PCT = { early_bird: 85, regular: 62, vip: 28 };
 const accentColor = '#A78BFA';
-const SLIDESHOW_IMAGES = [
-  'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1620712943543-bcc4688e7115?w=1920&h=1080&fit=crop',
-];
+const SLIDESHOW_IMAGES = FALLBACK_HERO_POOL.slice(36, 48);
 
 const VENUE = {
   name: 'Moscone Center',
@@ -100,11 +95,11 @@ export default function AISummit2026Page() {
   const scheduleFiltered = SCHEDULE.filter((s) => s.day === scheduleDay);
 
   return (
-    <main className="min-h-screen relative" style={{ background: 'var(--color-bg)' }}>
+    <main className="min-h-screen relative" style={{ background: 'transparent' }}>
       <ScanlineOverlay color="167,139,250" />
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <KenBurnsSlideshow images={SLIDESHOW_IMAGES} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.4) 50%, rgba(10,10,10,0.95) 100%)' }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.35) 50%, rgba(10,10,10,0.8) 100%)' }} />
         <div className="absolute inset-0 opacity-30" style={{ background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}26 0%, transparent 70%)` }} />
         <div className="absolute inset-0 pointer-events-none">
           <NetworkGraph nodeCount={50} colors={['#A78BFA', '#C4B5FD', '#DDD6FE']} />

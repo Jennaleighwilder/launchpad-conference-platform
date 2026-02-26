@@ -5,18 +5,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getSpeakerPhoto } from '@/lib/speaker-photos';
 import { PrisonerDilemmaKaleidoscope } from '@/components/event-viz';
+import { KenBurnsSlideshow } from '@/components/demo-event/DemoEventLayout';
+import { FALLBACK_HERO_POOL } from '@/lib/hero-images';
 
 const TRACK_COLORS = ['#4FFFDF', '#A78BFA', '#34D399', '#F472B6', '#FBBF24', '#60A5FA'];
 const SOLD_PCT = { early_bird: 78, regular: 45, vip: 12 };
 const accentColor = '#4FFFDF';
 
-const SLIDESHOW_IMAGES = [
-  'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=1920&h=1080&fit=crop',
-];
+const SLIDESHOW_IMAGES = FALLBACK_HERO_POOL.slice(60, 72);
 
 const VENUE = {
   name: 'Beurs van Berlage',
@@ -84,28 +80,6 @@ const YOUTUBE_VIDEOS = [
   { id: 'uFroTufv6es', title: 'Google I/O 2024 Keynote', event: 'Google I/O' },
   { id: 'pRAhO8piBtw', title: 'RailsConf 2024 Highlights', event: 'RailsConf' },
 ];
-
-function KenBurnsSlideshow() {
-  const [idx, setIdx] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setIdx((i) => (i + 1) % SLIDESHOW_IMAGES.length), 6000);
-    return () => clearInterval(id);
-  }, []);
-  return (
-    <div className="absolute inset-0">
-      {SLIDESHOW_IMAGES.map((src, i) => (
-        <div key={i} className="absolute inset-0" style={{
-          opacity: i === idx ? 1 : 0,
-          transition: 'opacity 1.5s ease-in-out',
-          backgroundImage: `url("${src}")`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          animation: i === idx ? 'kenBurns 20s ease-in-out infinite' : 'none',
-        }} />
-      ))}
-    </div>
-  );
-}
 
 function WaveDivider() {
   const waves = [
@@ -335,14 +309,14 @@ export default function DemoConferencePage() {
   const scheduleFiltered = SCHEDULE.filter((s) => s.day === scheduleDay);
 
   return (
-    <main className="min-h-screen relative" style={{ background: 'var(--color-bg)' }}>
+    <main className="min-h-screen relative" style={{ background: 'transparent' }}>
       <div className="scanline" style={{ background: 'linear-gradient(to bottom, transparent, rgba(79,255,223,0.04), transparent)' }} aria-hidden />
 
       {/* Visual layer — Ken Burns slideshow + particles + network graph */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <KenBurnsSlideshow />
+        <KenBurnsSlideshow images={SLIDESHOW_IMAGES} />
         <div className="absolute inset-0" style={{
-          background: 'linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.4) 50%, rgba(10,10,10,0.95) 100%)',
+          background: 'linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.35) 50%, rgba(10,10,10,0.8) 100%)',
         }} />
         <div className="absolute inset-0 opacity-30" style={{
           background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}26 0%, transparent 70%)`,
