@@ -1,3 +1,5 @@
+export type HeroMediaType = 'image' | 'video' | 'none';
+
 export interface EventData {
   id: string;
   slug: string;
@@ -19,6 +21,10 @@ export interface EventData {
   created_at: string;
   organizer_email?: string;
   status: 'draft' | 'planning' | 'announcing' | 'ticket_sales' | 'live' | 'completed' | 'sold_out' | 'past';
+  /** Unique hero media — every event MUST have its own. No reuse across events. */
+  hero_image_url?: string | null;
+  hero_video_url?: string | null;
+  hero_media_type?: HeroMediaType;
 }
 
 export interface VenueData {

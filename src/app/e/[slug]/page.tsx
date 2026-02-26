@@ -145,8 +145,10 @@ export default function EventPage() {
   const [customTagline, setCustomTagline] = useState('');
   const [customAccent, setCustomAccent] = useState<string | null>(null);
   const [customHeroImages, setCustomHeroImages] = useState<string[]>([]);
+  const [customHeroVideoUrl, setCustomHeroVideoUrl] = useState('');
   const [customVideoUrl, setCustomVideoUrl] = useState('');
   const [customDescription, setCustomDescription] = useState('');
+  const [blocks, setBlocks] = useState<{ id: string; type: string; data: Record<string, unknown> }[]>([]);
   const [sectionOrder, setSectionOrder] = useState<string[]>([
     'speakers', 'schedule', 'venue', 'travel', 'gallery', 'video', 'engagement', 'pricing', 'sponsor', 'share', 'faq',
   ]);
@@ -162,6 +164,12 @@ export default function EventPage() {
         const data = await res.json();
         if (data.event) {
           setEvent(data.event);
+          if (/^[0-9a-f-]{36}$/i.test(data.event.id)) {
+            fetch(`/api/events/${data.event.id}/blocks`)
+              .then((r) => r.json())
+              .then((d) => setBlocks(d.blocks || []))
+              .catch(() => {});
+          }
           // Load saved customizations from localStorage
           try {
             const key = `event-customize-${slug}`;
@@ -172,6 +180,7 @@ export default function EventPage() {
               if (parsed.tagline) setCustomTagline(parsed.tagline);
               if (parsed.accent) setCustomAccent(parsed.accent);
               if (parsed.heroImages?.length) setCustomHeroImages(parsed.heroImages);
+              if (parsed.heroVideoUrl) setCustomHeroVideoUrl(parsed.heroVideoUrl);
               if (parsed.videoUrl) setCustomVideoUrl(parsed.videoUrl);
               if (parsed.description) setCustomDescription(parsed.description);
               if (parsed.sectionOrder?.length) setSectionOrder(parsed.sectionOrder);
@@ -260,7 +269,12 @@ export default function EventPage() {
   const accentColor = customAccent || theme.accent;
   const displayName = customName || event.name;
   const displayTagline = customTagline !== undefined ? customTagline : event.tagline;
-  const heroImages = customHeroImages.length > 0 ? customHeroImages : theme.heroImages;
+  // Priority: user override > event's unique hero (from DB) > theme fallback. No image reuse.
+  const heroImages = customHeroImages.length > 0
+    ? customHeroImages
+    : (event.hero_image_url ? [event.hero_image_url] : theme.heroImages);
+  const heroVideoUrl = customHeroVideoUrl || event.hero_video_url || null;
+  const useVideoHero = !customHeroImages.length && !!heroVideoUrl;
   const displayDescription = customDescription || event.description || '';
   const videoEmbedId = (() => {
     if (!customVideoUrl.trim()) return DEFAULT_VIDEO_ID;
@@ -298,9 +312,20 @@ export default function EventPage() {
 
   return (
     <main className="min-h-screen relative" style={{ ...themeVars, background: 'transparent', color: theme.text }}>
-      {/* Theme-driven hero — 85vh full-bleed Ken Burns */}
+      {/* True hero section — real media (image or video), no gradient-only fallback */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <KenBurnsSlideshow images={heroImages} />
+        {useVideoHero ? (
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            src={heroVideoUrl!}
+          />
+        ) : (
+          <KenBurnsSlideshow images={heroImages} />
+        )}
         <div className="absolute inset-0" style={{ background: theme.heroOverlay }} />
         <div className="absolute inset-0 opacity-20" style={{
           background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}30 0%, transparent 70%)`,
@@ -382,6 +407,17 @@ export default function EventPage() {
           </div>
         </div>
       </section>
+
+      {/* User content blocks */}
+      {blocks.length > 0 && (
+        <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="max-w-5xl mx-auto space-y-8">
+            {blocks.map((block) => (
+              <EventBlock key={block.id} block={block} accentColor={accentColor} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Why you should attend */}
       {displayDescription && (
@@ -503,7 +539,7 @@ export default function EventPage() {
         <div className="max-w-5xl mx-auto">
           <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Venue</h2>
           <div className="rounded-xl overflow-hidden mb-4" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
-            <Image src={theme.heroImages[0]} alt={venue.name} width={800} height={400} className="w-full h-48 object-cover" unoptimized />
+            <Image src={heroImages[0]} alt={venue.name} width={800} height={400} className="w-full h-48 object-cover" unoptimized />
           </div>
           <div className="card mb-6">
             <h3 className="text-xl font-semibold mb-2">{venue.name}</h3>
@@ -887,23 +923,46 @@ export default function EventPage() {
           initialTagline={customTagline !== undefined ? customTagline : (event.tagline || '')}
           initialAccent={customAccent}
           initialHeroImages={customHeroImages}
+          initialHeroVideoUrl={customHeroVideoUrl}
           initialVideoUrl={customVideoUrl}
           initialDescription={customDescription || event.description || ''}
           sectionOrder={sectionOrder}
           sectionVisible={sectionVisible}
           onClose={() => setCustomizeOpen(false)}
-          onSave={(name, tagline, accent, heroImages, videoUrl, description, order, visible) => {
+          onSave={async (name, tagline, accent, heroImages, heroVidUrl, videoUrl, description, order, visible) => {
             setCustomName(name);
             setCustomTagline(tagline);
             setCustomAccent(accent);
             setCustomHeroImages(heroImages);
+            setCustomHeroVideoUrl(heroVidUrl);
             setCustomVideoUrl(videoUrl);
             setCustomDescription(description);
             setSectionOrder(order);
             setSectionVisible(visible);
-            try {
-              localStorage.setItem(`event-customize-${slug}`, JSON.stringify({ name, tagline, accent, heroImages, videoUrl, description, sectionOrder: order, sectionVisible: visible }));
-            } catch { /* ignore */ }
+
+            const isDbEvent = /^[0-9a-f-]{36}$/i.test(event.id);
+            if (isDbEvent) {
+              try {
+                const r = await fetch(`/api/events/${event.id}`, {
+                  method: 'PATCH',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    name,
+                    tagline,
+                    description,
+                    heroImages: heroImages.length ? heroImages : undefined,
+                    heroVideoUrl: heroVidUrl || undefined,
+                  }),
+                });
+                if (r.ok) {
+                  try { localStorage.removeItem(`event-customize-${slug}`); } catch { /* ignore */ }
+                }
+              } catch { /* ignore */ }
+            } else {
+              try {
+                localStorage.setItem(`event-customize-${slug}`, JSON.stringify({ name, tagline, accent, heroImages, heroVideoUrl: heroVidUrl, videoUrl, description, sectionOrder: order, sectionVisible: visible }));
+              } catch { /* ignore */ }
+            }
             setCustomizeOpen(false);
           }}
         />
@@ -926,6 +985,7 @@ function CustomizeModal({
   initialTagline,
   initialAccent,
   initialHeroImages,
+  initialHeroVideoUrl,
   initialVideoUrl,
   initialDescription,
   sectionOrder,
@@ -938,18 +998,21 @@ function CustomizeModal({
   initialTagline: string;
   initialAccent: string | null;
   initialHeroImages: string[];
+  initialHeroVideoUrl: string;
   initialVideoUrl: string;
   initialDescription: string;
   sectionOrder: string[];
   sectionVisible: Record<string, boolean>;
   onClose: () => void;
-  onSave: (name: string, tagline: string, accent: string | null, heroImages: string[], videoUrl: string, description: string, order: string[], visible: Record<string, boolean>) => void;
+  onSave: (name: string, tagline: string, accent: string | null, heroImages: string[], heroVideoUrl: string, videoUrl: string, description: string, order: string[], visible: Record<string, boolean>) => void;
 }) {
   const [name, setName] = useState(initialName);
   const [tagline, setTagline] = useState(initialTagline);
   const [accent, setAccent] = useState<string | null>(initialAccent);
   const [heroImagesText, setHeroImagesText] = useState(initialHeroImages.join('\n'));
+  const [heroVideoUrl, setHeroVideoUrl] = useState(initialHeroVideoUrl);
   const [videoUrl, setVideoUrl] = useState(initialVideoUrl);
+  const [uploading, setUploading] = useState<'image' | 'video' | null>(null);
   const [description, setDescription] = useState(initialDescription);
   const [order, setOrder] = useState(sectionOrder);
   const [visible, setVisible] = useState(sectionVisible);
@@ -991,11 +1054,53 @@ function CustomizeModal({
             </div>
           </div>
           <div>
-            <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Hero images (one URL per line)</label>
-            <textarea value={heroImagesText} onChange={(e) => setHeroImagesText(e.target.value)} rows={3} placeholder="Paste image URLs, one per line. Leave empty to use theme defaults." className="w-full px-4 py-3 rounded-lg bg-transparent border text-sm" style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }} />
+            <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Hero media</label>
+            <div className="flex gap-2 mb-2">
+              <label className="flex-1 px-4 py-2 rounded-lg border text-center text-sm cursor-pointer transition-colors hover:border-[var(--color-accent)]" style={{ borderColor: 'rgba(255,255,255,0.2)', color: 'var(--color-text)' }}>
+                <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setUploading('image');
+                  try {
+                    const fd = new FormData();
+                    fd.append('file', file);
+                    fd.append('type', 'image');
+                    const heroUrl = /^[0-9a-f-]{36}$/i.test(event.id) ? `/api/events/${event.id}/hero` : `/api/events/${event.slug}/hero`;
+                    const r = await fetch(heroUrl, { method: 'POST', body: fd });
+                    const d = await r.json();
+                    if (d.url) setHeroImagesText((t) => (t ? `${t}\n${d.url}` : d.url));
+                    else alert(d.error || 'Upload failed');
+                  } catch { alert('Upload failed'); }
+                  finally { setUploading(null); e.target.value = ''; }
+                }} />
+                {uploading === 'image' ? 'Uploading…' : '📷 Upload hero image'}
+              </label>
+              <label className="flex-1 px-4 py-2 rounded-lg border text-center text-sm cursor-pointer transition-colors hover:border-[var(--color-accent)]" style={{ borderColor: 'rgba(255,255,255,0.2)', color: 'var(--color-text)' }}>
+                <input type="file" accept="video/mp4,video/webm" className="hidden" onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setUploading('video');
+                  try {
+                    const fd = new FormData();
+                    fd.append('file', file);
+                    fd.append('type', 'video');
+                    const heroUrl = /^[0-9a-f-]{36}$/i.test(event.id) ? `/api/events/${event.id}/hero` : `/api/events/${event.slug}/hero`;
+                    const r = await fetch(heroUrl, { method: 'POST', body: fd });
+                    const d = await r.json();
+                    if (d.url) setHeroVideoUrl(d.url);
+                    else alert(d.error || 'Upload failed');
+                  } catch { alert('Upload failed'); }
+                  finally { setUploading(null); e.target.value = ''; }
+                }} />
+                {uploading === 'video' ? 'Uploading…' : '🎬 Upload hero video'}
+              </label>
+            </div>
+            <p className="text-xs mb-2" style={{ color: 'var(--color-text-muted)' }}>Or paste image URLs below (one per line). Hero video overrides hero images.</p>
+            <textarea value={heroImagesText} onChange={(e) => setHeroImagesText(e.target.value)} rows={2} placeholder="Paste image URLs, one per line" className="w-full px-4 py-3 rounded-lg bg-transparent border text-sm" style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }} />
+            <input value={heroVideoUrl} onChange={(e) => setHeroVideoUrl(e.target.value)} placeholder="Or paste hero video URL (mp4)" className="w-full mt-2 px-4 py-2 rounded-lg bg-transparent border text-sm" style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }} />
           </div>
           <div>
-            <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Video URL (YouTube or Vimeo)</label>
+            <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Watch section video (YouTube or Vimeo)</label>
             <input value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://youtube.com/watch?v=... or https://vimeo.com/..." className="w-full px-4 py-3 rounded-lg bg-transparent border text-sm" style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }} />
           </div>
           <div>
@@ -1028,13 +1133,59 @@ function CustomizeModal({
         <div className="flex gap-3">
           <button onClick={() => {
             const heroImages = heroImagesText.split('\n').map((u) => u.trim()).filter(Boolean);
-            onSave(name, tagline, accent, heroImages, videoUrl.trim(), description.trim(), order, visible);
+            onSave(name, tagline, accent, heroImages, heroVideoUrl.trim(), videoUrl.trim(), description.trim(), order, visible);
           }} className="flex-1 py-3 rounded-lg font-semibold" style={{ background: 'var(--color-accent)', color: 'var(--color-bg)' }}>Save</button>
           <button onClick={onClose} className="flex-1 py-3 rounded-lg font-semibold" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)' }}>Cancel</button>
         </div>
       </div>
     </div>
   );
+}
+
+function EventBlock({ block, accentColor }: { block: { type: string; data: Record<string, unknown> }; accentColor: string }) {
+  const d = block.data;
+  switch (block.type) {
+    case 'text':
+      return (
+        <div className="card">
+          <div className="prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: (d.html as string) || (d.text as string) || '' }} />
+        </div>
+      );
+    case 'image':
+      return (
+        <div className="card overflow-hidden p-0">
+          <img src={(d.url as string) || ''} alt={(d.alt as string) || ''} className="w-full h-auto object-cover" />
+        </div>
+      );
+    case 'video':
+      return (
+        <div className="card overflow-hidden p-0">
+          <div className="aspect-video">
+            <iframe src={(d.embedUrl as string) || (d.url as string) || ''} title="" className="w-full h-full" allowFullScreen />
+          </div>
+        </div>
+      );
+    case 'gallery':
+      return (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {((d.images as string[]) || []).map((src, i) => (
+            <img key={i} src={src} alt="" className="w-full aspect-square object-cover rounded-lg" />
+          ))}
+        </div>
+      );
+    case 'cta':
+      return (
+        <div className="card text-center py-8">
+          <h3 className="text-xl font-semibold mb-2" style={{ color: accentColor }}>{(d.title as string) || 'Call to action'}</h3>
+          <p className="mb-4" style={{ color: 'var(--color-text-muted)' }}>{(d.subtitle as string) || ''}</p>
+          <a href={(d.url as string) || '#'} className="inline-flex px-6 py-3 font-semibold rounded-lg" style={{ background: accentColor, color: '#0a0a0a' }}>
+            {(d.buttonText as string) || 'Learn more'}
+          </a>
+        </div>
+      );
+    default:
+      return null;
+  }
 }
 
 function getHotelsForCity(city: string): { name: string; distance: string; price: string; stars: number }[] {

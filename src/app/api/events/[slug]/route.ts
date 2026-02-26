@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getUniqueHeroForEvent } from '@/lib/hero-images';
+import { createServiceClient } from '@/lib/supabase';
 
 function hasSupabase(): boolean {
   return !!(
@@ -8,122 +10,139 @@ function hasSupabase(): boolean {
   );
 }
 
-const DEMO_EVENTS: Record<string, Record<string, unknown>> = {
-  'demo-conference': {
-    id: 'demo',
-    slug: 'demo-conference',
-    name: 'SuperNova AI Summit 2026',
-    topic: 'AI & Machine Learning',
-    topic_key: 'ai',
-    city: 'Amsterdam, Netherlands',
-    date: '2026-03-25',
-    capacity: 2500,
-    venue: { name: 'Beurs van Berlage', address: 'Damrak 243, Amsterdam', capacity_note: 'Historic venue in the heart of Amsterdam' },
-    tracks: ['AI & Machine Learning', 'Startup Growth', 'Enterprise Innovation'],
-    speakers: [],
-    schedule: [],
-    pricing: { early_bird: '€299', regular: '€499', vip: '€999', currency: 'EUR' },
-    description: 'Where AI meets ambition. A two-day summit bringing together innovators, founders, and enterprise leaders.',
-    tagline: 'Where AI meets ambition',
-    created_at: new Date().toISOString(),
-    status: 'ticket_sales',
-  },
-  'ai-summit-2026': {
-    id: 'demo',
-    slug: 'ai-summit-2026',
-    name: 'AI Summit 2026',
-    topic: 'AI & Machine Learning',
-    topic_key: 'ai',
-    city: 'Amsterdam, Netherlands',
-    date: '2026-03-25',
-    capacity: 2500,
-    venue: { name: 'Beurs van Berlage', address: 'Damrak 243, Amsterdam', capacity_note: 'Historic venue in the heart of Amsterdam' },
-    tracks: ['AI & Machine Learning', 'Startup Growth', 'Enterprise Innovation'],
-    speakers: [],
-    schedule: [],
-    pricing: { early_bird: '€299', regular: '€499', vip: '€999', currency: 'EUR' },
-    description: 'The flagship 2-day conference. Where AI meets ambition.',
-    tagline: 'Where AI meets ambition',
-    created_at: new Date().toISOString(),
-    status: 'ticket_sales',
-  },
-  'the-future-forum': {
-    id: 'demo-1',
-    slug: 'the-future-forum',
-    name: 'The Future Forum',
-    topic: 'Youth & Leadership',
-    topic_key: 'innovation',
-    city: 'Amsterdam, Netherlands',
-    date: '2026-03-23',
-    capacity: 800,
-    venue: { name: 'Beurs van Berlage', address: 'Damrak 243, Amsterdam', capacity_note: 'Historic venue' },
-    tracks: ['Youth Leadership', 'Innovation'],
-    speakers: [],
-    schedule: [],
-    pricing: { early_bird: '€99', regular: '€149', vip: '€299', currency: 'EUR' },
-    description: 'For students & young leaders. A day of inspiration and connection.',
-    tagline: 'For the next generation',
-    created_at: new Date().toISOString(),
-    status: 'ticket_sales',
-  },
-  'cybernova': {
-    id: 'demo-2',
-    slug: 'cybernova',
-    name: 'CyberNova',
-    topic: 'Cybersecurity',
-    topic_key: 'tech',
-    city: 'Amsterdam, Netherlands',
-    date: '2026-03-24',
-    capacity: 600,
-    venue: { name: 'Beurs van Berlage', address: 'Damrak 243, Amsterdam', capacity_note: 'Historic venue' },
-    tracks: ['Cybersecurity', 'Infrastructure'],
-    speakers: [],
-    schedule: [],
-    pricing: { early_bird: '€199', regular: '€299', vip: '€599', currency: 'EUR' },
-    description: 'Cybersecurity deep-dive. Experts, practitioners, and the latest threats.',
-    tagline: 'Secure the future',
-    created_at: new Date().toISOString(),
-    status: 'ticket_sales',
-  },
-  'startup-zaken': {
-    id: 'demo-3',
-    slug: 'startup-zaken',
-    name: 'Startup Zaken',
-    topic: 'Startups',
-    topic_key: 'startup',
-    city: 'Amsterdam, Netherlands',
-    date: '2026-03-28',
-    capacity: 400,
-    venue: { name: 'Beurs van Berlage', address: 'Damrak 243, Amsterdam', capacity_note: 'Historic venue' },
-    tracks: ['Startup Growth', 'Funding'],
-    speakers: [],
-    schedule: [],
-    pricing: { early_bird: '€79', regular: '€129', vip: '€249', currency: 'EUR' },
-    description: 'For small & medium businesses. Practical growth and funding insights.',
-    tagline: 'Build. Scale. Thrive.',
-    created_at: new Date().toISOString(),
-    status: 'ticket_sales',
-  },
-  'an-evening-with': {
-    id: 'demo-4',
-    slug: 'an-evening-with',
-    name: 'An Evening With',
-    topic: 'Keynote',
-    topic_key: 'innovation',
-    city: 'Amsterdam, Netherlands',
-    date: '2026-03-29',
-    capacity: 300,
-    venue: { name: 'Beurs van Berlage', address: 'Damrak 243, Amsterdam', capacity_note: 'Intimate setting' },
-    tracks: ['Keynote'],
-    speakers: [],
-    schedule: [],
-    pricing: { early_bird: '€149', regular: '€199', vip: '€399', currency: 'EUR' },
-    description: 'World-class keynote speaker. An intimate evening of inspiration.',
-    tagline: 'One speaker. One night.',
-    created_at: new Date().toISOString(),
-    status: 'ticket_sales',
-  },
-};
+function buildDemoEvents(): Record<string, Record<string, unknown>> {
+  const demos: [string, string, string][] = [
+    ['demo-conference', 'AI & Machine Learning', 'Amsterdam, Netherlands'],
+    ['ai-summit-2026', 'AI & Machine Learning', 'Amsterdam, Netherlands'],
+    ['the-future-forum', 'Youth & Leadership', 'Amsterdam, Netherlands'],
+    ['cybernova', 'Cybersecurity', 'Amsterdam, Netherlands'],
+    ['startup-zaken', 'Startups', 'Amsterdam, Netherlands'],
+    ['an-evening-with', 'Keynote', 'Amsterdam, Netherlands'],
+  ];
+  const base: Record<string, Record<string, unknown>> = {
+    'demo-conference': {
+      id: 'demo',
+      slug: 'demo-conference',
+      name: 'SuperNova AI Summit 2026',
+      topic: 'AI & Machine Learning',
+      topic_key: 'ai',
+      city: 'Amsterdam, Netherlands',
+      date: '2026-03-25',
+      capacity: 2500,
+      venue: { name: 'Beurs van Berlage', address: 'Damrak 243, Amsterdam', capacity_note: 'Historic venue in the heart of Amsterdam' },
+      tracks: ['AI & Machine Learning', 'Startup Growth', 'Enterprise Innovation'],
+      speakers: [],
+      schedule: [],
+      pricing: { early_bird: '€299', regular: '€499', vip: '€999', currency: 'EUR' },
+      description: 'Where AI meets ambition. A two-day summit bringing together innovators, founders, and enterprise leaders.',
+      tagline: 'Where AI meets ambition',
+      created_at: new Date().toISOString(),
+      status: 'ticket_sales',
+    },
+    'ai-summit-2026': {
+      id: 'demo',
+      slug: 'ai-summit-2026',
+      name: 'AI Summit 2026',
+      topic: 'AI & Machine Learning',
+      topic_key: 'ai',
+      city: 'Amsterdam, Netherlands',
+      date: '2026-03-25',
+      capacity: 2500,
+      venue: { name: 'Beurs van Berlage', address: 'Damrak 243, Amsterdam', capacity_note: 'Historic venue in the heart of Amsterdam' },
+      tracks: ['AI & Machine Learning', 'Startup Growth', 'Enterprise Innovation'],
+      speakers: [],
+      schedule: [],
+      pricing: { early_bird: '€299', regular: '€499', vip: '€999', currency: 'EUR' },
+      description: 'The flagship 2-day conference. Where AI meets ambition.',
+      tagline: 'Where AI meets ambition',
+      created_at: new Date().toISOString(),
+      status: 'ticket_sales',
+    },
+    'the-future-forum': {
+      id: 'demo-1',
+      slug: 'the-future-forum',
+      name: 'The Future Forum',
+      topic: 'Youth & Leadership',
+      topic_key: 'innovation',
+      city: 'Amsterdam, Netherlands',
+      date: '2026-03-23',
+      capacity: 800,
+      venue: { name: 'Beurs van Berlage', address: 'Damrak 243, Amsterdam', capacity_note: 'Historic venue' },
+      tracks: ['Youth Leadership', 'Innovation'],
+      speakers: [],
+      schedule: [],
+      pricing: { early_bird: '€99', regular: '€149', vip: '€299', currency: 'EUR' },
+      description: 'For students & young leaders. A day of inspiration and connection.',
+      tagline: 'For the next generation',
+      created_at: new Date().toISOString(),
+      status: 'ticket_sales',
+    },
+    'cybernova': {
+      id: 'demo-2',
+      slug: 'cybernova',
+      name: 'CyberNova',
+      topic: 'Cybersecurity',
+      topic_key: 'tech',
+      city: 'Amsterdam, Netherlands',
+      date: '2026-03-24',
+      capacity: 600,
+      venue: { name: 'Beurs van Berlage', address: 'Damrak 243, Amsterdam', capacity_note: 'Historic venue' },
+      tracks: ['Cybersecurity', 'Infrastructure'],
+      speakers: [],
+      schedule: [],
+      pricing: { early_bird: '€199', regular: '€299', vip: '€599', currency: 'EUR' },
+      description: 'Cybersecurity deep-dive. Experts, practitioners, and the latest threats.',
+      tagline: 'Secure the future',
+      created_at: new Date().toISOString(),
+      status: 'ticket_sales',
+    },
+    'startup-zaken': {
+      id: 'demo-3',
+      slug: 'startup-zaken',
+      name: 'Startup Zaken',
+      topic: 'Startups',
+      topic_key: 'startup',
+      city: 'Amsterdam, Netherlands',
+      date: '2026-03-28',
+      capacity: 400,
+      venue: { name: 'Beurs van Berlage', address: 'Damrak 243, Amsterdam', capacity_note: 'Historic venue' },
+      tracks: ['Startup Growth', 'Funding'],
+      speakers: [],
+      schedule: [],
+      pricing: { early_bird: '€79', regular: '€129', vip: '€249', currency: 'EUR' },
+      description: 'For small & medium businesses. Practical growth and funding insights.',
+      tagline: 'Build. Scale. Thrive.',
+      created_at: new Date().toISOString(),
+      status: 'ticket_sales',
+    },
+    'an-evening-with': {
+      id: 'demo-4',
+      slug: 'an-evening-with',
+      name: 'An Evening With',
+      topic: 'Keynote',
+      topic_key: 'innovation',
+      city: 'Amsterdam, Netherlands',
+      date: '2026-03-29',
+      capacity: 300,
+      venue: { name: 'Beurs van Berlage', address: 'Damrak 243, Amsterdam', capacity_note: 'Intimate setting' },
+      tracks: ['Keynote'],
+      speakers: [],
+      schedule: [],
+      pricing: { early_bird: '€149', regular: '€199', vip: '€399', currency: 'EUR' },
+      description: 'World-class keynote speaker. An intimate evening of inspiration.',
+      tagline: 'One speaker. One night.',
+      created_at: new Date().toISOString(),
+      status: 'ticket_sales',
+    },
+  };
+  for (const [slug, topic, city] of demos) {
+    base[slug].hero_image_url = getUniqueHeroForEvent(topic, city, slug);
+    base[slug].hero_media_type = 'image';
+  }
+  return base;
+}
+
+const DEMO_EVENTS = buildDemoEvents();
 
 export async function GET(
   request: NextRequest,
@@ -132,7 +151,10 @@ export async function GET(
   try {
     const { slug } = await params;
 
-    const demoEvent = DEMO_EVENTS[slug];
+    const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const isId = UUID_REGEX.test(slug);
+
+    const demoEvent = !isId ? DEMO_EVENTS[slug] : null;
     if (demoEvent) {
       return NextResponse.json({ event: demoEvent });
     }
@@ -140,16 +162,27 @@ export async function GET(
     // Try Supabase first
     if (hasSupabase()) {
       try {
-        const { createServiceClient } = await import('@/lib/supabase');
         const supabase = createServiceClient();
-        const { data, error } = await supabase
+        const { data: eventRow, error } = await supabase
           .from('events')
           .select('*')
-          .eq('slug', slug)
+          .eq(isId ? 'id' : 'slug', slug)
           .single();
 
-        if (!error && data) {
-          return NextResponse.json({ event: data });
+        if (!error && eventRow) {
+          const ev = eventRow as Record<string, unknown>;
+          if (ev.hero_asset_id) {
+            const { data: hero } = await supabase
+              .from('hero_assets')
+              .select('image_url, video_url')
+              .eq('id', ev.hero_asset_id)
+              .single();
+            if (hero) {
+              ev.hero_image_url = hero.image_url;
+              ev.hero_video_url = hero.video_url;
+            }
+          }
+          return NextResponse.json({ event: ev });
         }
       } catch (dbErr) {
         console.warn('Supabase unavailable, checking memory store');
@@ -174,5 +207,67 @@ export async function GET(
       { error: 'Failed to fetch event' },
       { status: 500 }
     );
+  }
+}
+
+const PATCH_UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * PATCH /api/events/[id] — persist hero overrides and event fields to DB.
+ * Param must be event UUID (from event.id).
+ */
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ slug: string }> }
+) {
+  try {
+    const { slug: param } = await params;
+    if (!param || !PATCH_UUID_REGEX.test(param)) {
+      return NextResponse.json({ error: 'Invalid event id. PATCH requires event UUID.' }, { status: 400 });
+    }
+
+    if (!hasSupabase()) {
+      return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
+    }
+
+    const body = await request.json();
+    const supabase = createServiceClient();
+
+    const { data: eventRow } = await supabase.from('events').select('id').eq('id', param).single();
+    if (!eventRow) {
+      return NextResponse.json({ error: 'Event not found' }, { status: 404 });
+    }
+
+    const eventUpdates: Record<string, unknown> = {};
+    if (body.name != null) eventUpdates.name = body.name;
+    if (body.tagline != null) eventUpdates.tagline = body.tagline;
+    if (body.description != null) eventUpdates.description = body.description;
+
+    if (Object.keys(eventUpdates).length > 0) {
+      await supabase.from('events').update(eventUpdates).eq('id', param);
+    }
+
+    const heroImageUrl = Array.isArray(body.heroImages) ? body.heroImages[0] : body.hero_image_url;
+    const heroVideoUrl = body.heroVideoUrl ?? body.hero_video_url;
+
+    if (heroImageUrl != null || heroVideoUrl != null) {
+      const heroPayload: Record<string, unknown> = {
+        event_id: param,
+        provider: 'upload',
+      };
+      if (heroVideoUrl) {
+        heroPayload.video_url = heroVideoUrl;
+        heroPayload.image_url = null;
+      } else if (heroImageUrl) {
+        heroPayload.image_url = heroImageUrl;
+        heroPayload.video_url = null;
+      }
+      await supabase.from('hero_assets').upsert(heroPayload, { onConflict: 'event_id' });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error('Event PATCH error:', err);
+    return NextResponse.json({ error: 'Update failed' }, { status: 500 });
   }
 }
