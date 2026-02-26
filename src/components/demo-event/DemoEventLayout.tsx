@@ -16,21 +16,35 @@ export function ScanlineOverlay({ color = '79,255,223' }: { color?: string }) {
 
 export function KenBurnsSlideshow({ images }: { images: string[] }) {
   const [idx, setIdx] = useState(0);
+
+  useEffect(() => {
+    images.forEach((src) => {
+      const img = new window.Image();
+      img.src = src;
+    });
+  }, [images]);
+
   useEffect(() => {
     const id = setInterval(() => setIdx((i) => (i + 1) % images.length), 6000);
     return () => clearInterval(id);
   }, [images.length]);
+
   return (
     <div className="absolute inset-0">
       {images.map((src, i) => (
-        <div key={i} className="absolute inset-0" style={{
-          opacity: i === idx ? 1 : 0,
-          transition: 'opacity 1.5s ease-in-out',
-          backgroundImage: `url("${src}")`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          animation: i === idx ? 'kenBurns 20s ease-in-out infinite' : 'none',
-        }} />
+        <div
+          key={i}
+          className="absolute inset-0"
+          style={{
+            opacity: i === idx ? 1 : 0,
+            transition: 'opacity 1.5s ease-in-out',
+            backgroundImage: `url("${src}")`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            animation: i === idx ? 'kenBurns 20s ease-in-out infinite' : 'none',
+            willChange: i === idx ? 'transform' : 'auto',
+          }}
+        />
       ))}
     </div>
   );

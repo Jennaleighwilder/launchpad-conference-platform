@@ -150,14 +150,14 @@ export default function EventPage() {
 
   return (
     <main className="min-h-screen relative" style={{ background: 'var(--color-bg)' }}>
-      {/* SuperNova hero — 85vh full-bleed Ken Burns */}
+      {/* SuperNova hero — 85vh full-bleed Ken Burns (light gradient so images show) */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <KenBurnsSlideshow images={HERO_IMAGES} />
         <div className="absolute inset-0" style={{
-          background: 'linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.4) 50%, rgba(10,10,10,0.95) 100%)',
+          background: 'linear-gradient(to bottom, rgba(5,5,8,0.4) 0%, rgba(5,5,8,0.5) 40%, rgba(5,5,8,0.92) 100%)',
         }} />
-        <div className="absolute inset-0 opacity-30" style={{
-          background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}26 0%, transparent 70%)`,
+        <div className="absolute inset-0 opacity-20" style={{
+          background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}30 0%, transparent 70%)`,
         }} />
       </div>
 
