@@ -5,11 +5,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const DEMO_EVENTS = [
-  { slug: 'the-future-forum', name: 'The Future Forum', date: 'March 23, 2026', desc: 'For students & young leaders', color: '#FBBF24', img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop' },
-  { slug: 'cybernova', name: 'CyberNova', date: 'March 24, 2026', desc: 'Cybersecurity deep-dive', color: '#60A5FA', img: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&h=400&fit=crop' },
-  { slug: 'ai-summit-2026', name: 'AI Summit 2026', date: 'March 25-26, 2026', desc: 'The flagship 2-day conference', color: '#A78BFA', img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=400&fit=crop' },
-  { slug: 'startup-zaken', name: 'Startup Zaken', date: 'March 28, 2026', desc: 'For small & medium businesses', color: '#34D399', img: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600&h=400&fit=crop' },
-  { slug: 'an-evening-with', name: 'An Evening With', date: 'March 29, 2026', desc: 'World-class keynote speaker', color: '#888', img: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600&h=400&fit=crop' },
+  { slug: 'the-future-forum', name: 'The Future Forum', date: 'March 23, 2026', desc: 'Gen Z energy · Tokyo · Matrix rain', color: '#EC4899', img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop' },
+  { slug: 'cybernova', name: 'CyberNova', date: 'March 24, 2026', desc: 'Hacker vibes · Berlin · Radar sweep', color: '#EF4444', img: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&h=400&fit=crop' },
+  { slug: 'ai-summit-2026', name: 'AI Summit 2026', date: 'March 25-26, 2026', desc: 'Flagship · San Francisco · 50-node graph', color: '#A78BFA', img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=400&fit=crop' },
+  { slug: 'startup-zaken', name: 'Startup Zaken', date: 'March 28, 2026', desc: 'Dutch biz · Amsterdam · Constellation', color: '#34D399', img: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600&h=400&fit=crop' },
+  { slug: 'an-evening-with', name: 'An Evening With', date: 'March 29, 2026', desc: 'Intimate keynote · London · Helix DNA', color: '#D4AF37', img: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600&h=400&fit=crop' },
+  { slug: 'demo-conference', name: 'Demo Conference', date: 'March 25-26, 2026', desc: 'Tech immersive · Amsterdam · Live graphs', color: '#4FFFDF', img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=400&fit=crop' },
 ];
 
 const SPEAKERS = [
@@ -388,24 +389,48 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Event Showcase */}
-      <section className="px-6 py-24" style={{ background: 'rgba(255,255,255,0.02)' }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center text-xs uppercase tracking-wider mb-4" style={{ color: 'var(--color-text-muted)' }}>Launchpad Showcase</div>
-          <h2 className="text-center text-4xl font-normal mb-4" style={{ fontFamily: 'var(--font-display)' }}>A full week of inspiration, connection, and innovation</h2>
-          <p className="text-center max-w-2xl mx-auto mb-12" style={{ color: 'var(--color-text-muted)' }}>Explore generated events from our platform.</p>
+      {/* Event Showcase — neon hackers meets cool world */}
+      <section className="px-6 py-24 relative overflow-hidden" style={{
+        background: 'rgba(255,255,255,0.02)',
+        backgroundImage: 'linear-gradient(rgba(79,255,223,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(79,255,223,0.03) 1px, transparent 1px)',
+        backgroundSize: '32px 32px',
+      }}>
+        <div className="absolute inset-0 pointer-events-none">
+          {[...Array(20)].map((_, i) => (
+            <div key={i} className="absolute rounded-full animate-pulse" style={{
+              width: 2 + (i % 2),
+              height: 2 + (i % 2),
+              left: `${(i * 13) % 100}%`,
+              top: `${(i * 7) % 100}%`,
+              background: ['#4FFFDF', '#EC4899', '#A78BFA', '#34D399'][i % 4],
+              opacity: 0.15 + (i % 3) * 0.1,
+              boxShadow: `0 0 8px ${['#4FFFDF', '#EC4899', '#A78BFA', '#34D399'][i % 4]}`,
+              animation: `floatUp ${20 + (i % 10)}s linear infinite`,
+              animationDelay: `${i * 0.5}s`,
+            }} />
+          ))}
+        </div>
+        <div className="max-w-6xl mx-auto relative">
+          <div className="text-center text-xs uppercase tracking-[0.2em] mb-4" style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-tech)' }}>Launchpad Showcase</div>
+          <h2 className="text-center text-4xl font-semibold mb-4" style={{ fontFamily: 'var(--font-tech)' }}>Hackers meet cool world</h2>
+          <p className="text-center max-w-2xl mx-auto mb-12" style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>6 fully unique demo events. Each with its own viz, vibe, and moving graphics.</p>
           <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory" style={{ scrollbarWidth: 'none' }}>
             {DEMO_EVENTS.map((e) => (
-              <Link key={e.slug} href={`/e/${e.slug}`} className="flex-shrink-0 w-72 snap-center rounded-2xl overflow-hidden group" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <div className="h-48 relative">
-                  <Image src={e.img} alt={e.name} fill className="object-cover" />
+              <Link key={e.slug} href={`/e/${e.slug}`} className="flex-shrink-0 w-72 snap-center rounded-2xl overflow-hidden group transition-all duration-300 hover:scale-[1.02]" style={{
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                boxShadow: '0 0 0 0 transparent',
+              }}>
+                <div className="h-48 relative overflow-hidden">
+                  <Image src={e.img} alt={e.name} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: `linear-gradient(to top, ${e.color}40 0%, transparent 60%)` }} />
                 </div>
                 <div className="p-4">
-                  <div className="text-xs mb-2" style={{ color: 'var(--color-text-muted)' }}>{e.date}</div>
-                  <div className="w-2 h-2 rounded-full inline-block mr-2" style={{ background: e.color }} />
-                  <h3 className="font-semibold mb-1">{e.name}</h3>
+                  <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>{e.date}</div>
+                  <div className="w-2 h-2 rounded-full inline-block mr-2 animate-pulse" style={{ background: e.color, boxShadow: `0 0 8px ${e.color}` }} />
+                  <h3 className="font-semibold mb-1" style={{ fontFamily: 'var(--font-tech)' }}>{e.name}</h3>
                   <p className="text-sm mb-3" style={{ color: 'var(--color-text-muted)' }}>{e.desc}</p>
-                  <span className="text-sm" style={{ color: 'var(--color-accent)' }}>Explore event →</span>
+                  <span className="text-sm group-hover:tracking-wider transition-all" style={{ color: e.color }}>Explore event →</span>
                 </div>
               </Link>
             ))}

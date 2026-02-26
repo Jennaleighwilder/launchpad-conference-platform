@@ -328,6 +328,7 @@ export default function DemoConferencePage() {
 
   return (
     <main className="min-h-screen relative" style={{ background: 'var(--color-bg)' }}>
+      <div className="scanline" style={{ background: 'linear-gradient(to bottom, transparent, rgba(79,255,223,0.04), transparent)' }} aria-hidden />
 
       {/* Visual layer — Ken Burns slideshow + particles + network graph */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
@@ -382,7 +383,7 @@ export default function DemoConferencePage() {
             </span>
           </div>
 
-          <h1 className="mb-4" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.1 }}>
+          <h1 className="mb-4" style={{ fontFamily: 'var(--font-tech)', fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.1 }}>
             SuperNova AI Summit 2026
           </h1>
 

@@ -4,6 +4,16 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
+export function ScanlineOverlay({ color = '79,255,223' }: { color?: string }) {
+  return (
+    <div
+      className="scanline"
+      style={{ background: `linear-gradient(to bottom, transparent, rgba(${color},0.04), transparent)` }}
+      aria-hidden
+    />
+  );
+}
+
 export function KenBurnsSlideshow({ images }: { images: string[] }) {
   const [idx, setIdx] = useState(0);
   useEffect(() => {

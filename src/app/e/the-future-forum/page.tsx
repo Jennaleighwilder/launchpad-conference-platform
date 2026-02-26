@@ -12,6 +12,7 @@ import {
   TicketBarChart,
   RegistrationLineChart,
   ticketsRemaining,
+  ScanlineOverlay,
 } from '@/components/demo-event/DemoEventLayout';
 
 const TRACK_COLORS = ['#EC4899', '#F472B6', '#FB7185', '#F9A8D4', '#FBCFE8'];
@@ -84,6 +85,7 @@ export default function TheFutureForumPage() {
 
   return (
     <main className="min-h-screen relative" style={{ background: 'var(--color-bg)' }}>
+      <ScanlineOverlay color="236,72,153" />
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <KenBurnsSlideshow images={SLIDESHOW_IMAGES} />
         <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.4) 50%, rgba(10,10,10,0.95) 100%)' }} />
@@ -110,7 +112,7 @@ export default function TheFutureForumPage() {
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#22c55e', boxShadow: '0 0 8px #22c55e' }} />
             <span style={{ color: accentColor, fontSize: '0.75rem', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Tickets Available</span>
           </div>
-          <h1 className="mb-4" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.1 }}>The Future Forum</h1>
+          <h1 className="mb-4" style={{ fontFamily: 'var(--font-tech)', fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.1 }}>The Future Forum</h1>
           <p className="mb-6" style={{ color: accentColor, fontSize: '1.25rem', fontFamily: 'var(--font-mono)' }}>Gen Z energy · 8 under-35 leaders</p>
           <div className="flex flex-wrap gap-6 mb-6" style={{ color: 'var(--color-text-muted)', fontSize: '1rem' }}>
             <div className="flex items-center gap-2"><span>📍</span><span>Tokyo, Japan</span></div>
