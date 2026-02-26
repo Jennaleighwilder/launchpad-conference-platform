@@ -2,6 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+
+const DEMO_EVENTS = [
+  { slug: 'the-future-forum', name: 'The Future Forum', color: '#EC4899', img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=250&fit=crop' },
+  { slug: 'cybernova', name: 'CyberNova', color: '#3B82F6', img: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&h=250&fit=crop' },
+  { slug: 'ai-summit-2026', name: 'AI Summit 2026', color: '#A78BFA', img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=250&fit=crop' },
+  { slug: 'startup-zaken', name: 'Startup Zaken', color: '#34D399', img: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=400&h=250&fit=crop' },
+  { slug: 'an-evening-with', name: 'An Evening With', color: '#D4AF37', img: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=400&h=250&fit=crop' },
+  { slug: 'demo-conference', name: 'Demo Conference', color: '#4FFFDF', img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=250&fit=crop' },
+];
 
 const STEPS = [
   { id: 'speakers', label: 'Speaker Agent', icon: '🎤', done: false },
@@ -58,6 +68,23 @@ export default function DemoPage() {
   return (
     <main className="min-h-screen" style={{ background: 'var(--color-bg)' }}>
       <div className="max-w-5xl mx-auto px-6 py-16">
+        <div className="mb-16 p-8 rounded-2xl" style={{ background: 'rgba(79,255,223,0.05)', border: '1px solid rgba(79,255,223,0.2)' }}>
+          <h2 className="text-xl font-semibold mb-4" style={{ fontFamily: 'var(--font-tech)' }}>6 Event Demos — All Live</h2>
+          <p className="text-sm mb-6" style={{ color: 'var(--color-text-muted)' }}>Each has unique viz, motion, and content. Click any to explore.</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            {DEMO_EVENTS.map((e) => (
+              <Link key={e.slug} href={`/e/${e.slug}`} className="rounded-xl overflow-hidden group transition-all hover:scale-105" style={{ border: `1px solid ${e.color}40`, boxShadow: `0 0 12px ${e.color}20` }}>
+                <div className="relative h-24">
+                  <Image src={e.img} alt={e.name} fill className="object-cover" sizes="150px" />
+                </div>
+                <div className="p-2 text-center">
+                  <span className="text-xs font-medium" style={{ color: e.color }}>{e.name}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
         <h1 className="text-4xl font-bold mb-4" style={{ fontFamily: 'var(--font-display)' }}>Live Demo</h1>
         <p className="mb-12" style={{ color: 'var(--color-text-muted)', fontSize: '1.125rem' }}>
           Watch 5 AI agents build a complete conference in real-time.

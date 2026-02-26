@@ -339,17 +339,17 @@ export default function DemoConferencePage() {
         <div className="absolute inset-0 opacity-30" style={{
           background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}26 0%, transparent 70%)`,
         }} />
-        {[...Array(25)].map((_, i) => (
+        {[...Array(45)].map((_, i) => (
           <div key={i} className="absolute rounded-full" style={{
             width: 3 + (i % 3),
             height: 3 + (i % 3),
-            left: `${(i * 7) % 100}%`,
+            left: `${(i * 5) % 100}%`,
             bottom: 0,
-            background: [accentColor, '#A78BFA', '#F472B6'][i % 3],
-            opacity: 0.25 + (i % 4) * 0.15,
-            boxShadow: `0 0 8px ${[accentColor, '#A78BFA', '#F472B6'][i % 3]}`,
-            animation: `floatUp ${15 + (i % 15)}s linear infinite`,
-            animationDelay: `${i * 0.8}s`,
+            background: [accentColor, '#A78BFA', '#F472B6', '#34D399'][i % 4],
+            opacity: 0.3 + (i % 3) * 0.1,
+            boxShadow: `0 0 10px ${[accentColor, '#A78BFA', '#F472B6', '#34D399'][i % 4]}`,
+            animation: `floatUp ${10 + (i % 12)}s linear infinite`,
+            animationDelay: `${(i * 0.4) % 6}s`,
             zIndex: 1,
           }} />
         ))}
@@ -365,8 +365,8 @@ export default function DemoConferencePage() {
           <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem' }}>Launchpad</span>
         </Link>
         <div className="flex items-center gap-6">
+          <Link href="/demo" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>All Demos</Link>
           <Link href="/speakers" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Speakers</Link>
-          <Link href="/features" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Features</Link>
           <Link href="/" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Home</Link>
           <Link href="/create" className="btn-primary" style={{ padding: '0.5rem 1.5rem', fontSize: '0.875rem' }}>Create Event →</Link>
         </div>
@@ -377,7 +377,7 @@ export default function DemoConferencePage() {
         <div className="max-w-5xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6"
             style={{ background: `${accentColor}15`, border: `1px solid ${accentColor}40` }}>
-            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#22c55e', boxShadow: '0 0 8px #22c55e' }} />
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#22c55e', boxShadow: '0 0 12px #22c55e' }} />
             <span style={{ color: accentColor, fontSize: '0.75rem', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               Tickets Available
             </span>

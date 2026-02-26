@@ -156,7 +156,7 @@ export default function HomePage() {
           <a href="#how-it-works" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }} onClick={(e) => { e.preventDefault(); document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }); }}>How It Works</a>
           <Link href="/features" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Features</Link>
           <Link href="/speakers" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Speakers</Link>
-          <Link href="/e/demo-conference" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Demo</Link>
+          <Link href="/demo" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Demos</Link>
           <Link href="/sponsor" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Sponsor</Link>
           <Link href="/pricing" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Pricing</Link>
           <Link href="/create" className="btn-primary" style={{ padding: '0.5rem 1.5rem', fontSize: '0.875rem' }}>Create Event →</Link>
@@ -390,23 +390,23 @@ export default function HomePage() {
       </section>
 
       {/* Event Showcase — neon hackers meets cool world */}
-      <section className="px-6 py-24 relative overflow-hidden" style={{
+      <section id="showcase" className="px-6 py-24 relative overflow-hidden" style={{
         background: 'rgba(255,255,255,0.02)',
         backgroundImage: 'linear-gradient(rgba(79,255,223,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(79,255,223,0.03) 1px, transparent 1px)',
         backgroundSize: '32px 32px',
       }}>
         <div className="absolute inset-0 pointer-events-none">
-          {[...Array(20)].map((_, i) => (
-            <div key={i} className="absolute rounded-full animate-pulse" style={{
-              width: 2 + (i % 2),
-              height: 2 + (i % 2),
-              left: `${(i * 13) % 100}%`,
-              top: `${(i * 7) % 100}%`,
-              background: ['#4FFFDF', '#EC4899', '#A78BFA', '#34D399'][i % 4],
-              opacity: 0.15 + (i % 3) * 0.1,
-              boxShadow: `0 0 8px ${['#4FFFDF', '#EC4899', '#A78BFA', '#34D399'][i % 4]}`,
-              animation: `floatUp ${20 + (i % 10)}s linear infinite`,
-              animationDelay: `${i * 0.5}s`,
+          {[...Array(40)].map((_, i) => (
+            <div key={i} className="absolute rounded-full" style={{
+              width: 2 + (i % 3),
+              height: 2 + (i % 3),
+              left: `${(i * 7) % 100}%`,
+              top: `${(i * 5) % 100}%`,
+              background: ['#4FFFDF', '#EC4899', '#A78BFA', '#34D399', '#F472B6'][i % 5],
+              opacity: 0.2 + (i % 4) * 0.1,
+              boxShadow: `0 0 12px ${['#4FFFDF', '#EC4899', '#A78BFA', '#34D399', '#F472B6'][i % 5]}`,
+              animation: `floatUp ${12 + (i % 8)}s linear infinite`,
+              animationDelay: `${(i * 0.3) % 5}s`,
             }} />
           ))}
         </div>
@@ -415,15 +415,17 @@ export default function HomePage() {
           <h2 className="text-center text-4xl font-semibold mb-4" style={{ fontFamily: 'var(--font-tech)' }}>Hackers meet cool world</h2>
           <p className="text-center max-w-2xl mx-auto mb-12" style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>6 fully unique demo events. Each with its own viz, vibe, and moving graphics.</p>
           <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory" style={{ scrollbarWidth: 'none' }}>
-            {DEMO_EVENTS.map((e) => (
-              <Link key={e.slug} href={`/e/${e.slug}`} className="flex-shrink-0 w-72 snap-center rounded-2xl overflow-hidden group transition-all duration-300 hover:scale-[1.02]" style={{
+            {DEMO_EVENTS.map((e, idx) => (
+              <Link key={e.slug} href={`/e/${e.slug}`} className="flex-shrink-0 w-72 snap-center rounded-2xl overflow-hidden group transition-all duration-300 hover:scale-[1.03]" style={{
                 background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                boxShadow: '0 0 0 0 transparent',
+                border: `1px solid rgba(255,255,255,0.08)`,
+                boxShadow: `0 0 12px ${e.color}20`,
+                animationDelay: `${idx * 0.2}s`,
               }}>
                 <div className="h-48 relative overflow-hidden">
                   <Image src={e.img} alt={e.name} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: `linear-gradient(to top, ${e.color}40 0%, transparent 60%)` }} />
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 float-slow" style={{ background: `radial-gradient(circle at 50% 50%, ${e.color}15 0%, transparent 70%)` }} />
                 </div>
                 <div className="p-4">
                   <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>{e.date}</div>
