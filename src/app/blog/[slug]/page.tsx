@@ -85,7 +85,7 @@ Launchpad integrates with 20+ tools. We generate the event; you connect the rest
   'launch-announcement': `
 We're live. Launchpad generates complete conferences in 60 seconds — name, venue, speakers, schedule, pricing. No spreadsheets. No 6-month planning cycles.
 
-We built this because event planning is broken. Great ideas get stuck in coordination hell. We're fixing that with AI.
+We built this because event planning is broken. Great ideas get stuck in coordination hell. We're fixing that with AI. Built by Jennifer West.
 
 Try it: [Create your event](/create). No credit card. No commitment. See what a full conference looks like in under a minute.
 

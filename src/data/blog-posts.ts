@@ -5,7 +5,7 @@ export const BLOG_POSTS = [
     excerpt: 'From rural Tennessee to 24M tokens in 63 days. The story behind Launchpad\'s founder — neurodivergent cognition, Mirror Protocol™, The Forgotten Code Research Institute, and building the future of events.',
     category: 'Company',
     date: '2026-02-24',
-    author: 'Launchpad Team',
+    author: 'Jennifer West',
     image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&h=450&fit=crop',
   },
   {
@@ -32,7 +32,7 @@ export const BLOG_POSTS = [
     excerpt: 'Our parallel AI architecture generates complete conferences in under 30 seconds.',
     category: 'Engineering',
     date: '2026-02-15',
-    author: 'Launchpad Team',
+    author: 'Jennifer West',
     image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=450&fit=crop',
   },
   {
@@ -68,7 +68,7 @@ export const BLOG_POSTS = [
     excerpt: 'How we match speakers to events using AI and diversity heuristics.',
     category: 'Engineering',
     date: '2026-01-22',
-    author: 'Launchpad Team',
+    author: 'Jennifer West',
     image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&h=450&fit=crop',
   },
   {
@@ -86,7 +86,7 @@ export const BLOG_POSTS = [
     excerpt: 'The engineering story — stack decisions, swarm architecture, fallback system, 34 pages. What it proves about AI-assisted development.',
     category: 'Engineering',
     date: '2026-01-08',
-    author: 'Launchpad Team',
+    author: 'Jennifer West',
     image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=450&fit=crop',
   },
   {

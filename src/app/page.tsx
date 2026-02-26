@@ -547,7 +547,7 @@ export default function HomePage() {
             <div>
               <div className="text-xs uppercase tracking-wider mb-4" style={{ color: 'var(--color-text-muted)' }}>Company</div>
               <div className="space-y-2">
-                <Link href="/contact" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>About</Link>
+                <Link href="/about" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>About</Link>
                 <Link href="/contact" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Contact</Link>
               </div>
             </div>
