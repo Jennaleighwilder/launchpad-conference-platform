@@ -1148,7 +1148,9 @@ function EventBlock({ block, accentColor }: { block: { type: string; data: Recor
     case 'text':
       return (
         <div className="card">
-          <div className="prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: (d.html as string) || (d.text as string) || '' }} />
+          <div className="prose prose-invert max-w-none whitespace-pre-wrap">
+            {String((d.text as string) || (d.html as string) || '')}
+          </div>
         </div>
       );
     case 'image':
