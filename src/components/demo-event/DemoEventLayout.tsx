@@ -20,13 +20,6 @@ export function KenBurnsSlideshow({ images }: { images: string[] }) {
   const pool = images?.length ? images : FALLBACK_HERO_POOL;
 
   useEffect(() => {
-    pool.slice(0, 8).forEach((src) => {
-      const img = new window.Image();
-      img.src = src;
-    });
-  }, [pool]);
-
-  useEffect(() => {
     const id = setInterval(() => setIdx((i) => (i + 1) % pool.length), 6000);
     return () => clearInterval(id);
   }, [pool.length]);
@@ -35,18 +28,24 @@ export function KenBurnsSlideshow({ images }: { images: string[] }) {
     <div className="absolute inset-0" style={{ background: '#0a0a0a' }}>
       {pool.map((src, i) => (
         <div
-          key={i}
+          key={`${src}-${i}`}
           className="absolute inset-0"
           style={{
             opacity: i === idx ? 1 : 0,
             transition: 'opacity 1.5s ease-in-out',
-            backgroundImage: `url("${src}")`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
             animation: i === idx ? 'kenBurns 20s ease-in-out infinite' : 'none',
             willChange: i === idx ? 'transform' : 'auto',
           }}
-        />
+        >
+          {/* Use img tag for reliable external image loading (CSS backgroundImage can fail) */}
+          <img
+            src={src}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ transform: 'scale(1)' }}
+            loading="eager"
+          />
+        </div>
       ))}
     </div>
   );
