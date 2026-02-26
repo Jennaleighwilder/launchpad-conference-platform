@@ -20,6 +20,16 @@ export const SPEAKER_PHOTOS: string[] = [
   'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&h=500&fit=crop',
   'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=500&fit=crop',
   'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop',
+  'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=500&fit=crop',
+  'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=500&fit=crop',
+  'https://images.unsplash.com/photo-1545167622-3a6ac756afa4?w=400&h=500&fit=crop',
+  'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=500&fit=crop',
+  'https://images.unsplash.com/photo-1524504388940-b1c0d5e0e8e8?w=400&h=500&fit=crop',
+  'https://images.unsplash.com/photo-1531384441138-2736e62e0919?w=400&h=500&fit=crop',
+  'https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=400&h=500&fit=crop',
+  'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=500&fit=crop',
+  'https://images.unsplash.com/photo-1521577352947-9bb58764b69a?w=400&h=500&fit=crop',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop&sat=-50', // variant
 ];
 
 /** Get speaker photo URL by index (cycles through pool) */

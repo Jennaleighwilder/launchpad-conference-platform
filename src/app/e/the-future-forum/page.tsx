@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { MatrixRain } from '@/components/event-viz';
+import { MatrixRain, PrisonerDilemmaKaleidoscope } from '@/components/event-viz';
+import { getSpeakerPhoto } from '@/lib/speaker-photos';
 import {
   KenBurnsSlideshow,
   WaveDivider,
@@ -50,14 +51,14 @@ const RESTAURANTS = [
 const TRACKS = ['Gen Z Leadership', 'Climate Action', 'Digital Identity', 'Future of Work'];
 
 const SPEAKERS = [
-  { id: 'yuki-tanaka', name: 'Yuki Tanaka', role: 'CEO, NextGen Labs', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop', talk: 'Leading at 28', track: 'Gen Z Leadership', bio: 'Founded NextGen Labs at 24. Forbes 30 Under 30. Building the future of sustainable tech in Tokyo.' },
-  { id: 'marcus-okonkwo', name: 'Marcus Okonkwo', role: 'Founder, AfriTech', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=500&fit=crop', talk: 'Climate Tech in Africa', track: 'Climate Action', bio: '29. Raised $20M for solar microgrids. UN Youth Ambassador. TED speaker.' },
-  { id: 'sakura-yamamoto', name: 'Sakura Yamamoto', role: 'CTO, MetaVerse Inc', img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=500&fit=crop', talk: 'Digital Identity & Web3', track: 'Digital Identity', bio: '27. Ex-Google. Building decentralized identity systems. 50K Twitter followers.' },
-  { id: 'alex-rivera', name: 'Alex Rivera', role: 'Head of Future of Work, Stripe', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop', talk: 'Remote-First at Scale', track: 'Future of Work', bio: '31. Led Stripe\'s distributed teams. Author of "Async by Default."' },
-  { id: 'zara-patel', name: 'Zara Patel', role: 'CEO, GreenByte', img: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=500&fit=crop', talk: 'Carbon-Neutral Cloud', track: 'Climate Action', bio: '26. GreenByte raised $15M Series A. Making cloud computing sustainable.' },
-  { id: 'kenji-watanabe', name: 'Kenji Watanabe', role: 'Founder, DAO Collective', img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop', talk: 'Governance Without Hierarchy', track: 'Digital Identity', bio: '30. Built one of Asia\'s largest DAOs. 100K members. No bosses.' },
-  { id: 'maya-okoye', name: 'Maya Okoye', role: 'VP Product, Notion', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop', talk: 'Tools for Async Teams', track: 'Future of Work', bio: '28. Scaled Notion to 30M users. Passionate about work-life integration.' },
-  { id: 'david-kim', name: 'David Kim', role: 'Activist, Fridays for Future', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop', talk: 'Youth-Led Climate Action', track: 'Climate Action', bio: '24. Organizer of Tokyo climate strikes. 500K Instagram. Voice of a generation.' },
+  { id: 'yuki-tanaka', name: 'Yuki Tanaka', role: 'CEO, NextGen Labs', img: getSpeakerPhoto(24), talk: 'Leading at 28', track: 'Gen Z Leadership', bio: 'Founded NextGen Labs at 24. Forbes 30 Under 30. Building the future of sustainable tech in Tokyo.' },
+  { id: 'marcus-okonkwo', name: 'Marcus Okonkwo', role: 'Founder, AfriTech', img: getSpeakerPhoto(25), talk: 'Climate Tech in Africa', track: 'Climate Action', bio: '29. Raised $20M for solar microgrids. UN Youth Ambassador. TED speaker.' },
+  { id: 'sakura-yamamoto', name: 'Sakura Yamamoto', role: 'CTO, MetaVerse Inc', img: getSpeakerPhoto(26), talk: 'Digital Identity & Web3', track: 'Digital Identity', bio: '27. Ex-Google. Building decentralized identity systems. 50K Twitter followers.' },
+  { id: 'alex-rivera', name: 'Alex Rivera', role: 'Head of Future of Work, Stripe', img: getSpeakerPhoto(27), talk: 'Remote-First at Scale', track: 'Future of Work', bio: '31. Led Stripe\'s distributed teams. Author of "Async by Default."' },
+  { id: 'zara-patel', name: 'Zara Patel', role: 'CEO, GreenByte', img: getSpeakerPhoto(28), talk: 'Carbon-Neutral Cloud', track: 'Climate Action', bio: '26. GreenByte raised $15M Series A. Making cloud computing sustainable.' },
+  { id: 'kenji-watanabe', name: 'Kenji Watanabe', role: 'Founder, DAO Collective', img: getSpeakerPhoto(29), talk: 'Governance Without Hierarchy', track: 'Digital Identity', bio: '30. Built one of Asia\'s largest DAOs. 100K members. No bosses.' },
+  { id: 'maya-okoye', name: 'Maya Okoye', role: 'VP Product, Notion', img: getSpeakerPhoto(30), talk: 'Tools for Async Teams', track: 'Future of Work', bio: '28. Scaled Notion to 30M users. Passionate about work-life integration.' },
+  { id: 'david-kim', name: 'David Kim', role: 'Activist, Fridays for Future', img: getSpeakerPhoto(31), talk: 'Youth-Led Climate Action', track: 'Climate Action', bio: '24. Organizer of Tokyo climate strikes. 500K Instagram. Voice of a generation.' },
 ];
 
 const SCHEDULE = [
@@ -151,6 +152,27 @@ export default function TheFutureForumPage() {
       </section>
 
       <WaveDivider colors={[accentColor, '#F472B6']} />
+
+      {/* Interactive Exhibit: Cooperation Kaleidoscope */}
+      <section className="px-6 py-16" style={{ background: 'linear-gradient(180deg, rgba(20,5,25,0.98) 0%, rgba(5,5,15,0.99) 100%)', borderTop: `1px solid ${accentColor}30`, borderBottom: `1px solid ${accentColor}30` }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-2 h-8 rounded-full" style={{ background: accentColor, boxShadow: `0 0 24px ${accentColor}` }} />
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.25em]" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>Interactive Exhibit</div>
+              <h2 className="text-xl font-semibold" style={{ fontFamily: 'var(--font-display)' }}>Cooperation & Collective Action</h2>
+            </div>
+          </div>
+          <p className="text-sm mb-6 max-w-2xl" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
+            Spatial game theory: when cooperation spreads across a network. Gen Z leads through collective action — climate, DAOs, community. Teal = cooperate. Watch patterns emerge.
+          </p>
+          <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${accentColor}30`, boxShadow: `0 0 40px ${accentColor}15` }}>
+            <PrisonerDilemmaKaleidoscope size={72} cellSize={5} speed={90} colors={{ cooperator: accentColor, defector: '#1a0a14', flipToC: '#f9a8d4', flipToD: '#fb7185' }} />
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider colors={[accentColor]} />
 
       <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto">

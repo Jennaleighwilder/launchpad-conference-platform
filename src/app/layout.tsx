@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { DemoBanner } from "./DemoBanner";
+import { AccessibilityProvider } from "@/contexts/AccessibilityContext";
+import { AccessibilityToggle } from "@/components/AccessibilityToggle";
+import { AccessibilityBody } from "@/components/AccessibilityBody";
 
 export const metadata: Metadata = {
   title: "Launchpad — AI-Powered Conference Generator",
@@ -22,13 +25,17 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
-          href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Orbitron:wght@400;500;600;700&family=Share+Tech+Mono&display=swap"
+          href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Orbitron:wght@400;500;600;700&family=Share+Tech+Mono&family=Lexend:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>
       <body className="antialiased">
-        <DemoBanner />
-        {children}
+        <AccessibilityProvider>
+          <AccessibilityBody />
+          <DemoBanner />
+          {children}
+          <AccessibilityToggle />
+        </AccessibilityProvider>
       </body>
     </html>
   );

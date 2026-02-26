@@ -5,12 +5,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const DEMO_EVENTS = [
-  { slug: 'the-future-forum', name: 'The Future Forum', color: '#EC4899', img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=250&fit=crop' },
+  { slug: 'the-future-forum', name: 'The Future Forum', color: '#EC4899', img: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&h=250&fit=crop' },
   { slug: 'cybernova', name: 'CyberNova', color: '#3B82F6', img: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&h=250&fit=crop' },
   { slug: 'ai-summit-2026', name: 'AI Summit 2026', color: '#A78BFA', img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=250&fit=crop' },
   { slug: 'startup-zaken', name: 'Startup Zaken', color: '#34D399', img: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=400&h=250&fit=crop' },
   { slug: 'an-evening-with', name: 'An Evening With', color: '#D4AF37', img: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=400&h=250&fit=crop' },
-  { slug: 'demo-conference', name: 'Demo Conference', color: '#4FFFDF', img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=250&fit=crop' },
+  { slug: 'demo-conference', name: 'Demo Conference', color: '#4FFFDF', img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=250&fit=crop' },
 ];
 
 const STEPS = [

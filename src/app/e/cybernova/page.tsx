@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { RadarSweep } from '@/components/event-viz';
+import { RadarSweep, GameOfLife } from '@/components/event-viz';
+import { getSpeakerPhoto } from '@/lib/speaker-photos';
 import {
   KenBurnsSlideshow,
   WaveDivider,
@@ -51,16 +52,16 @@ const RESTAURANTS = [
 const TRACKS = ['Offensive Security', 'Defense & IR', 'CTF & Challenges', 'Zero Trust'];
 
 const SPEAKERS = [
-  { id: 'anna-mueller', name: 'Anna Mueller', role: 'Lead Researcher, CrowdStrike', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop', talk: 'APT Trends 2026', track: 'Offensive Security', bio: '15 years tracking nation-state actors. Discovered 12 zero-days. Black Hat keynote speaker.' },
-  { id: 'viktor-kowalski', name: 'Viktor Kowalski', role: 'CISO, Deutsche Bank', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=500&fit=crop', talk: 'Defending at Scale', track: 'Defense & IR', bio: 'Built security ops for 90K employees. Ex-Mandiant. Incident response veteran.' },
-  { id: 'lena-schmidt', name: 'Lena Schmidt', role: 'CTF Champion, HackerOne', img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=500&fit=crop', talk: 'From CTF to Bug Bounty', track: 'CTF & Challenges', bio: 'DEF CON CTF winner. $2M+ in bounties. Training the next gen of ethical hackers.' },
-  { id: 'marc-weber', name: 'Marc Weber', role: 'Principal, Google Security', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop', talk: 'Zero Trust Architecture', track: 'Zero Trust', bio: 'Architected Zero Trust at Google. Author of "Beyond the Perimeter."' },
-  { id: 'sophie-berger', name: 'Sophie Berger', role: 'Red Team Lead, Airbus', img: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=500&fit=crop', talk: 'Aviation Security', track: 'Offensive Security', bio: 'Pen-tests aircraft systems. DEF CON speaker. Aviation + infosec pioneer.' },
-  { id: 'thomas-bauer', name: 'Thomas Bauer', role: 'Director IR, Palo Alto', img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop', talk: 'Ransomware Response', track: 'Defense & IR', bio: 'Led 200+ ransomware investigations. Ransomware task force advisor.' },
-  { id: 'yuki-tanaka', name: 'Yuki Tanaka', role: 'CTF Organizer, SECCON', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop', talk: 'Building CTF Infrastructure', track: 'CTF & Challenges', bio: 'Organized SECCON CTF. 50K+ participants. Open-source CTF platform maintainer.' },
-  { id: 'david-nguyen', name: 'David Nguyen', role: 'VP Security, Cloudflare', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop', talk: 'Zero Trust at the Edge', track: 'Zero Trust', bio: 'Built Cloudflare\'s Zero Trust stack. Securing 20% of the web.' },
-  { id: 'maria-santos', name: 'Maria Santos', role: 'Researcher, Kaspersky', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop', talk: 'IoT Botnets', track: 'Offensive Security', bio: 'Tracks IoT malware families. Discovered Mirai variants. 30+ CVEs.' },
-  { id: 'james-okonkwo', name: 'James Okonkwo', role: 'CISO, Siemens', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop', talk: 'OT/IT Convergence', track: 'Defense & IR', bio: 'Securing critical infrastructure. ICS/SCADA expert. NIST contributor.' },
+  { id: 'anna-mueller', name: 'Anna Mueller', role: 'Lead Researcher, CrowdStrike', img: getSpeakerPhoto(0), talk: 'APT Trends 2026', track: 'Offensive Security', bio: '15 years tracking nation-state actors. Discovered 12 zero-days. Black Hat keynote speaker.' },
+  { id: 'viktor-kowalski', name: 'Viktor Kowalski', role: 'CISO, Deutsche Bank', img: getSpeakerPhoto(1), talk: 'Defending at Scale', track: 'Defense & IR', bio: 'Built security ops for 90K employees. Ex-Mandiant. Incident response veteran.' },
+  { id: 'lena-schmidt', name: 'Lena Schmidt', role: 'CTF Champion, HackerOne', img: getSpeakerPhoto(2), talk: 'From CTF to Bug Bounty', track: 'CTF & Challenges', bio: 'DEF CON CTF winner. $2M+ in bounties. Training the next gen of ethical hackers.' },
+  { id: 'marc-weber', name: 'Marc Weber', role: 'Principal, Google Security', img: getSpeakerPhoto(3), talk: 'Zero Trust Architecture', track: 'Zero Trust', bio: 'Architected Zero Trust at Google. Author of "Beyond the Perimeter."' },
+  { id: 'sophie-berger', name: 'Sophie Berger', role: 'Red Team Lead, Airbus', img: getSpeakerPhoto(4), talk: 'Aviation Security', track: 'Offensive Security', bio: 'Pen-tests aircraft systems. DEF CON speaker. Aviation + infosec pioneer.' },
+  { id: 'thomas-bauer', name: 'Thomas Bauer', role: 'Director IR, Palo Alto', img: getSpeakerPhoto(5), talk: 'Ransomware Response', track: 'Defense & IR', bio: 'Led 200+ ransomware investigations. Ransomware task force advisor.' },
+  { id: 'yuki-tanaka', name: 'Yuki Tanaka', role: 'CTF Organizer, SECCON', img: getSpeakerPhoto(6), talk: 'Building CTF Infrastructure', track: 'CTF & Challenges', bio: 'Organized SECCON CTF. 50K+ participants. Open-source CTF platform maintainer.' },
+  { id: 'david-nguyen', name: 'David Nguyen', role: 'VP Security, Cloudflare', img: getSpeakerPhoto(7), talk: 'Zero Trust at the Edge', track: 'Zero Trust', bio: 'Built Cloudflare\'s Zero Trust stack. Securing 20% of the web.' },
+  { id: 'maria-santos', name: 'Maria Santos', role: 'Researcher, Kaspersky', img: getSpeakerPhoto(8), talk: 'IoT Botnets', track: 'Offensive Security', bio: 'Tracks IoT malware families. Discovered Mirai variants. 30+ CVEs.' },
+  { id: 'james-okonkwo', name: 'James Okonkwo', role: 'CISO, Siemens', img: getSpeakerPhoto(9), talk: 'OT/IT Convergence', track: 'Defense & IR', bio: 'Securing critical infrastructure. ICS/SCADA expert. NIST contributor.' },
 ];
 
 const SCHEDULE = [
@@ -154,6 +155,27 @@ export default function CybernovaPage() {
       </section>
 
       <WaveDivider colors={['#1E3A8A', '#DC2626']} />
+
+      {/* Interactive Exhibit: Network Life (cyber theme) */}
+      <section className="px-6 py-16" style={{ background: 'linear-gradient(180deg, rgba(15,20,35,0.98) 0%, rgba(5,5,15,0.99) 100%)', borderTop: `1px solid ${accentColor}30`, borderBottom: `1px solid ${accentRed}20` }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-2 h-8 rounded-full" style={{ background: accentColor, boxShadow: `0 0 24px ${accentColor}` }} />
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.25em]" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>Interactive Exhibit</div>
+              <h2 className="text-xl font-semibold" style={{ fontFamily: 'var(--font-display)' }}>Emergent Network Behavior</h2>
+            </div>
+          </div>
+          <p className="text-sm mb-6 max-w-2xl" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
+            Conway&apos;s Game of Life: simple rules, infinite complexity. Like malware spreading or defenses propagating. Watch autonomous patterns evolve — no central control.
+          </p>
+          <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${accentColor}30`, boxShadow: `0 0 40px ${accentColor}10` }}>
+            <GameOfLife width={90} height={65} cellSize={6} color={accentColor} speed={70} />
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider colors={['#1E3A8A']} />
 
       <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto">

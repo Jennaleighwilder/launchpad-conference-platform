@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Constellation } from '@/components/event-viz';
+import { Constellation, PrisonerDilemmaKaleidoscope } from '@/components/event-viz';
+import { getSpeakerPhoto } from '@/lib/speaker-photos';
 import {
   KenBurnsSlideshow,
   WaveDivider,
@@ -50,14 +51,14 @@ const RESTAURANTS = [
 const TRACKS = ['Founder Stories', 'VC Insights', 'Pitch Competition', 'Growth'];
 
 const SPEAKERS = [
-  { id: 'sophie-van-der-berg', name: 'Sophie van der Berg', role: 'Founder, TechScale', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop', talk: 'From Zero to Series A in 18 Months', track: 'Founder Stories', bio: 'Built TechScale to 50 employees. Raised €12M. Forbes 30 Under 30 Europe.' },
-  { id: 'marcus-berg', name: 'Marcus Berg', role: 'Partner, Index Ventures', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=500&fit=crop', talk: 'What VCs Look For in 2026', track: 'VC Insights', bio: 'Partner at Index. 15 investments. Ex-founder at 2 unicorns.' },
-  { id: 'priya-sharma', name: 'Priya Sharma', role: 'Founder, GrowthHub', img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=500&fit=crop', talk: 'Product-Led Growth at Scale', track: 'Growth', bio: 'Scaled GrowthHub to $10M ARR. Ex-Intercom. PLG expert.' },
-  { id: 'james-wright', name: 'James Wright', role: 'Founder, LaunchLab', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop', talk: 'From Side Project to Exit', track: 'Founder Stories', bio: 'Sold 2 startups. Angel in 40+ companies. YC mentor.' },
-  { id: 'ana-costa', name: 'Ana Costa', role: 'Partner, Accel', img: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=500&fit=crop', talk: 'European Unicorns in 2026', track: 'VC Insights', bio: 'Led Accel\'s European early-stage. Spotify, Slack, Dropbox.' },
-  { id: 'david-kim', name: 'David Kim', role: 'Founder, ScaleUp', img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop', talk: 'Growth Loops That Work', track: 'Growth', bio: 'Scaled 4 companies to $100M+ ARR. Growth advisor to 50+ startups.' },
-  { id: 'elena-vasquez', name: 'Elena Vasquez', role: 'Founder, DataPulse', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop', talk: 'Building in Public', track: 'Founder Stories', bio: 'Built DataPulse to 100K users. Twitter 50K. Transparency advocate.' },
-  { id: 'thomas-muller', name: 'Thomas Muller', role: 'Partner, Balderton', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop', talk: 'Seed to Series A', track: 'VC Insights', bio: 'Partner at Balderton. 20 European investments. Ex-Revolut.' },
+  { id: 'sophie-van-der-berg', name: 'Sophie van der Berg', role: 'Founder, TechScale', img: getSpeakerPhoto(10), talk: 'From Zero to Series A in 18 Months', track: 'Founder Stories', bio: 'Built TechScale to 50 employees. Raised €12M. Forbes 30 Under 30 Europe.' },
+  { id: 'marcus-berg', name: 'Marcus Berg', role: 'Partner, Index Ventures', img: getSpeakerPhoto(11), talk: 'What VCs Look For in 2026', track: 'VC Insights', bio: 'Partner at Index. 15 investments. Ex-founder at 2 unicorns.' },
+  { id: 'priya-sharma', name: 'Priya Sharma', role: 'Founder, GrowthHub', img: getSpeakerPhoto(12), talk: 'Product-Led Growth at Scale', track: 'Growth', bio: 'Scaled GrowthHub to $10M ARR. Ex-Intercom. PLG expert.' },
+  { id: 'james-wright', name: 'James Wright', role: 'Founder, LaunchLab', img: getSpeakerPhoto(13), talk: 'From Side Project to Exit', track: 'Founder Stories', bio: 'Sold 2 startups. Angel in 40+ companies. YC mentor.' },
+  { id: 'ana-costa', name: 'Ana Costa', role: 'Partner, Accel', img: getSpeakerPhoto(14), talk: 'European Unicorns in 2026', track: 'VC Insights', bio: 'Led Accel\'s European early-stage. Spotify, Slack, Dropbox.' },
+  { id: 'david-kim', name: 'David Kim', role: 'Founder, ScaleUp', img: getSpeakerPhoto(15), talk: 'Growth Loops That Work', track: 'Growth', bio: 'Scaled 4 companies to $100M+ ARR. Growth advisor to 50+ startups.' },
+  { id: 'elena-vasquez', name: 'Elena Vasquez', role: 'Founder, DataPulse', img: getSpeakerPhoto(16), talk: 'Building in Public', track: 'Founder Stories', bio: 'Built DataPulse to 100K users. Twitter 50K. Transparency advocate.' },
+  { id: 'thomas-muller', name: 'Thomas Muller', role: 'Partner, Balderton', img: getSpeakerPhoto(17), talk: 'Seed to Series A', track: 'VC Insights', bio: 'Partner at Balderton. 20 European investments. Ex-Revolut.' },
 ];
 
 const SCHEDULE = [
@@ -148,6 +149,27 @@ export default function StartupZakenPage() {
       </section>
 
       <WaveDivider colors={[accentColor, '#6EE7B7']} />
+
+      {/* Interactive Exhibit: Cooperation in Ecosystems */}
+      <section className="px-6 py-16" style={{ background: 'linear-gradient(180deg, rgba(5,25,20,0.98) 0%, rgba(5,15,12,0.99) 100%)', borderTop: `1px solid ${accentColor}30`, borderBottom: `1px solid ${accentColor}30` }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-2 h-8 rounded-full" style={{ background: accentColor, boxShadow: `0 0 24px ${accentColor}` }} />
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.25em]" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>Interactive Exhibit</div>
+              <h2 className="text-xl font-semibold" style={{ fontFamily: 'var(--font-display)' }}>Founder–VC Dynamics</h2>
+            </div>
+          </div>
+          <p className="text-sm mb-6 max-w-2xl" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
+            Cooperation vs. competition in startup ecosystems. When do founders and investors align? Spatial game theory reveals how trust and collaboration spread across networks.
+          </p>
+          <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${accentColor}30`, boxShadow: `0 0 40px ${accentColor}12` }}>
+            <PrisonerDilemmaKaleidoscope size={72} cellSize={5} speed={110} colors={{ cooperator: accentColor, defector: '#052e16', flipToC: '#6EE7B7', flipToD: '#14B8A6' }} />
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider colors={[accentColor]} />
 
       <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto">

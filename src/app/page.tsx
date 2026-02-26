@@ -3,6 +3,10 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { IndustryStats } from '@/components/IndustryStats';
+import { PromotionEngine } from '@/components/PromotionEngine';
+import { AnimatedTerminal } from '@/components/AnimatedTerminal';
+import { SocialProofTicker } from '@/components/SocialProofTicker';
 
 const DEMO_EVENTS = [
   { slug: 'the-future-forum', name: 'The Future Forum', date: 'March 23, 2026', desc: 'Gen Z energy · Tokyo · Matrix rain', color: '#EC4899', img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop' },
@@ -163,56 +167,63 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* Hero — full viewport, cinematic */}
+      {/* Hero — superhero SaaS: gradient mesh + floating orbs (Linear/Vercel/Stripe energy) */}
       <section className="min-h-screen flex flex-col justify-end relative px-6 pb-24 pt-32 overflow-hidden">
         <div className="absolute inset-0" style={{
-          background: 'linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.4) 50%, rgba(10,10,10,0.95) 100%)',
-          zIndex: 2,
-        }} />
-        <div className="absolute inset-0 opacity-30" style={{
-          background: 'radial-gradient(ellipse 80% 50% at 50% 50%, rgba(79,255,223,0.15) 0%, transparent 70%)',
-          zIndex: 2,
+          background: 'radial-gradient(ellipse 120% 80% at 50% 0%, rgba(79,255,223,0.12) 0%, transparent 50%), radial-gradient(ellipse 80% 60% at 80% 20%, rgba(167,123,250,0.08) 0%, transparent 50%), radial-gradient(ellipse 60% 80% at 20% 80%, rgba(236,72,153,0.06) 0%, transparent 50%), #050508',
+          zIndex: 1,
         }} />
         <div className="absolute inset-0" style={{
-          backgroundImage: 'url("https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          animation: 'kenBurns 20s ease-in-out infinite',
-          willChange: 'transform',
+          backgroundImage: 'radial-gradient(circle at 25% 25%, rgba(79,255,223,0.15) 0%, transparent 40%), radial-gradient(circle at 75% 75%, rgba(167,123,250,0.1) 0%, transparent 40%)',
+          zIndex: 2,
         }} />
-        {[...Array(25)].map((_, i) => (
-          <div key={i} className="absolute rounded-full bg-white" style={{
-            width: 2 + (i % 3),
-            height: 2 + (i % 3),
-            left: `${(i * 7) % 100}%`,
-            bottom: 0,
-            opacity: 0.1 + (i % 4) * 0.1,
-            animation: `floatUp ${15 + (i % 15)}s linear infinite`,
-            animationDelay: `${i * 0.8}s`,
-            zIndex: 1,
+        {[...Array(30)].map((_, i) => (
+          <div key={i} className="absolute rounded-full" style={{
+            width: 4 + (i % 4),
+            height: 4 + (i % 4),
+            left: `${(i * 11) % 100}%`,
+            top: `${(i * 7) % 100}%`,
+            background: ['#4FFFDF', '#A78BFA', '#EC4899', '#34D399'][i % 4],
+            opacity: 0.15 + (i % 3) * 0.05,
+            boxShadow: `0 0 20px ${['#4FFFDF', '#A78BFA', '#EC4899', '#34D399'][i % 4]}40`,
+            animation: `float-slow ${8 + (i % 6)}s ease-in-out infinite`,
+            animationDelay: `${(i * 0.2) % 4}s`,
+            zIndex: 2,
           }} />
         ))}
-        <div className="relative z-10 max-w-6xl mx-auto w-full flex flex-col md:flex-row md:items-end md:justify-between gap-12">
-          <div>
+        <div className="relative z-10 max-w-6xl mx-auto w-full flex flex-col lg:flex-row lg:items-end lg:justify-between gap-12">
+          <div className="flex-1">
             <div className="flex gap-2 mb-6">
-              <span className="px-3 py-1 rounded-full text-xs uppercase tracking-wider border" style={{ borderColor: 'rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.9)' }}>AI-Powered</span>
-              <span className="px-3 py-1 rounded-full text-xs uppercase tracking-wider border" style={{ borderColor: 'rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.9)' }}>60-Second Generation</span>
+              <span className="px-3 py-1 rounded-full text-xs uppercase tracking-wider" style={{ background: 'rgba(79,255,223,0.15)', border: '1px solid rgba(79,255,223,0.4)', color: 'var(--color-accent)' }}>AI-Powered</span>
+              <span className="px-3 py-1 rounded-full text-xs uppercase tracking-wider" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.9)' }}>60-Second Generation</span>
             </div>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-normal leading-[1.05] mb-8" style={{ fontFamily: 'var(--font-display)' }}>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-normal leading-[1.05] mb-6" style={{ fontFamily: 'var(--font-display)' }}>
               The platform that launches<br />conferences in seconds
             </h1>
+            <p className="text-xl mb-8 max-w-xl" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
+              Generate. Promote. Fill seats. AI builds your event — then a street team of bots gets it in front of the right people.
+            </p>
             <div className="flex gap-4 flex-wrap">
               <Link href="/create" className="btn-primary" style={{ fontSize: '1.125rem' }}>Generate Your Event →</Link>
-              <a href="#how-it-works" className="px-6 py-3 rounded-lg font-semibold border transition-all hover:border-[var(--color-accent)]"
+              <a href="#promotion" className="px-6 py-3 rounded-lg font-semibold border transition-all hover:border-[var(--color-accent)]"
                 style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'var(--color-text)' }}
-                onClick={(e) => { e.preventDefault(); document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }); }}>See How It Works →</a>
+                onClick={(e) => { e.preventDefault(); document.getElementById('promotion')?.scrollIntoView({ behavior: 'smooth' }); }}>See Promotion Engine →</a>
             </div>
           </div>
-          <div className="hidden md:block">
-            <CountdownWidget />
+          <div className="hidden lg:block w-full max-w-md flex-shrink-0">
+            <AnimatedTerminal autoPlay speed={500} />
           </div>
         </div>
       </section>
+
+      <SocialProofTicker />
+
+      <IndustryStats />
+
+      {/* Promotion Engine — AI street team */}
+      <div id="promotion">
+        <PromotionEngine />
+      </div>
 
       {/* Why Launchpad — split layout */}
       <section className="px-6 py-32" style={{ background: '#0A0A0A' }}>
@@ -243,12 +254,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* How It Works + 5-Agent Engine */}
       <section id="how-it-works" className="px-6 py-24" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto">
           <RevealSection><h2 className="text-center mb-4" style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem' }}>How It Works</h2></RevealSection>
           <p className="text-center mb-16" style={{ color: 'var(--color-text-muted)', fontSize: '1.125rem' }}>Three steps. One click. Done.</p>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-8 mb-20">
             {[
               { step: '01', emoji: '✍️', title: 'Describe', desc: 'Topic, city, date, capacity, budget, vibe. Six fields. No complexity.', accent: 'var(--color-accent)' },
               { step: '02', emoji: '🤖', title: 'Generate', desc: 'AI agents research speakers, build schedule, match venue, set pricing — all in parallel.', accent: 'var(--color-warm)' },
@@ -262,6 +273,26 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+          <RevealSection>
+            <div className="text-center text-xs uppercase tracking-[0.2em] mb-6" style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-mono)' }}>5-Agent Engine</div>
+            <div className="flex flex-col gap-3">
+              {[
+                { name: 'Speaker Agent', color: '#4FFFDF', width: 95 },
+                { name: 'Venue Agent', color: '#A78BFA', width: 88 },
+                { name: 'Schedule Agent', color: '#34D399', width: 92 },
+                { name: 'Pricing Agent', color: '#F472B6', width: 90 },
+                { name: 'Branding Agent', color: '#FBBF24', width: 87 },
+              ].map((a) => (
+                <div key={a.name} className="flex items-center gap-4">
+                  <span className="w-32 text-sm" style={{ color: 'var(--color-text-muted)' }}>{a.name}</span>
+                  <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                    <div className="h-full rounded-full transition-all duration-1000" style={{ width: `${a.width}%`, background: a.color, boxShadow: `0 0 12px ${a.color}60` }} />
+                  </div>
+                  <span className="w-10 text-right text-xs font-mono" style={{ color: a.color }}>{a.width}%</span>
+                </div>
+              ))}
+            </div>
+          </RevealSection>
         </div>
       </section>
 

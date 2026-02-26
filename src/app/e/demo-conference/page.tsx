@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { getSpeakerPhoto } from '@/lib/speaker-photos';
+import { PrisonerDilemmaKaleidoscope } from '@/components/event-viz';
 
 const TRACK_COLORS = ['#4FFFDF', '#A78BFA', '#34D399', '#F472B6', '#FBBF24', '#60A5FA'];
 const SOLD_PCT = { early_bird: 78, regular: 45, vip: 12 };
@@ -40,42 +42,48 @@ const RESTAURANTS = [
 const TRACKS = ['AI & Machine Learning', 'Startup Growth', 'Enterprise Innovation'];
 
 const SPEAKERS = [
-  { id: 'sarah-chen', name: 'Sarah Chen', role: 'CTO, TechForge', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop', talk: 'Building AI-First Products', track: 'AI & Machine Learning', bio: 'Former Google AI lead. 15 years building ML systems at scale. Speaker at NeurIPS, ICML, and 50+ conferences.' },
-  { id: 'marcus-berg', name: 'Marcus Berg', role: 'CEO, EventScale', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=500&fit=crop', talk: 'Scaling Events to 10K Attendees', track: 'Startup Growth', bio: 'Built EventScale from 0 to 500 enterprise customers. Y Combinator alum. Passionate about making events accessible.' },
-  { id: 'priya-sharma', name: 'Priya Sharma', role: 'VP Engineering, CloudNova', img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=500&fit=crop', talk: 'Enterprise ML Infrastructure', track: 'Enterprise Innovation', bio: 'Led ML infra at Stripe and AWS. Author of "Production ML Systems." PhD from Stanford.' },
-  { id: 'james-wright', name: 'James Wright', role: 'Founder, LaunchLab', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop', talk: 'From Zero to Series A', track: 'Startup Growth', bio: 'Raised $12M for LaunchLab. 3x founder. Angel investor in 40+ startups.' },
-  { id: 'ana-costa', name: 'Ana Costa', role: 'Director of AI, FutureConf', img: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=500&fit=crop', talk: 'Responsible AI in Production', track: 'AI & Machine Learning', bio: 'AI ethics researcher turned practitioner. Ex-Meta AI. Focus on fairness and interpretability.' },
-  { id: 'david-kim', name: 'David Kim', role: 'Head of Growth, ScaleUp', img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop', talk: 'Growth Loops That Work', track: 'Startup Growth', bio: 'Scaled 4 companies to $100M+ ARR. Growth advisor to 50+ startups. Newsletter: 80K subscribers.' },
-  { id: 'elena-vasquez', name: 'Elena Vasquez', role: 'Chief Product Officer, DataPulse', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop', talk: 'Product Strategy for Technical Products', track: 'Enterprise Innovation', bio: 'Led product at Snowflake and Databricks. Board member at 3 tech companies.' },
-  { id: 'thomas-muller', name: 'Thomas Muller', role: 'VP Engineering, Innovate Corp', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop', talk: 'Legacy to AI: Enterprise Transformation', track: 'Enterprise Innovation', bio: 'Led digital transformation at Fortune 500 companies. 20 years in enterprise software.' },
-  { id: 'aisha-patel', name: 'Aisha Patel', role: 'Director of AI, StackAI', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop', talk: 'LLMs in Production', track: 'AI & Machine Learning', bio: 'Deployed LLMs at scale for 100+ enterprise clients. ML engineer at OpenAI before founding StackAI.' },
-  { id: 'ryan-obrien', name: 'Ryan O\'Brien', role: 'Founder, GrowthHub', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop', talk: 'Building Ecosystems', track: 'Enterprise Innovation', bio: 'Built developer ecosystems at Twilio and Stripe. Now helping startups build community-led growth.' },
-  { id: 'maya-johnson', name: 'Maya Johnson', role: 'Chief AI Officer, NovaTech', img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=500&fit=crop', talk: 'The Future of AI Agents', track: 'AI & Machine Learning', bio: 'Pioneer in autonomous AI systems. 50+ papers. Advisor to OpenAI and Anthropic.' },
-  { id: 'chen-wei', name: 'Chen Wei', role: 'Head of Platform, ScaleUp', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=500&fit=crop', talk: 'Platform Engineering at Scale', track: 'Enterprise Innovation', bio: 'Built platform teams at Netflix and Uber. Author of "Platform Engineering Handbook."' },
+  { id: 'nina-vorster', name: 'Nina Vorster', role: 'CTO, Nordic AI Labs', img: getSpeakerPhoto(12), talk: 'Edge AI in European Manufacturing', track: 'AI & Machine Learning', bio: 'Led AI at Siemens Munich. 12 years in industrial ML. Advisor to EU AI Act working groups.' },
+  { id: 'lars-lindqvist', name: 'Lars Lindqvist', role: 'CEO, EventScale Nordic', img: getSpeakerPhoto(13), talk: 'Scaling European Tech Events', track: 'Startup Growth', bio: 'Founded 3 event platforms. Grew Nordic Startup Week to 8K attendees. Based in Stockholm.' },
+  { id: 'eva-bergstrom', name: 'Eva Bergström', role: 'VP Engineering, Klarna', img: getSpeakerPhoto(14), talk: 'ML at Fintech Scale', track: 'Enterprise Innovation', bio: 'Built Klarna\'s recommendation engine. Ex-Spotify. PhD KTH Stockholm. 40+ patents.' },
+  { id: 'johan-de-vries', name: 'Johan de Vries', role: 'Founder, Dutch Ventures', img: getSpeakerPhoto(15), talk: 'European VC Landscape 2026', track: 'Startup Growth', bio: '€200M AUM. Backed Adyen, Mollie. Angel in 60+ Dutch startups.' },
+  { id: 'sofia-andersson', name: 'Sofia Andersson', role: 'Director of AI, Volvo Cars', img: getSpeakerPhoto(16), talk: 'AI in Autonomous Driving', track: 'AI & Machine Learning', bio: 'Led perception systems at Waymo. Now heading Volvo\'s AI research. IEEE Fellow.' },
+  { id: 'pieter-van-der-berg', name: 'Pieter van der Berg', role: 'Head of Growth, Mollie', img: getSpeakerPhoto(17), talk: 'Payments & Growth at Scale', track: 'Startup Growth', bio: 'Scaled Mollie to €100B TPV. Ex-Adyen. Growth advisor to European fintechs.' },
+  { id: 'ingrid-nielsen', name: 'Ingrid Nielsen', role: 'Chief Product Officer, Trustpilot', img: getSpeakerPhoto(18), talk: 'Product-Led Growth in B2B', track: 'Enterprise Innovation', bio: 'Led product at Zendesk and Intercom. Copenhagen-based. Board member at 4 scale-ups.' },
+  { id: 'henrik-malm', name: 'Henrik Malm', role: 'VP Engineering, Spotify', img: getSpeakerPhoto(19), talk: 'Recommendation Systems at 600M Users', track: 'AI & Machine Learning', bio: 'Core team on Discover Weekly. 15 years at Spotify. RecSys conference keynote.' },
+  { id: 'clara-van-amsterdam', name: 'Clara van Amsterdam', role: 'Director of AI, Booking.com', img: getSpeakerPhoto(20), talk: 'Personalization at Travel Scale', track: 'Enterprise Innovation', bio: 'Built Booking\'s ML stack. Amsterdam native. 50+ papers on recommender systems.' },
+  { id: 'willem-janssen', name: 'Willem Janssen', role: 'Founder, DevTools.io', img: getSpeakerPhoto(21), talk: 'Developer Experience in 2026', track: 'Enterprise Innovation', bio: 'Built DevTools from 0 to 50K users. Ex-GitLab. Open-source advocate.' },
+  { id: 'margreet-bakker', name: 'Margreet Bakker', role: 'Chief AI Officer, ING', img: getSpeakerPhoto(22), talk: 'AI in European Banking', track: 'AI & Machine Learning', bio: 'Led ING\'s AI transformation. ECB advisor. Focus on responsible AI in finance.' },
+  { id: 'anton-schmidt', name: 'Anton Schmidt', role: 'Head of Platform, Zalando', img: getSpeakerPhoto(23), talk: 'Platform Engineering at Zalando', track: 'Enterprise Innovation', bio: 'Built Zalando\'s platform for 50M customers. Berlin-based. KubeCon speaker.' },
 ];
 
 const SCHEDULE = [
-  { time: '09:00', title: 'Opening Keynote: The Future of AI', speaker: 'Sarah Chen', track: 'AI & Machine Learning', day: 'Day 1', keynote: true },
-  { time: '09:45', title: 'Scaling Events to 10K Attendees', speaker: 'Marcus Berg', track: 'Startup Growth', day: 'Day 1' },
+  { time: '09:00', title: 'Opening Keynote: European AI in 2026', speaker: 'Nina Vorster', track: 'AI & Machine Learning', day: 'Day 1', keynote: true },
+  { time: '09:45', title: 'Scaling European Tech Events', speaker: 'Lars Lindqvist', track: 'Startup Growth', day: 'Day 1' },
   { time: '10:30', title: 'Coffee & Networking', speaker: '-', track: 'All', day: 'Day 1' },
-  { time: '11:00', title: 'Enterprise ML Infrastructure', speaker: 'Priya Sharma', track: 'Enterprise Innovation', day: 'Day 1' },
-  { time: '11:45', title: 'From Zero to Series A', speaker: 'James Wright', track: 'Startup Growth', day: 'Day 1' },
+  { time: '11:00', title: 'ML at Fintech Scale', speaker: 'Eva Bergström', track: 'Enterprise Innovation', day: 'Day 1' },
+  { time: '11:45', title: 'European VC Landscape 2026', speaker: 'Johan de Vries', track: 'Startup Growth', day: 'Day 1' },
   { time: '12:30', title: 'Lunch & Exhibition', speaker: '-', track: 'All', day: 'Day 1' },
-  { time: '14:00', title: 'Responsible AI in Production', speaker: 'Ana Costa', track: 'AI & Machine Learning', day: 'Day 1' },
-  { time: '14:45', title: 'Growth Loops That Work', speaker: 'David Kim', track: 'Startup Growth', day: 'Day 1' },
-  { time: '15:30', title: 'Product Strategy for Technical Products', speaker: 'Elena Vasquez', track: 'Enterprise Innovation', day: 'Day 1' },
-  { time: '09:00', title: 'Day 2 Keynote: AI Agents', speaker: 'Maya Johnson', track: 'AI & Machine Learning', day: 'Day 2', keynote: true },
-  { time: '09:45', title: 'Legacy to AI: Enterprise Transformation', speaker: 'Thomas Muller', track: 'Enterprise Innovation', day: 'Day 2' },
-  { time: '10:30', title: 'LLMs in Production', speaker: 'Aisha Patel', track: 'AI & Machine Learning', day: 'Day 2' },
-  { time: '11:00', title: 'Building Ecosystems', speaker: 'Ryan O\'Brien', track: 'Enterprise Innovation', day: 'Day 2' },
-  { time: '11:45', title: 'Platform Engineering at Scale', speaker: 'Chen Wei', track: 'Enterprise Innovation', day: 'Day 2' },
+  { time: '14:00', title: 'AI in Autonomous Driving', speaker: 'Sofia Andersson', track: 'AI & Machine Learning', day: 'Day 1' },
+  { time: '14:45', title: 'Payments & Growth at Scale', speaker: 'Pieter van der Berg', track: 'Startup Growth', day: 'Day 1' },
+  { time: '15:30', title: 'Product-Led Growth in B2B', speaker: 'Ingrid Nielsen', track: 'Enterprise Innovation', day: 'Day 1' },
+  { time: '09:00', title: 'Day 2 Keynote: AI in European Banking', speaker: 'Margreet Bakker', track: 'AI & Machine Learning', day: 'Day 2', keynote: true },
+  { time: '09:45', title: 'Recommendation Systems at 600M Users', speaker: 'Henrik Malm', track: 'AI & Machine Learning', day: 'Day 2' },
+  { time: '10:30', title: 'Personalization at Travel Scale', speaker: 'Clara van Amsterdam', track: 'Enterprise Innovation', day: 'Day 2' },
+  { time: '11:00', title: 'Developer Experience in 2026', speaker: 'Willem Janssen', track: 'Enterprise Innovation', day: 'Day 2' },
+  { time: '11:45', title: 'Platform Engineering at Zalando', speaker: 'Anton Schmidt', track: 'Enterprise Innovation', day: 'Day 2' },
   { time: '12:30', title: 'Lunch & Demos', speaker: '-', track: 'All', day: 'Day 2' },
-  { time: '14:00', title: 'Panel: The State of AI', speaker: 'Sarah Chen, Ana Costa, Maya Johnson', track: 'AI & Machine Learning', day: 'Day 2' },
-  { time: '15:00', title: 'Closing Remarks', speaker: 'Marcus Berg', track: 'All', day: 'Day 2' },
+  { time: '14:00', title: 'Panel: European AI Leadership', speaker: 'Nina Vorster, Margreet Bakker, Sofia Andersson', track: 'AI & Machine Learning', day: 'Day 2' },
+  { time: '15:00', title: 'Closing Remarks', speaker: 'Lars Lindqvist', track: 'All', day: 'Day 2' },
   { time: '16:00', title: 'Networking Reception', speaker: '-', track: 'All', day: 'Day 2' },
 ];
 
 const PRICING = { early_bird: '€299', regular: '€499', vip: '€999' };
+
+const YOUTUBE_VIDEOS = [
+  { id: 'f8DKD78BrQA', title: 'Nvidia GTC 2024 Keynote', event: 'Nvidia GTC' },
+  { id: 'uFroTufv6es', title: 'Google I/O 2024 Keynote', event: 'Google I/O' },
+  { id: 'pRAhO8piBtw', title: 'RailsConf 2024 Highlights', event: 'RailsConf' },
+];
 
 function KenBurnsSlideshow() {
   const [idx, setIdx] = useState(0);
@@ -457,6 +465,32 @@ export default function DemoConferencePage() {
 
       <WaveDivider />
 
+      {/* EXHIBIT: Game Theory — Prisoner's Kaleidoscope (museum-style) */}
+      <section className="px-6 py-16" style={{
+        background: 'linear-gradient(180deg, rgba(10,10,10,0.98) 0%, rgba(5,5,15,0.99) 100%)',
+        borderTop: '1px solid rgba(79,255,223,0.2)',
+        borderBottom: '1px solid rgba(79,255,223,0.2)',
+        backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(79,255,223,0.04) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(167,123,250,0.04) 0%, transparent 50%)',
+      }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-2 h-8 rounded-full" style={{ background: accentColor, boxShadow: `0 0 24px ${accentColor}` }} />
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.25em]" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>Interactive Exhibit</div>
+              <h2 className="text-xl font-semibold" style={{ fontFamily: 'var(--font-display)' }}>Prisoner&apos;s Kaleidoscope</h2>
+            </div>
+          </div>
+          <p className="text-sm mb-6 max-w-2xl" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
+            Cooperation vs. defection on a lattice. Each cell adopts its neighbor&apos;s strategy based on payoff. Teal = cooperate, dark = defect. Watch emergent patterns evolve in real time — inspired by Complexity Explorables and spatial game theory.
+          </p>
+          <div className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(79,255,223,0.2)', boxShadow: '0 0 40px rgba(79,255,223,0.08)' }}>
+            <PrisonerDilemmaKaleidoscope size={80} cellSize={5} speed={100} colors={{ cooperator: accentColor, defector: '#0f172a', flipToC: '#7dd3fc', flipToD: '#f472b6' }} />
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider />
+
       {/* EXHIBIT: Speakers */}
       <section className="px-6 py-16" style={{
         background: 'rgba(255,255,255,0.02)',
@@ -471,11 +505,11 @@ export default function DemoConferencePage() {
             <h2 className="text-sm font-medium uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Speakers</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {SPEAKERS.map((speaker) => {
+            {SPEAKERS.map((speaker, i) => {
               const trackColor = TRACK_COLORS[TRACKS.indexOf(speaker.track) % TRACK_COLORS.length] || accentColor;
               const expanded = expandedSpeaker === speaker.id;
               return (
-                <div key={speaker.id} className="card group">
+                <div key={speaker.id} className="card group float-slow" style={{ animationDelay: `${(i % 6) * 0.5}s`, animationDuration: `${6 + (i % 3)}s` }}>
                   <div className="relative w-full aspect-[4/5] rounded-lg mb-4 overflow-hidden">
                     <Image src={speaker.img} alt={speaker.name} fill className="object-cover transition-transform group-hover:scale-105" sizes="25vw" />
                   </div>
@@ -490,6 +524,43 @@ export default function DemoConferencePage() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider />
+
+      {/* Featured Videos */}
+      <section className="px-6 py-16" style={{
+        background: 'linear-gradient(180deg, rgba(79,255,223,0.03) 0%, transparent 100%)',
+        borderTop: '1px solid rgba(79,255,223,0.1)',
+        borderBottom: '1px solid rgba(79,255,223,0.1)',
+      }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-2 h-8 rounded-full" style={{ background: accentColor, boxShadow: `0 0 20px ${accentColor}` }} />
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.2em]" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>Watch</div>
+              <h2 className="text-lg font-semibold" style={{ fontFamily: 'var(--font-display)' }}>Featured conference talks</h2>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {YOUTUBE_VIDEOS.map((v, i) => (
+              <div key={v.id} className="card overflow-hidden group" style={{ animationDelay: `${i * 100}ms` }}>
+                <div className="relative aspect-video rounded-lg overflow-hidden mb-4">
+                  <iframe
+                    src={`https://www.youtube.com/embed/${v.id}?rel=0`}
+                    title={v.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="absolute inset-0 w-full h-full transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: 'inset 0 0 60px rgba(0,0,0,0.3)' }} />
+                </div>
+                <h3 className="font-semibold mb-1">{v.title}</h3>
+                <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>{v.event}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -627,7 +698,7 @@ export default function DemoConferencePage() {
               { tier: 'regular' as const, label: 'Regular', price: PRICING.regular, featured: true },
               { tier: 'vip' as const, label: 'VIP', price: PRICING.vip },
             ].map(({ tier, label, price, featured }) => (
-              <div key={tier} className={`card text-center flex flex-col ${featured ? 'border-[rgba(79,255,223,0.3)]' : ''}`} style={featured ? { boxShadow: '0 0 20px rgba(79,255,223,0.05)' } : {}}>
+              <div key={tier} className={`card text-center flex flex-col ${featured ? 'border-[rgba(79,255,223,0.3)] border-glow' : ''}`} style={featured ? {} : {}}>
                 <div className="text-sm uppercase tracking-wider mb-2" style={{ color: featured ? accentColor : 'var(--color-text-muted)' }}>{label}</div>
                 <div className="text-3xl font-bold mb-2 flex-1" style={{ fontFamily: 'var(--font-display)', color: tier === 'vip' ? 'var(--color-warm)' : accentColor }}>{price}</div>
                 <div className="h-1.5 rounded-full mb-3 overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>

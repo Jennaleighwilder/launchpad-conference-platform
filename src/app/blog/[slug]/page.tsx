@@ -2,150 +2,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { BLOG_POSTS } from '@/data/blog-posts';
-
-const ARTICLE_CONTENT: Record<string, string> = {
-  'ai-obsolete-6-month-cycle': `
-Event planning used to mean months of spreadsheets, venue hunting, and speaker outreach. Today, AI can generate a complete conference — name, venue, speakers, schedule, pricing — in under a minute.
-
-**The old way:** 6+ months of planning, $50K+ in coordination costs, and endless back-and-forth with vendors. **The new way:** Describe your event, hit generate, and get a production-ready event page.
-
-We built Launchpad to bridge that gap. Our AI understands conference structure: keynote slots, panel formats, workshop tracks, networking breaks. It knows real venues in major cities. It generates diverse, credible speaker rosters. And it does it all in parallel — 5 specialized agents working simultaneously.
-
-The result isn't a generic template. It's a tailored conference that matches your topic, vibe, and budget. **90% of event planning is mechanical** — venue research, speaker outreach, schedule drafting, pricing tiers. AI can do that in parallel. Our swarm architecture runs 5 agents at once. The new customize layer lets you tweak name, tagline, accent color, and section order without regenerating. Industry cost analysis: $50K–150K per 500-person event in coordination alone. Launchpad collapses that to minutes.
-
-Investors, startups, and enterprises are already using it to ship events 10x faster.
-  `,
-  'free-to-premium-event-funnel': `
-The strategy is simple: **launch free, give people a taste, convert 12% to premium.** It's exactly how Twan's clients scale — and it works.
-
-**Step 1: Free tier.** Let anyone create an event in 60 seconds. No credit card. No commitment. They get a full conference page — speakers, schedule, venue, pricing. The experience sells itself.
-
-**Step 2: The taste.** Free users see what's possible. Customization, analytics, integrations — all visible but locked. The "Customize" button is the trigger. 78% of users who open it convert.
-
-**Step 3: Premium conversion.** Customization (name, tagline, colors, section order). Analytics (registration tracking, engagement metrics). Integrations (Stripe, calendar, social). These are the upsells that justify the upgrade.
-
-**Step 4: Retention.** Premium users get ongoing value — more events, team seats, API access. The funnel compounds. 12% conversion on a growing free base means predictable revenue growth.
-
-The key: don't gate the core experience. Let them feel the magic first. Then make the upgrade obvious.
-  `,
-  'drag-drop-customization': `
-The Customize button isn't just a feature — it's a **premium upsell trigger.** 78% of users who open it convert to paid.
-
-Why? Because customization is where intent becomes commitment. Someone who tweaks the name, changes the accent color, and reorders sections isn't just browsing. They're building. That psychological shift — from "looking" to "owning" — is what drives conversion.
-
-**What we offer:** Name and tagline editing. 8 accent colors. Drag-and-drop section reorder. Show/hide toggles for speakers, schedule, venue, pricing. It's enough to make the event feel *theirs* without overwhelming them.
-
-**The data:** Users who open Customize spend 3x longer on the page. They're 78% more likely to complete checkout. And they're more likely to return for a second event — because they've already invested in the platform.
-
-The lesson for event planners: give people a taste of control. Let them personalize. Then make the full power (analytics, integrations, team seats) the obvious next step.
-  `,
-  '60-seconds-vs-6-months': `
-**More experiments. Lower risk. Better market timing.** That's the competitive advantage of speed.
-
-The old model: 6 months of planning, one big bet, hope it lands. If the market shifts or the topic cools, you're stuck. Sunk cost. Spreadsheets. Vendor contracts.
-
-The new model: 60 seconds to a draft. Test the concept. Share it. Get feedback. Iterate. If it doesn't resonate, you've lost minutes, not months. **Run 10 experiments in the time it used to take to run one.**
-
-Event planners who ship fast can:
-- **Test topics** before committing budget
-- **Respond to trends** (AI, climate, fintech) while they're hot
-- **Lower risk** — small bets, fast feedback, no big-bang launches
-- **Improve conversion** — real pages beat PDFs and decks every time
-
-The 6-month cycle made sense when coordination was the bottleneck. AI removes that bottleneck. The planners who adapt will win. The ones who don't will keep doing spreadsheets.
-  `,
-  'ai-venue-matching': `
-The Venue Agent does more than pick a building. It builds a **complete location experience** — maps, hotels, dining, accessibility.
-
-**Embedded maps.** Every event page gets a Google Maps embed of the venue. Dark-mode inverted for our aesthetic. One click to directions. No more "where is this again?" in the chat.
-
-**Nearby hotels.** 3 options with real Unsplash photos, distance, price, star ratings. Attendees need a place to stay. We surface it. Booking.com links for conversion.
-
-**Restaurant recommendations.** 4 spots with cuisine type, distance, price tier. Post-event dinners, client lunches, team offsites — all pre-researched.
-
-**Accessibility scoring.** We factor in wheelchair access, transit proximity, and venue capacity. Not every venue works for every audience. The agent knows.
-
-**How it works:** The Venue Agent receives city + topic + capacity. It queries a curated database of real venues (Beurs van Berlage, convention centers, hotels). It picks one that fits. Then it enriches with maps, hotels, and dining from structured data. All in parallel with the other 4 agents. The result: a venue section that feels hand-curated, not generic.
-  `,
-  'murderers-lock-build': `
-The Murderer's Lock is a security research project demonstrating what "unbreakable" looks like when you design for threat models most products ignore.
-
-**Argon2id at 64MB** — memory-hard hashing that makes GPU/ASIC attacks impractical. **AES-256-GCM** — authenticated encryption with no room for tampering. **WebAuthn with counter enforcement** — hardware-backed auth that detects cloning. **Atomic single-use challenges** — no replay, no downgrade. **Graduated lockjaw** — escalation from soft to hard lock. **Shamir recovery** — distributed key recovery without a single point of failure.
-
-We ran Playwright-based red-team CI. Every attack vector we could think of — replay, downgrade, timing — gets tested on every commit. The live demo is available for security researchers.
-  `,
-  'ai-replacing-event-planning': `
-Event planning used to mean months of spreadsheets, venue hunting, and speaker outreach. Today, AI can generate a complete conference — name, venue, speakers, schedule, pricing — in under a minute.
-
-**The old way:** 6+ months of planning, $50K+ in coordination costs, and endless back-and-forth with vendors. **The new way:** Describe your event, hit generate, and get a production-ready event page.
-
-We built Launchpad to bridge that gap. Our AI understands conference structure: keynote slots, panel formats, workshop tracks, networking breaks. It knows real venues in major cities. It generates diverse, credible speaker rosters. And it does it all in parallel — 5 specialized agents working simultaneously.
-
-The result isn't a generic template. It's a tailored conference that matches your topic, vibe, and budget. **90% of event planning is mechanical** — venue research, speaker outreach, schedule drafting, pricing tiers. AI can do that in parallel. Our swarm architecture runs 5 agents at once. The new customize layer lets you tweak name, tagline, accent color, and section order without regenerating. Industry cost analysis: $50K–150K per 500-person event in coordination alone. Launchpad collapses that to minutes.
-
-Investors, startups, and enterprises are already using it to ship events 10x faster.
-  `,
-  'zero-to-production': `
-We built Launchpad to prove a point: AI-assisted development can ship production software fast. **Stack:** Next.js 16, Vercel, Stripe, Supabase. **Architecture:** 5 parallel swarm agents (speakers, venue, schedule, pricing, branding), smart fallback when OpenAI isn't configured, in-memory store when Supabase isn't. **Scope:** 34 pages, 11 API routes, 0 TypeScript errors. **What it proves:** A single developer with the right tools can build a full SaaS in weeks, not months. The customize layer, blog, community, ROI calculator — all added in days. This is the new normal.
-  `,
-  'swarm-ai-deep-dive': `
-Launchpad's Swarm AI runs 5 specialized agents in parallel. Each agent owns one domain: speakers, venue, schedule, pricing, branding. They don't wait for each other — they all fire at once.
-
-**Speaker Agent** curates 8 diverse speakers with names, roles, and bios. **Venue Agent** picks a real venue in your city. **Schedule Agent** builds a 12-session day from 9AM to 6PM. **Pricing Agent** sets tier pricing based on budget. **Branding Agent** generates name, tagline, and description.
-
-Results merge in under 30 seconds. If any agent fails, smart fallbacks fill the gap. No OpenAI key? We have a full fallback generator with 60 speakers across 6 topic categories.
-
-The architecture is designed for speed and reliability. Investors love seeing real AI, not mockups.
-  `,
-  'conference-budget-guide-2026': `
-Planning a conference in 2026? Here's a practical budget breakdown.
-
-**Venue (25–35%):** Convention centers run $5–15 per sq ft. For 500 attendees, budget $15K–40K. **AV & Tech (10–15%):** Mics, screens, livestream. $5K–15K for mid-size. **Catering (15–25%):** Coffee, lunch, breaks. $25–50 per head. **Speakers (0–20%):** Keynotes can be $10K–50K; many accept exposure. **Marketing (10–15%):** Ads, design, swag. **Staff & Ops (10–20%):** Coordination, check-in, support.
-
-Total for a 500-person single-day event: $50K–150K depending on city and polish. Use Launchpad to generate a baseline, then adjust.
-  `,
-  'hybrid-events-playbook': `
-Hybrid events serve in-person and virtual attendees. The playbook:
-
-**1. One registration, two experiences.** Same ticket, different access. In-person gets the room; virtual gets a livestream link.
-
-**2. Dedicated virtual host.** Someone who monitors chat, reads questions aloud, and keeps remote attendees engaged.
-
-**3. Replay everything.** Record keynotes and panels. Virtual attendees in different time zones will watch async.
-
-**4. Networking for both.** In-person: lunch tables, breaks. Virtual: breakout rooms, Slack/Discord, matchmaking tools.
-
-**5. Test the tech.** Run a dry run 24h before. Zoom, YouTube, Vimeo — whatever you use, verify it works.
-  `,
-  'attendee-engagement-metrics': `
-Beyond ticket sales, measure what matters:
-
-**Check-in rate:** Did they show up? **Session attendance:** Which talks drew crowds? **Networking activity:** How many 1:1s or connections? **Q&A participation:** Questions submitted, upvoted. **Poll responses:** Real-time engagement. **App usage:** Agenda views, map opens, chat messages. **NPS post-event:** Would they recommend?
-
-Launchpad tracks these through QR check-in, session data, and post-event surveys. The goal: not just attendance, but active participation.
-  `,
-  'speaker-curation-engine': `
-Our speaker curation engine balances three inputs: topic relevance, diversity (gender, ethnicity, role), and credibility (real-sounding titles and companies).
-
-For AI generation, we prompt for "industry leaders, academics, and practitioners" with "gender/ethnic diversity." For fallback mode, we maintain a database of 60 speakers across 6 topics — AI, Web3, Climate, Health, Fintech, General. Each has a name, role, and professional photo from our Unsplash pool.
-
-We never reuse the same speaker twice in one event. Fisher-Yates shuffle picks 8, then we assign photos. The result feels curated, not random.
-  `,
-  'modern-event-tech-stack': `
-The modern event stack: **Registration** — Launchpad, Eventbrite, Tito. **Payments** — Stripe. **Check-in** — QR codes, NFC. **Livestream** — Zoom, YouTube, Vimeo. **Q&A** — Slido, Mentimeter. **Networking** — Brella, Grip, our built-in matchmaking. **Analytics** — Mixpanel, PostHog, custom dashboards.
-
-Launchpad integrates with 20+ tools. We generate the event; you connect the rest. API-first design means you can push events to any platform.
-  `,
-  'launch-announcement': `
-We're live. Launchpad generates complete conferences in 60 seconds — name, venue, speakers, schedule, pricing. No spreadsheets. No 6-month planning cycles.
-
-We built this because event planning is broken. Great ideas get stuck in coordination hell. We're fixing that with AI. Built by Jennifer West.
-
-Try it: [Create your event](/create). No credit card. No commitment. See what a full conference looks like in under a minute.
-
-— The Launchpad Team
-  `,
-};
+import { ARTICLE_CONTENT } from '@/data/blog-articles';
+import { BlogContent } from '@/components/BlogContent';
 
 export default async function BlogArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -164,13 +22,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
         <div className="rounded-xl overflow-hidden mb-12" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
           <Image src={post.image} alt="" width={800} height={450} className="w-full h-64 md:h-80 object-cover" />
         </div>
-        <div className="prose prose-invert max-w-none" style={{ color: 'var(--color-text)' }}>
-          {content.split('\n\n').map((para, i) => (
-            <p key={i} className="mb-4 leading-relaxed">
-              {para.split('**').map((seg, j) => (j % 2 === 1 ? <strong key={j}>{seg}</strong> : seg))}
-            </p>
-          ))}
-        </div>
+        <BlogContent content={content} />
         <div className="mt-12 pt-8 flex gap-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
           <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}`} target="_blank" rel="noopener noreferrer" className="text-sm" style={{ color: 'var(--color-accent)' }}>Share on X</a>
           <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent((process.env.NEXT_PUBLIC_APP_URL || 'https://launchpad-conference-platform.vercel.app') + '/blog/' + slug)}`} target="_blank" rel="noopener noreferrer" className="text-sm" style={{ color: 'var(--color-accent)' }}>Share on LinkedIn</a>

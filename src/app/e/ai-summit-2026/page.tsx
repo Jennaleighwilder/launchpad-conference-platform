@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { NetworkGraph } from '@/components/event-viz';
+import { NetworkGraph, GameOfLife } from '@/components/event-viz';
+import { getSpeakerPhoto } from '@/lib/speaker-photos';
 import {
   KenBurnsSlideshow,
   WaveDivider,
@@ -50,18 +51,18 @@ const RESTAURANTS = [
 const TRACKS = ['Foundation Models', 'AI Safety', 'Agentic AI', 'Enterprise AI'];
 
 const SPEAKERS = [
-  { id: 'sarah-chen', name: 'Sarah Chen', role: 'VP AI, Anthropic', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop', talk: 'Constitutional AI in Production', track: 'AI Safety', bio: 'Led safety at Anthropic. PhD MIT. 50+ papers on AI alignment.' },
-  { id: 'marcus-berg', name: 'Marcus Berg', role: 'Director, OpenAI', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=500&fit=crop', talk: 'GPT-6 and Beyond', track: 'Foundation Models', bio: 'Core team on GPT-5/6. Scaling laws researcher. Ex-DeepMind.' },
-  { id: 'priya-sharma', name: 'Priya Sharma', role: 'CTO, Cohere', img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=500&fit=crop', talk: 'Enterprise LLMs', track: 'Enterprise AI', bio: 'Built Cohere\'s enterprise stack. Ex-Google Brain. RAG pioneer.' },
-  { id: 'james-wright', name: 'James Wright', role: 'Head of Agents, Google', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop', talk: 'Autonomous AI Agents', track: 'Agentic AI', bio: 'Led Gemini agents. 20+ years in AI. Stanford advisor.' },
-  { id: 'ana-costa', name: 'Ana Costa', role: 'Chief Scientist, Mistral', img: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=500&fit=crop', talk: 'Open Models at Scale', track: 'Foundation Models', bio: 'Core team Mistral. Open-source advocate. NeurIPS best paper.' },
-  { id: 'david-kim', name: 'David Kim', role: 'VP Engineering, Scale AI', img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop', talk: 'Data for Frontier Models', track: 'Foundation Models', bio: 'Scales data pipelines for GPT-class models. Ex-Meta.' },
-  { id: 'elena-vasquez', name: 'Elena Vasquez', role: 'Director, OpenAI Safety', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop', talk: 'Superalignment Progress', track: 'AI Safety', bio: 'Superalignment team. Interpretability researcher. LessWrong founder.' },
-  { id: 'thomas-muller', name: 'Thomas Muller', role: 'CEO, Adept', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop', talk: 'AI That Uses Your Tools', track: 'Agentic AI', bio: 'Founded Adept. Ex-Google. Action models pioneer.' },
-  { id: 'aisha-patel', name: 'Aisha Patel', role: 'VP AI, Salesforce', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop', talk: 'Einstein GPT', track: 'Enterprise AI', bio: 'Built Salesforce AI. CRM + LLMs. $2B ARR from AI features.' },
-  { id: 'ryan-obrien', name: 'Ryan O\'Brien', role: 'Founder, LangChain', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop', talk: 'The LLM App Stack', track: 'Agentic AI', bio: 'LangChain creator. 50M+ downloads. Defining the agent framework.' },
-  { id: 'maya-johnson', name: 'Maya Johnson', role: 'Chief AI Officer, Microsoft', img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=500&fit=crop', talk: 'Copilot at Scale', track: 'Enterprise AI', bio: 'Led Copilot rollout. 400M users. Enterprise AI adoption.' },
-  { id: 'chen-wei', name: 'Chen Wei', role: 'Head of AI, Meta', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=500&fit=crop', talk: 'Llama and Open AI', track: 'Foundation Models', bio: 'Led Llama 3/4. Open-weight advocate. 1B+ downloads.' },
+  { id: 'sarah-chen', name: 'Sarah Chen', role: 'VP AI, Anthropic', img: getSpeakerPhoto(0), talk: 'Constitutional AI in Production', track: 'AI Safety', bio: 'Led safety at Anthropic. PhD MIT. 50+ papers on AI alignment.' },
+  { id: 'marcus-berg', name: 'Marcus Berg', role: 'Director, OpenAI', img: getSpeakerPhoto(1), talk: 'GPT-6 and Beyond', track: 'Foundation Models', bio: 'Core team on GPT-5/6. Scaling laws researcher. Ex-DeepMind.' },
+  { id: 'priya-sharma', name: 'Priya Sharma', role: 'CTO, Cohere', img: getSpeakerPhoto(2), talk: 'Enterprise LLMs', track: 'Enterprise AI', bio: 'Built Cohere\'s enterprise stack. Ex-Google Brain. RAG pioneer.' },
+  { id: 'james-wright', name: 'James Wright', role: 'Head of Agents, Google', img: getSpeakerPhoto(3), talk: 'Autonomous AI Agents', track: 'Agentic AI', bio: 'Led Gemini agents. 20+ years in AI. Stanford advisor.' },
+  { id: 'ana-costa', name: 'Ana Costa', role: 'Chief Scientist, Mistral', img: getSpeakerPhoto(4), talk: 'Open Models at Scale', track: 'Foundation Models', bio: 'Core team Mistral. Open-source advocate. NeurIPS best paper.' },
+  { id: 'david-kim', name: 'David Kim', role: 'VP Engineering, Scale AI', img: getSpeakerPhoto(5), talk: 'Data for Frontier Models', track: 'Foundation Models', bio: 'Scales data pipelines for GPT-class models. Ex-Meta.' },
+  { id: 'elena-vasquez', name: 'Elena Vasquez', role: 'Director, OpenAI Safety', img: getSpeakerPhoto(6), talk: 'Superalignment Progress', track: 'AI Safety', bio: 'Superalignment team. Interpretability researcher. LessWrong founder.' },
+  { id: 'thomas-muller', name: 'Thomas Muller', role: 'CEO, Adept', img: getSpeakerPhoto(7), talk: 'AI That Uses Your Tools', track: 'Agentic AI', bio: 'Founded Adept. Ex-Google. Action models pioneer.' },
+  { id: 'aisha-patel', name: 'Aisha Patel', role: 'VP AI, Salesforce', img: getSpeakerPhoto(8), talk: 'Einstein GPT', track: 'Enterprise AI', bio: 'Built Salesforce AI. CRM + LLMs. $2B ARR from AI features.' },
+  { id: 'ryan-obrien', name: 'Ryan O\'Brien', role: 'Founder, LangChain', img: getSpeakerPhoto(9), talk: 'The LLM App Stack', track: 'Agentic AI', bio: 'LangChain creator. 50M+ downloads. Defining the agent framework.' },
+  { id: 'maya-johnson', name: 'Maya Johnson', role: 'Chief AI Officer, Microsoft', img: getSpeakerPhoto(10), talk: 'Copilot at Scale', track: 'Enterprise AI', bio: 'Led Copilot rollout. 400M users. Enterprise AI adoption.' },
+  { id: 'chen-wei', name: 'Chen Wei', role: 'Head of AI, Meta', img: getSpeakerPhoto(11), talk: 'Llama and Open AI', track: 'Foundation Models', bio: 'Led Llama 3/4. Open-weight advocate. 1B+ downloads.' },
 ];
 
 const SCHEDULE = [
@@ -86,6 +87,12 @@ const SCHEDULE = [
 ];
 
 const PRICING = { early_bird: '$499', regular: '$799', vip: '$1,999' };
+
+const YOUTUBE_VIDEOS = [
+  { id: 'f8DKD78BrQA', title: 'Nvidia GTC 2024 Keynote', event: 'Nvidia GTC' },
+  { id: 'uFroTufv6es', title: 'Google I/O 2024 Keynote', event: 'Google I/O' },
+  { id: 'pRAhO8piBtw', title: 'RailsConf 2024 Highlights', event: 'RailsConf' },
+];
 
 export default function AISummit2026Page() {
   const [scheduleDay, setScheduleDay] = useState<'Day 1' | 'Day 2'>('Day 1');
@@ -161,6 +168,27 @@ export default function AISummit2026Page() {
 
       <WaveDivider colors={[accentColor, '#C4B5FD']} />
 
+      {/* Interactive Exhibit: Conway's Game of Life */}
+      <section className="px-6 py-16" style={{ background: 'linear-gradient(180deg, rgba(15,15,25,0.98) 0%, rgba(5,5,15,0.99) 100%)', borderTop: `1px solid ${accentColor}30`, borderBottom: `1px solid ${accentColor}30` }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-2 h-8 rounded-full" style={{ background: accentColor, boxShadow: `0 0 24px ${accentColor}` }} />
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.25em]" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>Interactive Exhibit</div>
+              <h2 className="text-xl font-semibold" style={{ fontFamily: 'var(--font-display)' }}>Conway&apos;s Game of Life</h2>
+            </div>
+          </div>
+          <p className="text-sm mb-6 max-w-2xl" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
+            Cellular automata from 1970. Each cell lives or dies by its neighbors. Gliders, oscillators, and infinite complexity from four simple rules. A cornerstone of artificial life and emergent computation.
+          </p>
+          <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${accentColor}30`, boxShadow: `0 0 40px ${accentColor}15` }}>
+            <GameOfLife width={100} height={75} cellSize={6} color={accentColor} speed={60} />
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider colors={[accentColor]} />
+
       <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
@@ -169,11 +197,11 @@ export default function AISummit2026Page() {
             <h2 className="text-sm font-medium uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Speakers</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {SPEAKERS.map((speaker) => {
+            {SPEAKERS.map((speaker, i) => {
               const trackColor = TRACK_COLORS[TRACKS.indexOf(speaker.track) % TRACK_COLORS.length] || accentColor;
               const expanded = expandedSpeaker === speaker.id;
               return (
-                <div key={speaker.id} className="card group">
+                <div key={speaker.id} className="card group float-slow" style={{ animationDelay: `${(i % 6) * 0.5}s`, animationDuration: `${6 + (i % 3)}s` }}>
                   <div className="relative w-full aspect-[4/5] rounded-lg mb-4 overflow-hidden">
                     <Image src={speaker.img} alt={speaker.name} fill className="object-cover transition-transform group-hover:scale-105" sizes="25vw" />
                   </div>
@@ -231,6 +259,38 @@ export default function AISummit2026Page() {
                 );
               })}
             </div>
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider colors={[accentColor]} />
+
+      {/* Featured Videos */}
+      <section className="px-6 py-16" style={{ background: 'linear-gradient(180deg, rgba(167,139,250,0.03) 0%, transparent 100%)', borderTop: `1px solid ${accentColor}26`, borderBottom: `1px solid ${accentColor}26` }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-2 h-8 rounded-full" style={{ background: accentColor, boxShadow: `0 0 20px ${accentColor}` }} />
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.2em]" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>Watch</div>
+              <h2 className="text-lg font-semibold" style={{ fontFamily: 'var(--font-display)' }}>Featured conference talks</h2>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {YOUTUBE_VIDEOS.map((v, i) => (
+              <div key={v.id} className="card overflow-hidden group">
+                <div className="relative aspect-video rounded-lg overflow-hidden mb-4">
+                  <iframe
+                    src={`https://www.youtube.com/embed/${v.id}?rel=0`}
+                    title={v.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="absolute inset-0 w-full h-full transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <h3 className="font-semibold mb-1">{v.title}</h3>
+                <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>{v.event}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

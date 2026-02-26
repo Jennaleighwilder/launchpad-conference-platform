@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { HelixDNA } from '@/components/event-viz';
+import { HelixDNA, GameOfLife } from '@/components/event-viz';
+import { getSpeakerPhoto } from '@/lib/speaker-photos';
 import {
   KenBurnsSlideshow,
   WaveDivider,
@@ -47,7 +48,7 @@ const RESTAURANTS = [
 ];
 
 const SPEAKERS = [
-  { id: 'james-dyson', name: 'James Dyson', role: 'Founder, Dyson', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop', talk: 'Innovation Through Failure', track: 'Keynote', bio: 'British inventor and industrial designer. Founded Dyson in 1991. Revolutionized vacuum technology and hand dryers. Knighted for services to business. Built a global empire from 5,127 failed prototypes.' },
+  { id: 'james-dyson', name: 'James Dyson', role: 'Founder, Dyson', img: getSpeakerPhoto(18), talk: 'Innovation Through Failure', track: 'Keynote', bio: 'British inventor and industrial designer. Founded Dyson in 1991. Revolutionized vacuum technology and hand dryers. Knighted for services to business. Built a global empire from 5,127 failed prototypes.' },
 ];
 
 const SCHEDULE = [
@@ -125,6 +126,27 @@ export default function AnEveningWithPage() {
       </section>
 
       <WaveDivider colors={[accentColor, '#E8C547']} />
+
+      {/* Interactive Exhibit: Innovation Through Iteration */}
+      <section className="px-6 py-16" style={{ background: 'linear-gradient(180deg, rgba(25,20,5,0.98) 0%, rgba(15,12,5,0.99) 100%)', borderTop: `1px solid ${accentColor}30`, borderBottom: `1px solid ${accentColor}30` }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-2 h-8 rounded-full" style={{ background: accentColor, boxShadow: `0 0 24px ${accentColor}` }} />
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.25em]" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>Interactive Exhibit</div>
+              <h2 className="text-xl font-semibold" style={{ fontFamily: 'var(--font-display)' }}>5,127 Prototypes</h2>
+            </div>
+          </div>
+          <p className="text-sm mb-6 max-w-2xl" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
+            Conway&apos;s Game of Life: simple rules, emergent complexity. Like Dyson&apos;s iterative design — each failure informs the next. From four rules, infinite patterns emerge.
+          </p>
+          <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${accentColor}30`, boxShadow: `0 0 40px ${accentColor}10` }}>
+            <GameOfLife width={80} height={55} cellSize={7} color={accentColor} speed={90} />
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider colors={[accentColor]} />
 
       <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto">
