@@ -5,20 +5,25 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const STEPS = [
-  { title: 'Join the program', desc: 'Fill in the form — it only takes 5 minutes' },
-  { title: 'Share your link', desc: 'Invite others by sharing your affiliate link across your network' },
-  { title: 'Earn forever', desc: 'Earn up to 30% recurring commission for every new referral' },
+  { title: 'Apply in 5 minutes', desc: 'Share your audience size and preferred channels. We approve within 48 hours.' },
+  { title: 'Get your unique link', desc: 'Share your affiliate link — events, blog, social, email. Track conversions in real time.' },
+  { title: 'Earn 40% recurring', desc: '40% of every Pro subscription you refer. Paid monthly. No cap.' },
 ];
 
 const COMMISSION_TIERS = [
-  { range: '1-10 referrals', rate: '20%' },
-  { range: '11-50 referrals', rate: '25%' },
-  { range: '50+ referrals', rate: '30%' },
+  { tier: 'Standard', range: '1–50 referrals', rate: '40%', desc: 'Creators, organizers, community builders' },
+  { tier: 'Influencer', range: '50–500 referrals', rate: '40%', desc: 'YouTubers, podcasters, newsletter writers', badge: 'Popular' },
+  { tier: 'Partner', range: '500+ referrals', rate: '40%', desc: 'Agencies, event platforms, co-marketing' },
 ];
 
+const REFER_A_FRIEND = {
+  title: 'Refer a friend, both get rewarded',
+  desc: 'Share your link. When someone signs up and subscribes to Pro, you earn 40% recurring. They get 20% off their first month.',
+};
+
 const TESTIMONIALS = [
-  { quote: 'Launchpad\'s affiliate program is the most generous I\'ve seen. I\'ve been promoting it to my audience and the recurring commissions add up fast.', name: 'Alex Rivera', role: 'Tech YouTuber', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop' },
-  { quote: 'As a conference organizer, I recommend Launchpad to everyone. The 30% commission tier is a no-brainer — my audience loves it and I get paid every month.', name: 'Sofia Martinez', role: 'Event Creator', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop' },
+  { quote: 'Launchpad\'s 40% affiliate rate is the highest I\'ve seen in SaaS. I promote it to my 50K YouTube audience and the recurring commissions add up fast.', name: 'Alex Rivera', role: 'Tech YouTuber, 52K subs', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop' },
+  { quote: 'As a conference organizer, I recommend Launchpad to everyone. My audience loves it — I earn 40% on every Pro signup. It\'s a no-brainer.', name: 'Sofia Martinez', role: 'Event Creator, Newsletter 12K', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop' },
 ];
 
 export default function AffiliatePage() {
@@ -39,6 +44,7 @@ export default function AffiliatePage() {
         </Link>
         <div className="flex items-center gap-6">
           <Link href="/" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Home</Link>
+          <Link href="/careers" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Careers</Link>
           <Link href="/create" className="btn-primary" style={{ padding: '0.5rem 1.5rem', fontSize: '0.875rem' }}>Create Event →</Link>
         </div>
       </nav>
@@ -48,11 +54,12 @@ export default function AffiliatePage() {
         background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 25%, #1e3a5f 50%, #0f172a 100%)',
       }}>
         <div className="relative z-10 max-w-4xl mx-auto text-center">
+          <div className="inline-block px-4 py-1.5 rounded-full mb-6" style={{ background: 'rgba(79,255,223,0.2)', border: '1px solid rgba(79,255,223,0.4)', color: 'var(--color-accent)', fontSize: '0.875rem', fontWeight: 600 }}>40% recurring commission</div>
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-normal mb-6 leading-tight" style={{ fontFamily: 'var(--font-display)' }}>
             Earn recurring income by recommending Launchpad
           </h1>
           <p className="text-xl mb-10" style={{ color: 'rgba(255,255,255,0.8)', lineHeight: 1.6 }}>
-            Become a Launchpad affiliate and earn up to 30% recurring commission every month
+            Influencers, podcasters, and event creators earn 40% of every Pro subscription they refer. Paid monthly. No cap.
           </p>
           <Link href="#apply" className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-all hover:brightness-110" style={{ background: '#4FFFDF', color: '#0A0A0A' }}>
             BECOME AN AFFILIATE
@@ -60,15 +67,48 @@ export default function AffiliatePage() {
         </div>
       </section>
 
-      {/* 3 white cards */}
+      {/* Refer a friend */}
+      <section className="px-6 py-16" style={{ background: 'rgba(79,255,223,0.06)', borderTop: '1px solid rgba(79,255,223,0.15)', borderBottom: '1px solid rgba(79,255,223,0.15)' }}>
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-2xl font-semibold mb-3" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-accent)' }}>{REFER_A_FRIEND.title}</h2>
+          <p className="text-lg" style={{ color: 'var(--color-text-muted)', lineHeight: 1.7 }}>{REFER_A_FRIEND.desc}</p>
+        </div>
+      </section>
+
+      {/* 3 steps */}
       <section className="px-6 py-24">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8">
             {STEPS.map((step, i) => (
-              <div key={i} className="rounded-2xl p-8" style={{ background: '#fff', color: '#0A0A0A' }}>
+              <div key={i} className="rounded-2xl p-8" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="text-4xl font-bold mb-4" style={{ color: 'var(--color-accent)' }}>0{i + 1}</div>
                 <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
-                <p className="text-base" style={{ color: '#666', lineHeight: 1.6 }}>{step.desc}</p>
+                <p className="text-base" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Commission tiers — influencer/podcaster focus */}
+      <section className="px-6 py-24" style={{ background: 'rgba(255,255,255,0.02)' }}>
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-4xl font-normal mb-4 text-center" style={{ fontFamily: 'var(--font-display)' }}>Who should join</h2>
+          <p className="text-center mb-12" style={{ color: 'var(--color-text-muted)', fontSize: '1.125rem' }}>Influencers, podcasters, event creators — all earn 40%</p>
+          <div className="space-y-4">
+            {COMMISSION_TIERS.map((t, i) => (
+              <div key={i} className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-5 px-6 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold">{t.tier}</span>
+                    {t.badge && <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: 'var(--color-accent)', color: 'var(--color-bg)' }}>{t.badge}</span>}
+                  </div>
+                  <p className="text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>{t.desc}</p>
+                </div>
+                <div className="flex items-center gap-6">
+                  <span className="text-sm" style={{ color: 'var(--color-text-muted)' }}>{t.range}</span>
+                  <span className="text-2xl font-bold" style={{ color: 'var(--color-accent)' }}>{t.rate}</span>
+                </div>
               </div>
             ))}
           </div>
@@ -76,7 +116,7 @@ export default function AffiliatePage() {
       </section>
 
       {/* Testimonials */}
-      <section className="px-6 py-24" style={{ background: 'rgba(255,255,255,0.02)' }}>
+      <section className="px-6 py-24">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-normal mb-12 text-center" style={{ fontFamily: 'var(--font-display)' }}>
             Creators love promoting Launchpad
@@ -92,23 +132,6 @@ export default function AffiliatePage() {
                   <p className="font-semibold">{t.name}</p>
                   <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>{t.role}</p>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How it works — Commission tiers */}
-      <section className="px-6 py-24">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl font-normal mb-12 text-center" style={{ fontFamily: 'var(--font-display)' }}>
-            How it works
-          </h2>
-          <div className="space-y-6">
-            {COMMISSION_TIERS.map((tier, i) => (
-              <div key={i} className="flex justify-between items-center py-4 px-6 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <span className="font-medium">{tier.range}</span>
-                <span className="text-2xl font-bold" style={{ color: 'var(--color-accent)' }}>{tier.rate}</span>
               </div>
             ))}
           </div>
@@ -139,7 +162,19 @@ export default function AffiliatePage() {
                 <input type="email" required placeholder="you@example.com" className="input-field w-full" />
               </div>
               <div>
-                <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Website / Social URL</label>
+                <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Audience type</label>
+                <select className="input-field w-full" style={{ cursor: 'pointer' }}>
+                  <option value="">Select...</option>
+                  <option value="youtube">YouTube / Video</option>
+                  <option value="podcast">Podcast</option>
+                  <option value="newsletter">Newsletter</option>
+                  <option value="social">Social media</option>
+                  <option value="events">Event organizer</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Website / Channel URL</label>
                 <input type="url" placeholder="https://youtube.com/yourchannel" className="input-field w-full" />
               </div>
               <button type="submit" className="btn-primary w-full">
