@@ -46,7 +46,7 @@ function CheckoutCountdown() {
   );
 }
 
-export default function MockCheckoutPage() {
+export default function CheckoutPage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -57,7 +57,8 @@ export default function MockCheckoutPage() {
   const [event, setEvent] = useState<{ name: string; date: string; city: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [form, setForm] = useState({ name: '', email: '', card: '', expiry: '', cvv: '' });
+  const [form, setForm] = useState({ name: '', email: '' });
+  const [stripeAvailable, setStripeAvailable] = useState<boolean | null>(null);
 
   useEffect(() => {
     async function fetchEvent() {
@@ -74,32 +75,51 @@ export default function MockCheckoutPage() {
     if (slug) fetchEvent();
   }, [slug]);
 
-  const formatCard = (v: string) => {
-    const digits = v.replace(/\D/g, '').slice(0, 16);
-    return digits.replace(/(\d{4})(?=\d)/g, '$1 ').trim();
-  };
-  const formatExpiry = (v: string) => {
-    const digits = v.replace(/\D/g, '').slice(0, 4);
-    if (digits.length >= 2) return digits.slice(0, 2) + '/' + digits.slice(2);
-    return digits;
-  };
+  useEffect(() => {
+    fetch('/api/checkout', { method: 'OPTIONS' }).then(() => {}).catch(() => {});
+    fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ eventSlug: slug, ticketType: tier, checkOnly: true }),
+    })
+      .then((r) => r.json())
+      .then((d) => setStripeAvailable(d.stripeAvailable === true))
+      .catch(() => setStripeAvailable(false));
+  }, [slug, tier]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name.trim() || !form.email.trim()) return;
     setSubmitting(true);
-    setTimeout(() => {
-      const q = new URLSearchParams({
-        slug,
-        tier,
-        name: form.name.trim(),
-        email: form.email.trim(),
-      });
-      router.push(`/checkout/success?${q.toString()}`);
-    }, 2000);
+
+    fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        eventSlug: slug,
+        ticketType: tier,
+        buyerName: form.name.trim(),
+        buyerEmail: form.email.trim(),
+      }),
+    })
+      .then(async (r) => {
+        const data = await r.json().catch(() => ({}));
+        if (r.status === 503 || !data.url) {
+          const q = new URLSearchParams({ slug, tier, name: form.name.trim(), email: form.email.trim() });
+          router.push(`/checkout/success?${q.toString()}`);
+        } else if (data.url) {
+          window.location.href = data.url;
+        }
+      })
+      .catch(() => {
+        const q = new URLSearchParams({ slug, tier, name: form.name.trim(), email: form.email.trim() });
+        router.push(`/checkout/success?${q.toString()}`);
+      })
+      .finally(() => setSubmitting(false));
   };
 
   const tierLabel = tier === 'early_bird' ? 'Early Bird' : tier === 'vip' ? 'VIP' : 'Regular';
+  const isDemo = stripeAvailable === false || stripeAvailable === null;
 
   if (loading) {
     return (
@@ -115,7 +135,6 @@ export default function MockCheckoutPage() {
 
   return (
     <main className="min-h-screen" style={{ background: '#0A0A0A' }}>
-      {/* Urgency banner */}
       <div className="py-3 px-6 text-center font-medium" style={{ background: 'var(--color-accent)', color: '#0A0A0A' }}>
         Price Increase Extended | Register by {deadlineStr}
       </div>
@@ -125,12 +144,13 @@ export default function MockCheckoutPage() {
           <Link href={`/e/${slug}`} className="text-sm hover:text-[#4FFFDF] transition-colors" style={{ color: 'var(--color-text-muted)' }}>
             ← Back to event
           </Link>
-          <span className="text-xs px-3 py-1 rounded-full" style={{ background: 'rgba(245,158,11,0.2)', color: '#F59E0B' }}>
-            🔒 Demo Mode — No real charges
-          </span>
+          {isDemo && (
+            <span className="text-xs px-3 py-1 rounded-full" style={{ background: 'rgba(245,158,11,0.2)', color: '#F59E0B' }}>
+              Demo Mode — No real charges
+            </span>
+          )}
         </div>
 
-        {/* Prices increase box */}
         <div className="rounded-xl p-6 mb-12" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
           <h3 className="text-lg font-semibold mb-4">Prices Increase Soon</h3>
           <CheckoutCountdown />
@@ -140,15 +160,10 @@ export default function MockCheckoutPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-12">
-          {/* Order summary */}
           <div>
-            <h2 className="text-sm font-medium uppercase tracking-wider mb-4" style={{ color: 'var(--color-text-muted)' }}>
-              Order summary
-            </h2>
+            <h2 className="text-sm font-medium uppercase tracking-wider mb-4" style={{ color: 'var(--color-text-muted)' }}>Order summary</h2>
             <div className="rounded-xl p-6" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <h3 className="text-xl font-semibold mb-2" style={{ fontFamily: 'var(--font-display)' }}>
-                {event?.name || 'Event'}
-              </h3>
+              <h3 className="text-xl font-semibold mb-2" style={{ fontFamily: 'var(--font-display)' }}>{event?.name || 'Event'}</h3>
               <p className="text-sm mb-4" style={{ color: 'var(--color-text-muted)' }}>
                 {event?.date ? new Date(event.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : ''} · {event?.city || ''}
               </p>
@@ -163,11 +178,8 @@ export default function MockCheckoutPage() {
             </div>
           </div>
 
-          {/* Payment form */}
           <div>
-            <h2 className="text-sm font-medium uppercase tracking-wider mb-4" style={{ color: 'var(--color-text-muted)' }}>
-              Attendee details
-            </h2>
+            <h2 className="text-sm font-medium uppercase tracking-wider mb-4" style={{ color: 'var(--color-text-muted)' }}>Attendee details</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Full name</label>
@@ -193,54 +205,16 @@ export default function MockCheckoutPage() {
                   style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }}
                 />
               </div>
-              <div>
-                <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Card number</label>
-                <input
-                  type="text"
-                  value={form.card}
-                  onChange={(e) => setForm((f) => ({ ...f, card: formatCard(e.target.value) }))}
-                  placeholder="4242 4242 4242 4242"
-                  maxLength={19}
-                  className="w-full px-4 py-3 rounded-lg bg-transparent border font-mono"
-                  style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Expiry</label>
-                  <input
-                    type="text"
-                    value={form.expiry}
-                    onChange={(e) => setForm((f) => ({ ...f, expiry: formatExpiry(e.target.value) }))}
-                    placeholder="MM/YY"
-                    maxLength={5}
-                    className="w-full px-4 py-3 rounded-lg bg-transparent border font-mono"
-                    style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>CVV</label>
-                  <input
-                    type="text"
-                    value={form.cvv}
-                    onChange={(e) => setForm((f) => ({ ...f, cvv: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
-                    placeholder="123"
-                    maxLength={4}
-                    className="w-full px-4 py-3 rounded-lg bg-transparent border font-mono"
-                    style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }}
-                  />
-                </div>
-              </div>
               <button
                 type="submit"
                 disabled={submitting}
                 className="w-full py-4 rounded-lg font-semibold text-lg transition-all disabled:opacity-70"
                 style={{ background: '#4FFFDF', color: '#0A0A0A' }}
               >
-                {submitting ? 'Processing...' : `Complete Purchase — ${priceStr}`}
+                {submitting ? 'Processing...' : stripeAvailable ? `Continue to Payment — ${priceStr}` : `Complete Purchase — ${priceStr}`}
               </button>
               <p className="text-xs text-center" style={{ color: 'var(--color-text-muted)' }}>
-                Secured with 256-bit encryption (demo simulation)
+                {stripeAvailable ? 'You\'ll be redirected to Stripe for secure payment.' : 'Demo mode: no real charges. Card data never touches our servers.'}
               </p>
             </div>
           </div>

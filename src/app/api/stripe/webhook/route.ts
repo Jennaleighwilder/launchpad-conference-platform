@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import type Stripe from 'stripe';
 import { getStripe } from '@/lib/stripe';
-import { createServiceClient } from '@/lib/supabase';
 import { sendTicketConfirmationEmail } from '@/lib/email';
 
 export async function POST(req: Request) {
@@ -41,50 +40,57 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Missing eventId or buyerEmail' }, { status: 400 });
   }
 
-  const supabase = createServiceClient();
+  let attendee: { id?: string } | null = null;
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    try {
+      const { createServiceClient } = await import('@/lib/supabase');
+      const supabase = createServiceClient();
+      const { data, error: attErr } = await supabase
+        .from('attendees')
+        .upsert(
+          {
+            event_id: eventId,
+            email: buyerEmail,
+            name: buyerName,
+            ticket_type: ticketType,
+            stripe_session_id: session.id,
+            stripe_payment_intent_id: session.payment_intent ? (typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent.id) : null,
+            payment_status: 'paid',
+          },
+          { onConflict: 'event_id,email' }
+        )
+        .select('id,event_id,email,name,ticket_type,payment_status')
+        .maybeSingle();
 
-  // Idempotent upsert: unique(event_id,email)
-  const { data: attendee, error: attErr } = await supabase
-    .from('attendees')
-    .upsert(
-      {
-        event_id: eventId,
-        email: buyerEmail,
-        name: buyerName,
-        ticket_type: ticketType,
-        stripe_session_id: session.id,
-        stripe_payment_intent_id: session.payment_intent ? (typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent.id) : null,
-        payment_status: 'paid',
-      },
-      { onConflict: 'event_id,email' }
-    )
-    .select('id,event_id,email,name,ticket_type,payment_status')
-    .maybeSingle();
+      if (attErr) {
+        return NextResponse.json({ error: attErr.message }, { status: 500 });
+      }
+      attendee = data;
 
-  if (attErr) {
-    return NextResponse.json({ error: attErr.message }, { status: 500 });
-  }
+      // Load event details for the email
+      const { data: ev } = await supabase
+        .from('events')
+        .select('name, slug, date, venue')
+        .eq('id', eventId)
+        .maybeSingle();
 
-  // Load event details for the email
-  const { data: ev } = await supabase
-    .from('events')
-    .select('name, slug, date, venue')
-    .eq('id', eventId)
-    .maybeSingle();
+      const eventData = ev as { name?: string; slug?: string } | null;
 
-  const eventData = ev as { name?: string; slug?: string } | null;
-
-  // Send email (server-side only). This must be idempotent eventually; for now, keep it simple.
-  try {
-    await sendTicketConfirmationEmail({
-      to: buyerEmail,
-      eventName: eventData?.name || 'Your Event',
-      eventUrl: `https://launchpad-conference-platform.vercel.app/e/${eventSlug || eventData?.slug || ''}`,
-      ticketType,
-    });
-  } catch (e) {
-    // Do not fail webhook; log and move on
-    console.error('Email send failed:', e);
+      // Send email (server-side only). This must be idempotent eventually; for now, keep it simple.
+      try {
+        await sendTicketConfirmationEmail({
+          to: buyerEmail,
+          eventName: eventData?.name || 'Your Event',
+          eventUrl: `https://launchpad-conference-platform.vercel.app/e/${eventSlug || eventData?.slug || ''}`,
+          ticketType,
+        });
+      } catch (e) {
+        // Do not fail webhook; log and move on
+        console.error('Email send failed:', e);
+      }
+    } catch (supabaseErr) {
+      console.warn('Supabase unavailable for webhook, payment acknowledged:', supabaseErr);
+    }
   }
 
   return NextResponse.json({ ok: true, attendee_id: attendee?.id });

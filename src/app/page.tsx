@@ -533,23 +533,23 @@ export default function HomePage() {
             <div>
               <div className="text-xs uppercase tracking-wider mb-4" style={{ color: 'var(--color-text-muted)' }}>Resources</div>
               <div className="space-y-2">
-                <button type="button" onClick={() => alert('Documentation coming soon!')} className="block text-sm hover:text-white transition-colors text-left w-full bg-transparent border-none cursor-pointer p-0" style={{ color: '#666' }}>Documentation</button>
-                <button type="button" onClick={() => alert('API docs coming soon!')} className="block text-sm hover:text-white transition-colors text-left w-full bg-transparent border-none cursor-pointer p-0" style={{ color: '#666' }}>API</button>
-                <button type="button" onClick={() => alert('Blog coming soon!')} className="block text-sm hover:text-white transition-colors text-left w-full bg-transparent border-none cursor-pointer p-0" style={{ color: '#666' }}>Blog</button>
+                <Link href="/docs" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Documentation</Link>
+                <Link href="/docs" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>API</Link>
+                <Link href="/blog" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Blog</Link>
               </div>
             </div>
             <div>
               <div className="text-xs uppercase tracking-wider mb-4" style={{ color: 'var(--color-text-muted)' }}>Company</div>
               <div className="space-y-2">
-                <button type="button" onClick={() => alert('About coming soon!')} className="block text-sm hover:text-white transition-colors text-left w-full bg-transparent border-none cursor-pointer p-0" style={{ color: '#666' }}>About</button>
+                <Link href="/contact" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>About</Link>
                 <Link href="/contact" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Contact</Link>
               </div>
             </div>
             <div>
               <div className="text-xs uppercase tracking-wider mb-4" style={{ color: 'var(--color-text-muted)' }}>Legal</div>
               <div className="space-y-2">
-                <button type="button" onClick={() => alert('Privacy coming soon!')} className="block text-sm hover:text-white transition-colors text-left w-full bg-transparent border-none cursor-pointer p-0" style={{ color: '#666' }}>Privacy</button>
-                <button type="button" onClick={() => alert('Terms coming soon!')} className="block text-sm hover:text-white transition-colors text-left w-full bg-transparent border-none cursor-pointer p-0" style={{ color: '#666' }}>Terms</button>
+                <Link href="/privacy" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Privacy</Link>
+                <Link href="/terms" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Terms</Link>
               </div>
             </div>
             <div>

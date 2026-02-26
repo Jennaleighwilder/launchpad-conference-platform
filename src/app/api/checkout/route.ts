@@ -1,29 +1,53 @@
 import { NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
-import { createServiceClient } from '@/lib/supabase';
+
+async function getEventBySlug(slug: string): Promise<{ id: string; name: string; pricing: Record<string, unknown>; status: string } | null> {
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    try {
+      const { createServiceClient } = await import('@/lib/supabase');
+      const supabase = createServiceClient();
+      const { data, error } = await supabase.from('events').select('id, name, pricing, status').eq('slug', slug).maybeSingle();
+      if (!error && data) return data as { id: string; name: string; pricing: Record<string, unknown>; status: string };
+    } catch {
+      // fall through
+    }
+  }
+  const { memoryStore } = await import('@/app/api/events/generate/route');
+  const mem = memoryStore.get(slug);
+  if (mem) return { id: mem.id, name: mem.name, pricing: mem.pricing as unknown as Record<string, string>, status: mem.status };
+  const DEMO_SLUGS: Record<string, { name: string; pricing: Record<string, string> }> = {
+    'demo-conference': { name: 'SuperNova AI Summit 2026', pricing: { early_bird: '€299', regular: '€499', vip: '€999', currency: 'EUR' } },
+    'ai-summit-2026': { name: 'AI Summit 2026', pricing: { early_bird: '€299', regular: '€499', vip: '€999', currency: 'EUR' } },
+    'the-future-forum': { name: 'The Future Forum', pricing: { early_bird: '€99', regular: '€149', vip: '€299', currency: 'EUR' } },
+    'cybernova': { name: 'CyberNova', pricing: { early_bird: '€199', regular: '€299', vip: '€599', currency: 'EUR' } },
+    'startup-zaken': { name: 'Startup Zaken', pricing: { early_bird: '€79', regular: '€129', vip: '€249', currency: 'EUR' } },
+    'an-evening-with': { name: 'An Evening With', pricing: { early_bird: '€149', regular: '€199', vip: '€399', currency: 'EUR' } },
+  };
+  const demo = DEMO_SLUGS[slug];
+  if (demo) return { id: 'demo', name: demo.name, pricing: demo.pricing, status: 'ticket_sales' };
+  return null;
+}
 
 export async function POST(req: Request) {
-  if (!process.env.STRIPE_SECRET_KEY) {
-    return NextResponse.json({ error: 'Stripe not configured' }, { status: 503 });
+  const hasStripe = !!process.env.STRIPE_SECRET_KEY;
+  const body = await req.json().catch(() => ({}));
+  if (body?.checkOnly) {
+    return NextResponse.json({ stripeAvailable: hasStripe });
+  }
+
+  if (!hasStripe) {
+    return NextResponse.json({ error: 'Stripe not configured', stripeAvailable: false }, { status: 503 });
   }
   try {
     const stripe = getStripe();
-    const body = await req.json();
     const { eventSlug, ticketType = 'regular', buyerEmail, buyerName } = body;
 
     if (!eventSlug || !buyerEmail) {
       return NextResponse.json({ error: 'Missing eventSlug or buyerEmail' }, { status: 400 });
     }
 
-    const supabase = createServiceClient();
-
-    const { data: ev, error: evErr } = await supabase
-      .from('events')
-      .select('id, name, pricing, status')
-      .eq('slug', eventSlug)
-      .maybeSingle();
-
-    if (evErr || !ev) return NextResponse.json({ error: 'Event not found' }, { status: 404 });
+    const ev = await getEventBySlug(eventSlug);
+    if (!ev) return NextResponse.json({ error: 'Event not found' }, { status: 404 });
 
     // Only allow checkout once ticket_sales or live
     if (!['ticket_sales', 'live'].includes(ev.status)) {
