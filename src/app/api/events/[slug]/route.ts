@@ -2,6 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getUniqueHeroForEvent } from '@/lib/hero-images';
 import { createServiceClient } from '@/lib/supabase';
 
+/** Ensure event always has hero_image_url — for pre-migration events or missing hero_assets. */
+function ensureHeroUrl(ev: Record<string, unknown>): void {
+  if (ev.hero_image_url || ev.hero_video_url) return;
+  const topic = String(ev.topic || '');
+  const city = String(ev.city || '');
+  const slug = String(ev.slug || '');
+  if (topic && city && slug) {
+    ev.hero_image_url = getUniqueHeroForEvent(topic, city, slug);
+  }
+}
+
 function hasSupabase(): boolean {
   return !!(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
@@ -182,6 +193,7 @@ export async function GET(
               ev.hero_video_url = hero.video_url;
             }
           }
+          ensureHeroUrl(ev);
           return NextResponse.json({ event: ev });
         }
       } catch (dbErr) {
@@ -194,7 +206,9 @@ export async function GET(
     const event = memoryStore.get(slug);
 
     if (event) {
-      return NextResponse.json({ event });
+      const ev = event as unknown as Record<string, unknown>;
+      ensureHeroUrl(ev);
+      return NextResponse.json({ event: ev });
     }
 
     return NextResponse.json(
