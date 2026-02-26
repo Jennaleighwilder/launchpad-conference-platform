@@ -6,13 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { EventData, SpeakerData, ScheduleItem, PricingData, VenueData } from '@/lib/types';
 import { KenBurnsSlideshow, CountdownTimer } from '@/components/demo-event/DemoEventLayout';
-
-const HERO_IMAGES = [
-  'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1920&h=1080&fit=crop',
-];
+import { getEventTheme } from '@/lib/event-themes';
 
 const TRACK_COLORS = ['#4FFFDF', '#A78BFA', '#34D399', '#F472B6', '#FBBF24', '#60A5FA'];
 
@@ -243,7 +237,8 @@ export default function EventPage() {
   const schedule = (event.schedule || []) as ScheduleItem[];
   const pricing = event.pricing as PricingData;
   const tracks = (event.tracks || []) as string[];
-  const accentColor = customAccent || getTopicColor(event.topic_key);
+  const theme = getEventTheme(event.topic, event.vibe, event.slug);
+  const accentColor = customAccent || theme.accent;
   const displayName = customName || event.name;
   const displayTagline = customTagline !== undefined ? customTagline : event.tagline;
   const ticketsAvailable = event.status === 'ticket_sales' || event.status === 'live';
@@ -258,14 +253,26 @@ export default function EventPage() {
   const heroBreadcrumb = `${venue.name}, ${event.city} · ${formattedDate}`;
   const countdownEnd = `${event.date}T09:00:00`;
 
+  const themeVars = {
+    '--color-bg': theme.bg,
+    '--color-text': theme.text,
+    '--color-text-muted': theme.textMuted,
+    '--color-accent': accentColor,
+    '--font-display': theme.fontDisplay,
+    '--font-mono': theme.fontMono,
+    '--color-card-bg': theme.cardBg,
+    '--color-card-border': theme.cardBorder,
+    '--card-radius': theme.buttonRadius === '0' ? '0' : '16px',
+    '--color-warm': theme.accentSecondary || accentColor,
+    '--color-warm-dim': `${accentColor}20`,
+  } as React.CSSProperties;
+
   return (
-    <main className="min-h-screen relative" style={{ background: 'var(--color-bg)' }}>
-      {/* SuperNova hero — 85vh full-bleed Ken Burns (light gradient so images show) */}
+    <main className="min-h-screen relative" style={{ ...themeVars, background: theme.bg, color: theme.text }}>
+      {/* Theme-driven hero — 85vh full-bleed Ken Burns */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <KenBurnsSlideshow images={HERO_IMAGES} />
-        <div className="absolute inset-0" style={{
-          background: 'linear-gradient(to bottom, rgba(5,5,8,0.4) 0%, rgba(5,5,8,0.5) 40%, rgba(5,5,8,0.92) 100%)',
-        }} />
+        <KenBurnsSlideshow images={theme.heroImages} />
+        <div className="absolute inset-0" style={{ background: theme.heroOverlay }} />
         <div className="absolute inset-0 opacity-20" style={{
           background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}30 0%, transparent 70%)`,
         }} />
@@ -275,98 +282,101 @@ export default function EventPage() {
       <section className="relative px-6 min-h-[85vh] flex flex-col justify-end pb-24 pt-32">
         <div className="max-w-5xl mx-auto w-full">
           <div className="flex items-center justify-between mb-6">
-            <Link href="/" className="inline-flex items-center gap-2 text-sm transition-colors hover:text-[var(--color-accent)]"
-              style={{ color: 'var(--color-text-muted)' }}>
+            <Link href="/" className="inline-flex items-center gap-2 text-sm transition-colors hover:opacity-80"
+              style={{ color: theme.textMuted }}>
               ← Back to Launchpad
             </Link>
-            <button onClick={() => setCustomizeOpen(true)} className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-              style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: 'var(--color-text)' }}>
+            <button onClick={() => setCustomizeOpen(true)} className="px-4 py-2 text-sm font-medium transition-colors"
+              style={{ background: theme.cardBg, border: `1px solid ${theme.cardBorder}`, color: theme.text, borderRadius: theme.buttonRadius }}>
               ✏️ Customize Event
             </button>
           </div>
 
-          <p className="mb-4 text-sm" style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>
+          <p className="mb-4 text-sm" style={{ color: theme.textMuted, fontFamily: theme.fontMono }}>
             {heroBreadcrumb}
           </p>
 
           <h1 className="mb-4" style={{
-            fontFamily: 'var(--font-display)',
+            fontFamily: theme.fontDisplay,
             fontSize: 'clamp(2.5rem, 6vw, 5.5rem)',
             lineHeight: 1.05,
             letterSpacing: '-0.02em',
+            color: theme.text,
           }}>
             {displayName}
           </h1>
 
           {displayTagline && (
-            <p className="mb-8 max-w-2xl" style={{ color: accentColor, fontSize: '1.25rem', fontFamily: 'var(--font-mono)' }}>
+            <p className="mb-8 max-w-2xl" style={{ color: accentColor, fontSize: '1.25rem', fontFamily: theme.fontMono }}>
               {displayTagline}
             </p>
           )}
 
           <div className="flex flex-wrap gap-4 mb-8">
-            <Link href="#pricing" className="btn-primary inline-flex items-center gap-2">
+            <Link href="#pricing" className="inline-flex items-center gap-2 px-6 py-3 font-semibold transition-all"
+              style={{ background: accentColor, color: (theme.bg === '#FFFFFF' || theme.bg === '#FAFAF8') ? '#0a0a0a' : theme.bg, borderRadius: theme.buttonRadius }}>
               Get your ticket →
             </Link>
-            <a href="#schedule" className="btn-secondary inline-flex items-center gap-2">
+            <a href="#schedule" className="inline-flex items-center gap-2 px-6 py-3 font-semibold transition-all border"
+              style={{ borderColor: theme.cardBorder, color: theme.text, borderRadius: theme.buttonRadius }}>
               Explore the program
             </a>
           </div>
 
           <div className="mb-4">
-            <p className="text-xs uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-muted)' }}>Event starts in</p>
+            <p className="text-xs uppercase tracking-wider mb-2" style={{ color: theme.textMuted }}>Event starts in</p>
             <CountdownTimer endDate={countdownEnd} accentColor={accentColor} />
           </div>
         </div>
       </section>
 
-      {/* Impact strip — SuperNova stats */}
-      <section className="px-6 py-12" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(10,10,10,0.9) 100%)', borderTop: `1px solid ${accentColor}26` }}>
+      {/* Impact strip — theme stats */}
+      <section className="px-6 py-12" style={{ background: theme.bgGradient || `linear-gradient(180deg, rgba(0,0,0,0.6) 0%, ${theme.bg} 100%)`, borderTop: `1px solid ${accentColor}26` }}>
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
-              <div className="text-3xl md:text-4xl font-bold mb-1" style={{ fontFamily: 'var(--font-display)', color: accentColor }}>{speakers.length}</div>
-              <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Speakers</div>
+              <div className="text-3xl md:text-4xl font-bold mb-1" style={{ fontFamily: theme.fontDisplay, color: accentColor }}>{speakers.length}</div>
+              <div className="text-sm" style={{ color: theme.textMuted }}>Speakers</div>
             </div>
             <div>
-              <div className="text-3xl md:text-4xl font-bold mb-1" style={{ fontFamily: 'var(--font-display)', color: accentColor }}>{tracks.length || 4}</div>
-              <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Tracks</div>
+              <div className="text-3xl md:text-4xl font-bold mb-1" style={{ fontFamily: theme.fontDisplay, color: accentColor }}>{tracks.length || 4}</div>
+              <div className="text-sm" style={{ color: theme.textMuted }}>Tracks</div>
             </div>
             <div>
-              <div className="text-3xl md:text-4xl font-bold mb-1" style={{ fontFamily: 'var(--font-display)', color: accentColor }}>{event.capacity}</div>
-              <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Attendees</div>
+              <div className="text-3xl md:text-4xl font-bold mb-1" style={{ fontFamily: theme.fontDisplay, color: accentColor }}>{event.capacity}</div>
+              <div className="text-sm" style={{ color: theme.textMuted }}>Attendees</div>
             </div>
             <div>
-              <div className="text-3xl md:text-4xl font-bold mb-1" style={{ fontFamily: 'var(--font-display)', color: accentColor }}>{schedule.length}</div>
-              <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Sessions</div>
+              <div className="text-3xl md:text-4xl font-bold mb-1" style={{ fontFamily: theme.fontDisplay, color: accentColor }}>{schedule.length}</div>
+              <div className="text-sm" style={{ color: theme.textMuted }}>Sessions</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Why you should attend — SuperNova */}
+      {/* Why you should attend */}
       {event.description && (
-        <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <section className="px-6 py-16" style={{ background: theme.cardBg, borderTop: `1px solid ${theme.cardBorder}` }}>
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-semibold mb-6" style={{ fontFamily: 'var(--font-display)' }}>
+            <h2 className="text-2xl md:text-3xl font-semibold mb-6" style={{ fontFamily: theme.fontDisplay, color: theme.text }}>
               The stage for ambitious minds
             </h2>
             <div className="grid md:grid-cols-2 gap-12">
-              <p className="text-lg" style={{ color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
+              <p className="text-lg" style={{ color: theme.textMuted, lineHeight: 1.7 }}>
                 {event.description}
               </p>
               <div className="flex flex-wrap gap-3">
-                <a href="#schedule" className="card px-6 py-4 hover:border-[var(--color-accent)] transition-colors">
-                  <span className="font-medium">Program</span>
-                  <span className="block text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>View schedule</span>
+                <a href="#schedule" className="px-6 py-4 transition-colors" style={{ background: theme.cardBg, border: `1px solid ${theme.cardBorder}`, borderRadius: theme.buttonRadius }}>
+                  <span className="font-medium" style={{ color: theme.text }}>Program</span>
+                  <span className="block text-sm mt-1" style={{ color: theme.textMuted }}>View schedule</span>
                 </a>
-                <a href="#speakers" className="card px-6 py-4 hover:border-[var(--color-accent)] transition-colors">
-                  <span className="font-medium">Speakers</span>
-                  <span className="block text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>Meet the lineup</span>
+                <a href="#speakers" className="px-6 py-4 transition-colors" style={{ background: theme.cardBg, border: `1px solid ${theme.cardBorder}`, borderRadius: theme.buttonRadius }}>
+                  <span className="font-medium" style={{ color: theme.text }}>Speakers</span>
+                  <span className="block text-sm mt-1" style={{ color: theme.textMuted }}>Meet the lineup</span>
                 </a>
-                <a href="#pricing" className="card px-6 py-4 hover:border-[var(--color-accent)] transition-colors">
-                  <span className="font-medium">Tickets</span>
-                  <span className="block text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>Get your ticket</span>
+                <a href="#pricing" className="px-6 py-4 transition-colors" style={{ background: theme.cardBg, border: `1px solid ${theme.cardBorder}`, borderRadius: theme.buttonRadius }}>
+                  <span className="font-medium" style={{ color: theme.text }}>Tickets</span>
+                  <span className="block text-sm mt-1" style={{ color: theme.textMuted }}>Get your ticket</span>
                 </a>
               </div>
             </div>
@@ -464,7 +474,7 @@ export default function EventPage() {
         <div className="max-w-5xl mx-auto">
           <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Venue</h2>
           <div className="rounded-xl overflow-hidden mb-4" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
-            <Image src={HERO_IMAGES[0]} alt={venue.name} width={800} height={400} className="w-full h-48 object-cover" unoptimized />
+            <Image src={theme.heroImages[0]} alt={venue.name} width={800} height={400} className="w-full h-48 object-cover" unoptimized />
           </div>
           <div className="card mb-6">
             <h3 className="text-xl font-semibold mb-2">{venue.name}</h3>
@@ -675,7 +685,7 @@ export default function EventPage() {
                 {checkoutLoading === 'early_bird' ? 'Loading...' : ticketsAvailable ? 'Get your ticket' : 'Coming Soon'}
               </button>
             </div>
-            <div className="card text-center flex flex-col" style={{ borderColor: 'rgba(79,255,223,0.3)', boxShadow: '0 0 20px rgba(79,255,223,0.05)' }}>
+            <div className="card text-center flex flex-col" style={{ borderColor: `${accentColor}4D`, boxShadow: `0 0 20px ${accentColor}0D` }}>
               <div className="text-sm uppercase tracking-wider mb-2" style={{ color: accentColor }}>Regular</div>
               <div className="text-3xl font-bold mb-2 flex-1" style={{ fontFamily: 'var(--font-display)' }}>
                 {pricing.regular}
