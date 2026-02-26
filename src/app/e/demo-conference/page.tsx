@@ -511,7 +511,7 @@ export default function DemoConferencePage() {
               return (
                 <div key={speaker.id} className="card group float-slow" style={{ animationDelay: `${(i % 6) * 0.5}s`, animationDuration: `${6 + (i % 3)}s` }}>
                   <div className="relative w-full aspect-[4/5] rounded-lg mb-4 overflow-hidden">
-                    <Image src={speaker.img} alt={speaker.name} fill className="object-cover transition-transform group-hover:scale-105" sizes="25vw" />
+                    <Image src={speaker.img} alt={speaker.name} fill className="object-cover transition-transform group-hover:scale-105" sizes="25vw" unoptimized />
                   </div>
                   <h3 className="font-semibold mb-1">{speaker.name}</h3>
                   <p className="text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>{speaker.role}</p>
@@ -520,7 +520,14 @@ export default function DemoConferencePage() {
                   <button onClick={() => setExpandedSpeaker(expanded ? null : speaker.id)} className="mt-3 text-xs" style={{ color: accentColor }}>
                     {expanded ? '− Less' : '+ Bio'}
                   </button>
-                  {expanded && <p className="mt-2 text-xs" style={{ color: 'var(--color-text-muted)', lineHeight: 1.5 }}>{speaker.bio}</p>}
+                  {expanded && (
+                    <div className="mt-3 flex gap-3 items-start">
+                      <div className="relative w-16 h-16 rounded-full overflow-hidden shrink-0">
+                        <Image src={speaker.img} alt={speaker.name} fill className="object-cover" unoptimized />
+                      </div>
+                      <p className="text-xs flex-1" style={{ color: 'var(--color-text-muted)', lineHeight: 1.5 }}>{speaker.bio}</p>
+                    </div>
+                  )}
                 </div>
               );
             })}
