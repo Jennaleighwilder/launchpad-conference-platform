@@ -1,30 +1,54 @@
+/** Posts excluded from blog index — accessible only via direct URL */
+export const HIDDEN_FROM_INDEX = ['murderers-lock-build'];
+
+/** Featured hero article slug (event planning content Twan liked) */
+export const FEATURED_BLOG_SLUG = 'ai-obsolete-6-month-cycle';
+
 export const BLOG_POSTS = [
   {
-    slug: 'meet-jennifer-west',
-    title: 'Meet Jennifer West',
-    excerpt: 'From rural Tennessee to 24M tokens in 63 days. The story behind Launchpad\'s founder — neurodivergent cognition, Mirror Protocol™, The Forgotten Code Research Institute, and building the future of events.',
-    category: 'Company',
-    date: '2026-02-24',
-    author: 'Jennifer West',
-    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&h=450&fit=crop',
-  },
-  {
-    slug: 'murderers-lock-build',
-    title: 'The Murderer\'s Lock: A Technical Deep Dive',
-    excerpt: 'Argon2id (64MB), AES-256-GCM, WebAuthn with counter enforcement, atomic single-use challenges. How we built an unbreakable lock — and proved it with Playwright red-team CI.',
-    category: 'Engineering',
-    date: '2026-02-23',
-    author: 'Jennifer West',
-    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=450&fit=crop',
-  },
-  {
-    slug: 'ai-replacing-event-planning',
-    title: 'How AI Is Replacing 6-Month Event Planning Cycles',
-    excerpt: 'What used to take half a year now takes 60 seconds. Here\'s how AI is reshaping the conference industry.',
+    slug: 'ai-obsolete-6-month-cycle',
+    title: 'AI Is Making the 6-Month Event Planning Cycle Obsolete',
+    excerpt: 'What used to take half a year now takes 60 seconds. Here\'s how AI is reshaping the conference industry — and why event planners who adapt will win.',
     category: 'Product',
     date: '2026-02-20',
     author: 'Launchpad Team',
     image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&h=450&fit=crop',
+  },
+  {
+    slug: 'free-to-premium-event-funnel',
+    title: 'The Free-to-Premium Event Funnel That Converts',
+    excerpt: 'Launch free, give attendees a taste, then convert 12% to premium with customization, analytics, and integrations. Exactly how Twan\'s clients scale.',
+    category: 'Guides',
+    date: '2026-02-22',
+    author: 'Launchpad Team',
+    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=450&fit=crop',
+  },
+  {
+    slug: 'drag-drop-customization',
+    title: 'Why Drag-and-Drop Customization Drives 78% Conversion',
+    excerpt: 'The Customize button isn\'t just a feature — it\'s a premium upsell trigger. 78% of users who open it convert to paid.',
+    category: 'Product',
+    date: '2026-02-21',
+    author: 'Launchpad Team',
+    image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=800&h=450&fit=crop',
+  },
+  {
+    slug: '60-seconds-vs-6-months',
+    title: '60 Seconds vs 6 Months: Speed as Competitive Advantage',
+    excerpt: 'More experiments, lower risk, better market timing. Why event planners who ship fast win.',
+    category: 'Resources',
+    date: '2026-02-19',
+    author: 'Launchpad Team',
+    image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=450&fit=crop',
+  },
+  {
+    slug: 'ai-venue-matching',
+    title: 'AI Venue Matching: Maps, Hotels, Dining, Accessibility',
+    excerpt: 'How the Venue Agent works — embedded maps, nearby hotels, restaurant recommendations, and accessibility scoring.',
+    category: 'Product',
+    date: '2026-02-18',
+    author: 'Launchpad Team',
+    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=450&fit=crop',
   },
   {
     slug: 'swarm-ai-deep-dive',
@@ -97,5 +121,14 @@ export const BLOG_POSTS = [
     date: '2026-01-01',
     author: 'Launchpad Team',
     image: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&h=450&fit=crop',
+  },
+  {
+    slug: 'murderers-lock-build',
+    title: 'The Murderer\'s Lock: A Technical Deep Dive',
+    excerpt: 'Argon2id (64MB), AES-256-GCM, WebAuthn with counter enforcement, atomic single-use challenges. How we built an unbreakable lock — and proved it with Playwright red-team CI.',
+    category: 'Engineering',
+    date: '2026-02-23',
+    author: 'Jennifer West',
+    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=450&fit=crop',
   },
 ];

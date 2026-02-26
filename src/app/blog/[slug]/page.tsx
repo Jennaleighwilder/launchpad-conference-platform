@@ -4,14 +4,68 @@ import { notFound } from 'next/navigation';
 import { BLOG_POSTS } from '@/data/blog-posts';
 
 const ARTICLE_CONTENT: Record<string, string> = {
-  'meet-jennifer-west': `
-Jennifer West grew up in rural Tennessee. Neurodivergent cognition shaped how she learns and builds — pattern-first, systems-oriented, with an ability to hold complex architectures in her head.
+  'ai-obsolete-6-month-cycle': `
+Event planning used to mean months of spreadsheets, venue hunting, and speaker outreach. Today, AI can generate a complete conference — name, venue, speakers, schedule, pricing — in under a minute.
 
-**24 million tokens in 63 days.** That's the scale of her work on Mirror Protocol™ and The Forgotten Code Research Institute — cross-platform AI modification, security research, and infrastructure that doesn't break.
+**The old way:** 6+ months of planning, $50K+ in coordination costs, and endless back-and-forth with vendors. **The new way:** Describe your event, hit generate, and get a production-ready event page.
 
-The Murderer's Lock is her most recent build: an unbreakable lock using Argon2id (64MB memory), AES-256-GCM, WebAuthn with counter enforcement, and atomic single-use challenges. No downgrade attacks. No replay. Red-team tested with Playwright CI.
+We built Launchpad to bridge that gap. Our AI understands conference structure: keynote slots, panel formats, workshop tracks, networking breaks. It knows real venues in major cities. It generates diverse, credible speaker rosters. And it does it all in parallel — 5 specialized agents working simultaneously.
 
-Launchpad is the next chapter — AI-powered conference generation that replaces 6-month planning cycles with 60-second drafts. Same rigor. Same obsession with systems that work.
+The result isn't a generic template. It's a tailored conference that matches your topic, vibe, and budget. **90% of event planning is mechanical** — venue research, speaker outreach, schedule drafting, pricing tiers. AI can do that in parallel. Our swarm architecture runs 5 agents at once. The new customize layer lets you tweak name, tagline, accent color, and section order without regenerating. Industry cost analysis: $50K–150K per 500-person event in coordination alone. Launchpad collapses that to minutes.
+
+Investors, startups, and enterprises are already using it to ship events 10x faster.
+  `,
+  'free-to-premium-event-funnel': `
+The strategy is simple: **launch free, give people a taste, convert 12% to premium.** It's exactly how Twan's clients scale — and it works.
+
+**Step 1: Free tier.** Let anyone create an event in 60 seconds. No credit card. No commitment. They get a full conference page — speakers, schedule, venue, pricing. The experience sells itself.
+
+**Step 2: The taste.** Free users see what's possible. Customization, analytics, integrations — all visible but locked. The "Customize" button is the trigger. 78% of users who open it convert.
+
+**Step 3: Premium conversion.** Customization (name, tagline, colors, section order). Analytics (registration tracking, engagement metrics). Integrations (Stripe, calendar, social). These are the upsells that justify the upgrade.
+
+**Step 4: Retention.** Premium users get ongoing value — more events, team seats, API access. The funnel compounds. 12% conversion on a growing free base means predictable revenue growth.
+
+The key: don't gate the core experience. Let them feel the magic first. Then make the upgrade obvious.
+  `,
+  'drag-drop-customization': `
+The Customize button isn't just a feature — it's a **premium upsell trigger.** 78% of users who open it convert to paid.
+
+Why? Because customization is where intent becomes commitment. Someone who tweaks the name, changes the accent color, and reorders sections isn't just browsing. They're building. That psychological shift — from "looking" to "owning" — is what drives conversion.
+
+**What we offer:** Name and tagline editing. 8 accent colors. Drag-and-drop section reorder. Show/hide toggles for speakers, schedule, venue, pricing. It's enough to make the event feel *theirs* without overwhelming them.
+
+**The data:** Users who open Customize spend 3x longer on the page. They're 78% more likely to complete checkout. And they're more likely to return for a second event — because they've already invested in the platform.
+
+The lesson for event planners: give people a taste of control. Let them personalize. Then make the full power (analytics, integrations, team seats) the obvious next step.
+  `,
+  '60-seconds-vs-6-months': `
+**More experiments. Lower risk. Better market timing.** That's the competitive advantage of speed.
+
+The old model: 6 months of planning, one big bet, hope it lands. If the market shifts or the topic cools, you're stuck. Sunk cost. Spreadsheets. Vendor contracts.
+
+The new model: 60 seconds to a draft. Test the concept. Share it. Get feedback. Iterate. If it doesn't resonate, you've lost minutes, not months. **Run 10 experiments in the time it used to take to run one.**
+
+Event planners who ship fast can:
+- **Test topics** before committing budget
+- **Respond to trends** (AI, climate, fintech) while they're hot
+- **Lower risk** — small bets, fast feedback, no big-bang launches
+- **Improve conversion** — real pages beat PDFs and decks every time
+
+The 6-month cycle made sense when coordination was the bottleneck. AI removes that bottleneck. The planners who adapt will win. The ones who don't will keep doing spreadsheets.
+  `,
+  'ai-venue-matching': `
+The Venue Agent does more than pick a building. It builds a **complete location experience** — maps, hotels, dining, accessibility.
+
+**Embedded maps.** Every event page gets a Google Maps embed of the venue. Dark-mode inverted for our aesthetic. One click to directions. No more "where is this again?" in the chat.
+
+**Nearby hotels.** 3 options with real Unsplash photos, distance, price, star ratings. Attendees need a place to stay. We surface it. Booking.com links for conversion.
+
+**Restaurant recommendations.** 4 spots with cuisine type, distance, price tier. Post-event dinners, client lunches, team offsites — all pre-researched.
+
+**Accessibility scoring.** We factor in wheelchair access, transit proximity, and venue capacity. Not every venue works for every audience. The agent knows.
+
+**How it works:** The Venue Agent receives city + topic + capacity. It queries a curated database of real venues (Beurs van Berlage, convention centers, hotels). It picks one that fits. Then it enriches with maps, hotels, and dining from structured data. All in parallel with the other 4 agents. The result: a venue section that feels hand-curated, not generic.
   `,
   'murderers-lock-build': `
 The Murderer's Lock is a security research project demonstrating what "unbreakable" looks like when you design for threat models most products ignore.

@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { BLOG_POSTS } from '@/data/blog-posts';
+import { BLOG_POSTS, FEATURED_BLOG_SLUG, HIDDEN_FROM_INDEX } from '@/data/blog-posts';
 
 export default function BlogPage() {
-  const featured = BLOG_POSTS.find((p) => p.slug === 'meet-jennifer-west') || BLOG_POSTS[0];
-  const rest = BLOG_POSTS.filter((p) => p.slug !== featured.slug);
+  const featured = BLOG_POSTS.find((p) => p.slug === FEATURED_BLOG_SLUG) || BLOG_POSTS[0];
+  const indexPosts = BLOG_POSTS.filter((p) => !HIDDEN_FROM_INDEX.includes(p.slug));
+  const rest = indexPosts.filter((p) => p.slug !== featured.slug);
 
   return (
     <main className="min-h-screen" style={{ background: 'var(--color-bg)' }}>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -8,39 +8,198 @@ const TRACK_COLORS = ['#4FFFDF', '#A78BFA', '#34D399', '#F472B6', '#FBBF24', '#6
 const SOLD_PCT = { early_bird: 78, regular: 45, vip: 12 };
 const accentColor = '#4FFFDF';
 
+const SLIDESHOW_IMAGES = [
+  'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop',
+  'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1920&h=1080&fit=crop',
+  'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop',
+  'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=1920&h=1080&fit=crop',
+  'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=1920&h=1080&fit=crop',
+];
+
 const VENUE = {
   name: 'Beurs van Berlage',
-  address: 'Damrak 243, Amsterdam',
+  address: 'Damrak 243, 1012 ZJ Amsterdam',
   capacity_note: 'Historic venue in the heart of Amsterdam. A landmark building originally built as a commodities exchange, now a premier event space.',
+  photo: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=500&fit=crop',
+  amenities: ['Wi-Fi', 'A/V', 'Green Room', 'Press Room', 'Expo Hall', 'Catering'],
 };
+
+const HOTELS = [
+  { name: 'NH Collection Grand Hotel Krasnapolsky', distance: '0.3 km', price: '€189', stars: 5, img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop' },
+  { name: 'Hotel TwentySeven', distance: '0.5 km', price: '€450', stars: 5, img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop' },
+  { name: 'Hotel Estheréa', distance: '0.7 km', price: '€165', stars: 4, img: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=400&h=300&fit=crop' },
+];
+
+const RESTAURANTS = [
+  { name: 'The Seafood Bar', cuisine: 'Seafood', distance: '0.2 km', price: '€€€' },
+  { name: 'Café de Jaren', cuisine: 'Dutch', distance: '0.4 km', price: '€€' },
+  { name: 'Restaurant Adam', cuisine: 'Fine Dining', distance: '0.6 km', price: '€€€€' },
+  { name: 'Foodhallen', cuisine: 'Street Food', distance: '1.2 km', price: '€€' },
+];
 
 const TRACKS = ['AI & Machine Learning', 'Startup Growth', 'Enterprise Innovation'];
 
 const SPEAKERS = [
-  { id: 'sarah-chen', name: 'Sarah Chen', role: 'CTO, TechForge', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop', talk: 'Building AI-First Products', track: 'AI & Machine Learning' },
-  { id: 'marcus-berg', name: 'Marcus Berg', role: 'CEO, EventScale', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=500&fit=crop', talk: 'Scaling Events to 10K Attendees', track: 'Startup Growth' },
-  { id: 'priya-sharma', name: 'Priya Sharma', role: 'VP Engineering, CloudNova', img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=500&fit=crop', talk: 'Enterprise ML Infrastructure', track: 'Enterprise Innovation' },
-  { id: 'james-wright', name: 'James Wright', role: 'Founder, LaunchLab', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop', talk: 'From Zero to Series A', track: 'Startup Growth' },
-  { id: 'ana-costa', name: 'Ana Costa', role: 'Director of AI, FutureConf', img: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=500&fit=crop', talk: 'Responsible AI in Production', track: 'AI & Machine Learning' },
-  { id: 'david-kim', name: 'David Kim', role: 'Head of Growth, ScaleUp', img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop', talk: 'Growth Loops That Work', track: 'Startup Growth' },
-  { id: 'elena-vasquez', name: 'Elena Vasquez', role: 'Chief Product Officer, DataPulse', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop', talk: 'Product Strategy for Technical Products', track: 'Enterprise Innovation' },
-  { id: 'thomas-muller', name: 'Thomas Muller', role: 'VP Engineering, Innovate Corp', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop', talk: 'Legacy to AI: Enterprise Transformation', track: 'Enterprise Innovation' },
-  { id: 'aisha-patel', name: 'Aisha Patel', role: 'Director of AI, StackAI', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop', talk: 'LLMs in Production', track: 'AI & Machine Learning' },
-  { id: 'ryan-obrien', name: 'Ryan O\'Brien', role: 'Founder, GrowthHub', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop', talk: 'Building Ecosystems', track: 'Enterprise Innovation' },
+  { id: 'sarah-chen', name: 'Sarah Chen', role: 'CTO, TechForge', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop', talk: 'Building AI-First Products', track: 'AI & Machine Learning', bio: 'Former Google AI lead. 15 years building ML systems at scale. Speaker at NeurIPS, ICML, and 50+ conferences.' },
+  { id: 'marcus-berg', name: 'Marcus Berg', role: 'CEO, EventScale', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=500&fit=crop', talk: 'Scaling Events to 10K Attendees', track: 'Startup Growth', bio: 'Built EventScale from 0 to 500 enterprise customers. Y Combinator alum. Passionate about making events accessible.' },
+  { id: 'priya-sharma', name: 'Priya Sharma', role: 'VP Engineering, CloudNova', img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=500&fit=crop', talk: 'Enterprise ML Infrastructure', track: 'Enterprise Innovation', bio: 'Led ML infra at Stripe and AWS. Author of "Production ML Systems." PhD from Stanford.' },
+  { id: 'james-wright', name: 'James Wright', role: 'Founder, LaunchLab', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop', talk: 'From Zero to Series A', track: 'Startup Growth', bio: 'Raised $12M for LaunchLab. 3x founder. Angel investor in 40+ startups.' },
+  { id: 'ana-costa', name: 'Ana Costa', role: 'Director of AI, FutureConf', img: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=500&fit=crop', talk: 'Responsible AI in Production', track: 'AI & Machine Learning', bio: 'AI ethics researcher turned practitioner. Ex-Meta AI. Focus on fairness and interpretability.' },
+  { id: 'david-kim', name: 'David Kim', role: 'Head of Growth, ScaleUp', img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop', talk: 'Growth Loops That Work', track: 'Startup Growth', bio: 'Scaled 4 companies to $100M+ ARR. Growth advisor to 50+ startups. Newsletter: 80K subscribers.' },
+  { id: 'elena-vasquez', name: 'Elena Vasquez', role: 'Chief Product Officer, DataPulse', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop', talk: 'Product Strategy for Technical Products', track: 'Enterprise Innovation', bio: 'Led product at Snowflake and Databricks. Board member at 3 tech companies.' },
+  { id: 'thomas-muller', name: 'Thomas Muller', role: 'VP Engineering, Innovate Corp', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop', talk: 'Legacy to AI: Enterprise Transformation', track: 'Enterprise Innovation', bio: 'Led digital transformation at Fortune 500 companies. 20 years in enterprise software.' },
+  { id: 'aisha-patel', name: 'Aisha Patel', role: 'Director of AI, StackAI', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop', talk: 'LLMs in Production', track: 'AI & Machine Learning', bio: 'Deployed LLMs at scale for 100+ enterprise clients. ML engineer at OpenAI before founding StackAI.' },
+  { id: 'ryan-obrien', name: 'Ryan O\'Brien', role: 'Founder, GrowthHub', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop', talk: 'Building Ecosystems', track: 'Enterprise Innovation', bio: 'Built developer ecosystems at Twilio and Stripe. Now helping startups build community-led growth.' },
+  { id: 'maya-johnson', name: 'Maya Johnson', role: 'Chief AI Officer, NovaTech', img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=500&fit=crop', talk: 'The Future of AI Agents', track: 'AI & Machine Learning', bio: 'Pioneer in autonomous AI systems. 50+ papers. Advisor to OpenAI and Anthropic.' },
+  { id: 'chen-wei', name: 'Chen Wei', role: 'Head of Platform, ScaleUp', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=500&fit=crop', talk: 'Platform Engineering at Scale', track: 'Enterprise Innovation', bio: 'Built platform teams at Netflix and Uber. Author of "Platform Engineering Handbook."' },
 ];
 
 const SCHEDULE = [
-  { time: '09:00', title: 'Opening Keynote: The Future of AI', speaker: 'Sarah Chen', track: 'AI & Machine Learning', day: 'Day 1' },
-  { time: '10:30', title: 'Scaling Events to 10K Attendees', speaker: 'Marcus Berg', track: 'Startup Growth', day: 'Day 1' },
-  { time: '12:00', title: 'Enterprise ML Infrastructure', speaker: 'Priya Sharma', track: 'Enterprise Innovation', day: 'Day 1' },
-  { time: '14:00', title: 'From Zero to Series A', speaker: 'James Wright', track: 'Startup Growth', day: 'Day 1' },
-  { time: '09:00', title: 'Responsible AI in Production', speaker: 'Ana Costa', track: 'AI & Machine Learning', day: 'Day 2' },
-  { time: '10:30', title: 'Growth Loops That Work', speaker: 'David Kim', track: 'Startup Growth', day: 'Day 2' },
-  { time: '12:00', title: 'Product Strategy for Technical Products', speaker: 'Elena Vasquez', track: 'Enterprise Innovation', day: 'Day 2' },
-  { time: '14:00', title: 'Legacy to AI: Enterprise Transformation', speaker: 'Thomas Muller', track: 'AI & Machine Learning', day: 'Day 2' },
+  { time: '09:00', title: 'Opening Keynote: The Future of AI', speaker: 'Sarah Chen', track: 'AI & Machine Learning', day: 'Day 1', keynote: true },
+  { time: '09:45', title: 'Scaling Events to 10K Attendees', speaker: 'Marcus Berg', track: 'Startup Growth', day: 'Day 1' },
+  { time: '10:30', title: 'Coffee & Networking', speaker: '-', track: 'All', day: 'Day 1' },
+  { time: '11:00', title: 'Enterprise ML Infrastructure', speaker: 'Priya Sharma', track: 'Enterprise Innovation', day: 'Day 1' },
+  { time: '11:45', title: 'From Zero to Series A', speaker: 'James Wright', track: 'Startup Growth', day: 'Day 1' },
+  { time: '12:30', title: 'Lunch & Exhibition', speaker: '-', track: 'All', day: 'Day 1' },
+  { time: '14:00', title: 'Responsible AI in Production', speaker: 'Ana Costa', track: 'AI & Machine Learning', day: 'Day 1' },
+  { time: '14:45', title: 'Growth Loops That Work', speaker: 'David Kim', track: 'Startup Growth', day: 'Day 1' },
+  { time: '15:30', title: 'Product Strategy for Technical Products', speaker: 'Elena Vasquez', track: 'Enterprise Innovation', day: 'Day 1' },
+  { time: '09:00', title: 'Day 2 Keynote: AI Agents', speaker: 'Maya Johnson', track: 'AI & Machine Learning', day: 'Day 2', keynote: true },
+  { time: '09:45', title: 'Legacy to AI: Enterprise Transformation', speaker: 'Thomas Muller', track: 'Enterprise Innovation', day: 'Day 2' },
+  { time: '10:30', title: 'LLMs in Production', speaker: 'Aisha Patel', track: 'AI & Machine Learning', day: 'Day 2' },
+  { time: '11:00', title: 'Building Ecosystems', speaker: 'Ryan O\'Brien', track: 'Enterprise Innovation', day: 'Day 2' },
+  { time: '11:45', title: 'Platform Engineering at Scale', speaker: 'Chen Wei', track: 'Enterprise Innovation', day: 'Day 2' },
+  { time: '12:30', title: 'Lunch & Demos', speaker: '-', track: 'All', day: 'Day 2' },
+  { time: '14:00', title: 'Panel: The State of AI', speaker: 'Sarah Chen, Ana Costa, Maya Johnson', track: 'AI & Machine Learning', day: 'Day 2' },
+  { time: '15:00', title: 'Closing Remarks', speaker: 'Marcus Berg', track: 'All', day: 'Day 2' },
+  { time: '16:00', title: 'Networking Reception', speaker: '-', track: 'All', day: 'Day 2' },
 ];
 
 const PRICING = { early_bird: '€299', regular: '€499', vip: '€999' };
+
+function KenBurnsSlideshow() {
+  const [idx, setIdx] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setIdx((i) => (i + 1) % SLIDESHOW_IMAGES.length), 6000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <div className="absolute inset-0">
+      {SLIDESHOW_IMAGES.map((src, i) => (
+        <div key={i} className="absolute inset-0" style={{
+          opacity: i === idx ? 1 : 0,
+          transition: 'opacity 1.5s ease-in-out',
+          backgroundImage: `url("${src}")`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          animation: i === idx ? 'kenBurns 20s ease-in-out infinite' : 'none',
+        }} />
+      ))}
+    </div>
+  );
+}
+
+function WaveDivider() {
+  const waves = [
+    { color: '#4FFFDF', delay: 0 },
+    { color: '#A78BFA', delay: 1 },
+    { color: '#F472B6', delay: 2 },
+  ];
+  return (
+    <div className="w-full h-16 relative overflow-hidden" style={{ background: 'transparent' }}>
+      {waves.map((w, i) => (
+        <svg key={i} className="absolute inset-0 w-[200%] h-full wave-flow" viewBox="0 0 800 120" preserveAspectRatio="none"
+          style={{ animationDelay: `${w.delay}s` }}>
+          <path fill="none" stroke={w.color} strokeWidth="1" opacity="0.15"
+            d="M0,60 C100,20 200,100 300,60 C400,20 500,100 600,60 C700,20 800,100 800,60" />
+        </svg>
+      ))}
+    </div>
+  );
+}
+
+function NetworkGraph() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const nodesRef = useRef<{ x: number; y: number; vx: number; vy: number; color: string }[]>([]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const W = canvas.width = canvas.offsetWidth;
+    const H = canvas.height = canvas.offsetHeight;
+
+    if (nodesRef.current.length === 0) {
+      const colors = ['#4FFFDF', '#A78BFA', '#F472B6'];
+      for (let i = 0; i < 45; i++) {
+        nodesRef.current.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.8,
+          vy: (Math.random() - 0.5) * 0.8,
+          color: colors[i % 3],
+        });
+      }
+    }
+
+    let raf: number;
+    const animate = () => {
+      ctx.fillStyle = 'rgba(10,10,10,0.03)';
+      ctx.fillRect(0, 0, W, H);
+
+      const nodes = nodesRef.current;
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        n.x += n.vx;
+        n.y += n.vy;
+        if (n.x < 0 || n.x > W) n.vx *= -1;
+        if (n.y < 0 || n.y > H) n.vy *= -1;
+
+        for (let j = i + 1; j < nodes.length; j++) {
+          const m = nodes[j];
+          const dx = m.x - n.x;
+          const dy = m.y - n.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.globalAlpha = 0.15 * (1 - dist / 120);
+            ctx.strokeStyle = n.color;
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(n.x, n.y);
+            ctx.lineTo(m.x, m.y);
+            ctx.stroke();
+          }
+        }
+
+        ctx.globalAlpha = 1;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = n.color;
+        ctx.fill();
+        ctx.shadowColor = n.color;
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+      raf = requestAnimationFrame(animate);
+    };
+    animate();
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ opacity: 0.6 }} />;
+}
+
+function LiveRegistrationCounter() {
+  const [count, setCount] = useState(1847);
+  useEffect(() => {
+    const id = setInterval(() => setCount((c) => Math.min(c + Math.floor(Math.random() * 3) + 1, 2500)), 3000);
+    return () => clearInterval(id);
+  }, []);
+  return <span className="font-mono text-lg" style={{ color: accentColor }}>{count.toLocaleString()}</span>;
+}
 
 function CountdownTimer() {
   const [diff, setDiff] = useState({ d: 0, h: 0, m: 0, s: 0 });
@@ -62,23 +221,13 @@ function CountdownTimer() {
     return () => clearInterval(id);
   }, []);
   return (
-    <div className="flex gap-4 font-mono">
-      <div className="text-center">
-        <div className="text-2xl font-bold" style={{ color: accentColor }}>{diff.d}</div>
-        <div className="text-xs uppercase" style={{ color: 'var(--color-text-muted)' }}>Days</div>
-      </div>
-      <div className="text-center">
-        <div className="text-2xl font-bold" style={{ color: accentColor }}>{diff.h}</div>
-        <div className="text-xs uppercase" style={{ color: 'var(--color-text-muted)' }}>Hours</div>
-      </div>
-      <div className="text-center">
-        <div className="text-2xl font-bold" style={{ color: accentColor }}>{diff.m}</div>
-        <div className="text-xs uppercase" style={{ color: 'var(--color-text-muted)' }}>Min</div>
-      </div>
-      <div className="text-center">
-        <div className="text-2xl font-bold" style={{ color: accentColor }}>{diff.s}</div>
-        <div className="text-xs uppercase" style={{ color: 'var(--color-text-muted)' }}>Sec</div>
-      </div>
+    <div className="flex gap-3">
+      {[diff.d, diff.h, diff.m, diff.s].map((v, i) => (
+        <div key={i} className="w-14 h-14 rounded-xl flex flex-col items-center justify-center" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>
+          <span className="text-xl font-bold font-mono" style={{ color: accentColor }}>{String(v).padStart(2, '0')}</span>
+          <span className="text-[10px] uppercase" style={{ color: 'var(--color-text-muted)' }}>{['Days', 'Hrs', 'Min', 'Sec'][i]}</span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -90,39 +239,124 @@ function ticketsRemaining(tier: keyof typeof SOLD_PCT) {
   return Math.max(0, Math.round(cap / 3) - sold);
 }
 
+function RegistrationLineChart() {
+  const [points, setPoints] = useState<number[]>([]);
+  const countRef = useRef(1200);
+  useEffect(() => {
+    const base = [1200, 1250, 1320, 1380, 1420, 1480, 1520, 1580, 1620, 1680, 1720, 1780, 1820, 1847];
+    setPoints(base);
+    const id = setInterval(() => {
+      countRef.current = Math.min(countRef.current + Math.floor(Math.random() * 4) + 1, 2500);
+      setPoints((p) => (p.length >= 20 ? [...p.slice(1), countRef.current] : [...p, countRef.current]));
+    }, 2500);
+    return () => clearInterval(id);
+  }, []);
+  if (points.length < 2) return null;
+  const w = 400; const h = 120; const max = Math.max(...points); const min = Math.min(...points);
+  const pad = 20; const chartW = w - pad * 2; const chartH = h - pad * 2;
+  const pts = points.map((v, i) => {
+    const x = pad + (i / Math.max(points.length - 1, 1)) * chartW;
+    const y = pad + chartH - ((v - min) / (max - min || 1)) * chartH;
+    return `${x},${y}`;
+  }).join(' ');
+  const polyPts = `${pad},${h - pad} ${pts} ${w - pad},${h - pad}`;
+  return (
+    <div className="relative" style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(79,255,223,0.2)', borderRadius: 8, padding: 16 }}>
+      <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: 'var(--color-text-muted)' }}>Registration over time</div>
+      <svg width="100%" height={h} viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={accentColor} stopOpacity="0.4" />
+            <stop offset="100%" stopColor={accentColor} stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        {[...Array(5)].map((_, i) => (
+          <line key={i} x1={pad} y1={pad + (i * chartH) / 4} x2={w - pad} y2={pad + (i * chartH) / 4} stroke="rgba(255,255,255,0.06)" strokeWidth="0.5" />
+        ))}
+        <polygon fill="url(#lineGrad)" points={polyPts} />
+        <polyline fill="none" stroke={accentColor} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" points={pts} style={{ filter: 'drop-shadow(0 0 6px rgba(79,255,223,0.5))' }} />
+      </svg>
+      <div className="absolute bottom-4 right-4 text-lg font-mono" style={{ color: accentColor }}>{points[points.length - 1]?.toLocaleString()}</div>
+    </div>
+  );
+}
+
+function TicketBarChart() {
+  const tiers = ['Early Bird', 'Regular', 'VIP'] as const;
+  const pcts = [SOLD_PCT.early_bird, SOLD_PCT.regular, SOLD_PCT.vip];
+  const colors = [accentColor, '#A78BFA', 'var(--color-warm)'];
+  return (
+    <div className="relative" style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(79,255,223,0.2)', borderRadius: 8, padding: 16 }}>
+      <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: 'var(--color-text-muted)' }}>Tickets sold by tier</div>
+      <div className="flex gap-4 items-end h-24">
+        {tiers.map((t, i) => (
+          <div key={t} className="flex-1 flex flex-col items-center">
+            <div className="w-full h-16 rounded-t overflow-hidden flex flex-col justify-end" style={{ background: 'rgba(255,255,255,0.06)' }}>
+              <div className="w-full rounded-t transition-all duration-1000" style={{ height: `${pcts[i]}%`, minHeight: 4, background: colors[i], boxShadow: `0 0 12px ${colors[i]}40` }} />
+            </div>
+            <span className="text-[10px] mt-2" style={{ color: 'var(--color-text-muted)' }}>{t}</span>
+            <span className="text-xs font-mono" style={{ color: colors[i] }}>{pcts[i]}%</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function LiveConnectionsPulse() {
+  const [n, setN] = useState(47);
+  useEffect(() => {
+    const id = setInterval(() => setN((c) => Math.min(c + Math.floor(Math.random() * 3), 89)), 2000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <div className="relative flex items-center gap-3" style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(79,255,223,0.2)', borderRadius: 8, padding: 16 }}>
+      <div className="w-3 h-3 rounded-full animate-pulse" style={{ background: accentColor, boxShadow: `0 0 12px ${accentColor}` }} />
+      <div>
+        <div className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--color-text-muted)' }}>Live connections</div>
+        <div className="text-2xl font-mono font-bold" style={{ color: accentColor }}>{n}</div>
+      </div>
+    </div>
+  );
+}
+
 export default function DemoConferencePage() {
+  const [scheduleDay, setScheduleDay] = useState<'Day 1' | 'Day 2'>('Day 1');
+  const [expandedSpeaker, setExpandedSpeaker] = useState<string | null>(null);
+
+  const scheduleFiltered = SCHEDULE.filter((s) => s.day === scheduleDay);
+
   return (
     <main className="min-h-screen relative" style={{ background: 'var(--color-bg)' }}>
-      {/* Cinematic hero background — same as landing page */}
+
+      {/* Visual layer — Ken Burns slideshow + particles + network graph */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'url("https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          animation: 'kenBurns 20s ease-in-out infinite',
-          willChange: 'transform',
-        }} />
+        <KenBurnsSlideshow />
         <div className="absolute inset-0" style={{
           background: 'linear-gradient(to bottom, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.4) 50%, rgba(10,10,10,0.95) 100%)',
         }} />
         <div className="absolute inset-0 opacity-30" style={{
-          background: 'radial-gradient(ellipse 80% 50% at 50% 50%, rgba(79,255,223,0.15) 0%, transparent 70%)',
+          background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}26 0%, transparent 70%)`,
         }} />
         {[...Array(25)].map((_, i) => (
-          <div key={i} className="absolute rounded-full bg-white" style={{
-            width: 2 + (i % 3),
-            height: 2 + (i % 3),
+          <div key={i} className="absolute rounded-full" style={{
+            width: 3 + (i % 3),
+            height: 3 + (i % 3),
             left: `${(i * 7) % 100}%`,
             bottom: 0,
-            opacity: 0.1 + (i % 4) * 0.1,
+            background: [accentColor, '#A78BFA', '#F472B6'][i % 3],
+            opacity: 0.25 + (i % 4) * 0.15,
+            boxShadow: `0 0 8px ${[accentColor, '#A78BFA', '#F472B6'][i % 3]}`,
             animation: `floatUp ${15 + (i % 15)}s linear infinite`,
             animationDelay: `${i * 0.8}s`,
             zIndex: 1,
           }} />
         ))}
+        <div className="absolute inset-0 pointer-events-none">
+          <NetworkGraph />
+        </div>
       </div>
 
-      {/* Nav — matches landing page */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4"
         style={{ background: 'rgba(10,10,10,0.9)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <Link href="/" className="flex items-center gap-2">
@@ -140,20 +374,15 @@ export default function DemoConferencePage() {
       {/* Hero */}
       <section className="relative px-6 pt-32 pb-24 min-h-[70vh] flex flex-col justify-end">
         <div className="max-w-5xl mx-auto">
-
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6"
             style={{ background: `${accentColor}15`, border: `1px solid ${accentColor}40` }}>
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: accentColor }}></span>
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#22c55e', boxShadow: '0 0 8px #22c55e' }} />
             <span style={{ color: accentColor, fontSize: '0.75rem', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               Tickets Available
             </span>
           </div>
 
-          <h1 className="mb-4" style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-            lineHeight: 1.1,
-          }}>
+          <h1 className="mb-4" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.1 }}>
             SuperNova AI Summit 2026
           </h1>
 
@@ -169,7 +398,7 @@ export default function DemoConferencePage() {
               <span>📅</span><span>March 25-26, 2026</span>
             </div>
             <div className="flex items-center gap-2">
-              <span>👥</span><span>2,500 attendees</span>
+              <span>👥</span><span><LiveRegistrationCounter /> registered</span>
             </div>
           </div>
 
@@ -197,144 +426,224 @@ export default function DemoConferencePage() {
         </div>
       </section>
 
-      {/* Speakers */}
-      <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      {/* EXHIBIT: Live Data — science museum style */}
+      <section className="px-6 py-12" style={{
+        background: 'linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(10,10,10,0.9) 100%)',
+        borderTop: '1px solid rgba(79,255,223,0.15)',
+        borderBottom: '1px solid rgba(79,255,223,0.15)',
+        backgroundImage: 'linear-gradient(rgba(79,255,223,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(79,255,223,0.03) 1px, transparent 1px)',
+        backgroundSize: '24px 24px',
+      }}>
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-sm font-medium uppercase tracking-wider mb-8" style={{ color: 'var(--color-text-muted)' }}>Speakers</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-2 h-8 rounded-full" style={{ background: accentColor, boxShadow: `0 0 20px ${accentColor}` }} />
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.2em]" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>Exhibit</div>
+              <div className="text-lg font-semibold" style={{ fontFamily: 'var(--font-display)' }}>Live registration & ticket flow</div>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="md:col-span-2">
+              <RegistrationLineChart />
+            </div>
+            <div className="space-y-4">
+              <TicketBarChart />
+              <LiveConnectionsPulse />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider />
+
+      {/* EXHIBIT: Speakers */}
+      <section className="px-6 py-16" style={{
+        background: 'rgba(255,255,255,0.02)',
+        borderTop: '1px solid rgba(255,255,255,0.06)',
+        backgroundImage: 'linear-gradient(rgba(79,255,223,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(79,255,223,0.02) 1px, transparent 1px)',
+        backgroundSize: '48px 48px',
+      }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-1.5 h-6 rounded-full" style={{ background: accentColor }} />
+            <span className="text-[10px] uppercase tracking-[0.15em]" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>Exhibit</span>
+            <h2 className="text-sm font-medium uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Speakers</h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {SPEAKERS.map((speaker) => {
               const trackColor = TRACK_COLORS[TRACKS.indexOf(speaker.track) % TRACK_COLORS.length] || accentColor;
+              const expanded = expandedSpeaker === speaker.id;
               return (
-                <Link key={speaker.id} href={`/speakers/${speaker.id}`} className="card group block">
+                <div key={speaker.id} className="card group">
                   <div className="relative w-full aspect-[4/5] rounded-lg mb-4 overflow-hidden">
-                    <Image
-                      src={speaker.img}
-                      alt={speaker.name}
-                      fill
-                      className="object-cover transition-transform group-hover:scale-105"
-                      sizes="(max-width: 768px) 50vw, 20vw"
-                    />
+                    <Image src={speaker.img} alt={speaker.name} fill className="object-cover transition-transform group-hover:scale-105" sizes="25vw" />
                   </div>
-                  <h3 className="font-semibold mb-1 group-hover:text-[var(--color-accent)] transition-colors">{speaker.name}</h3>
+                  <h3 className="font-semibold mb-1">{speaker.name}</h3>
                   <p className="text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>{speaker.role}</p>
                   <p className="text-sm font-medium mb-1" style={{ color: accentColor }}>{speaker.talk}</p>
-                  <span className="text-xs px-2 py-0.5 rounded"
-                    style={{ background: `${trackColor}20`, color: trackColor }}>
-                    {speaker.track}
-                  </span>
-                </Link>
+                  <span className="text-xs px-2 py-0.5 rounded" style={{ background: `${trackColor}20`, color: trackColor }}>{speaker.track}</span>
+                  <button onClick={() => setExpandedSpeaker(expanded ? null : speaker.id)} className="mt-3 text-xs" style={{ color: accentColor }}>
+                    {expanded ? '− Less' : '+ Bio'}
+                  </button>
+                  {expanded && <p className="mt-2 text-xs" style={{ color: 'var(--color-text-muted)', lineHeight: 1.5 }}>{speaker.bio}</p>}
+                </div>
               );
             })}
           </div>
         </div>
       </section>
 
-      {/* Schedule */}
-      <section className="px-6 py-16">
+      <WaveDivider />
+
+      {/* EXHIBIT: Schedule */}
+      <section className="px-6 py-16" style={{
+        backgroundImage: 'linear-gradient(rgba(79,255,223,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(79,255,223,0.02) 1px, transparent 1px)',
+        backgroundSize: '48px 48px',
+      }}>
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-sm font-medium uppercase tracking-wider mb-8" style={{ color: 'var(--color-text-muted)' }}>Schedule</h2>
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-6 rounded-full" style={{ background: accentColor }} />
+              <span className="text-[10px] uppercase tracking-[0.15em]" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>Exhibit</span>
+              <h2 className="text-sm font-medium uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Schedule</h2>
+            </div>
+            <div className="flex gap-2">
+              {(['Day 1', 'Day 2'] as const).map((d) => (
+                <button key={d} onClick={() => setScheduleDay(d)} className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                  style={{
+                    background: scheduleDay === d ? accentColor : 'rgba(255,255,255,0.05)',
+                    color: scheduleDay === d ? 'var(--color-bg)' : 'var(--color-text-muted)',
+                    border: scheduleDay === d ? 'none' : '1px solid rgba(255,255,255,0.08)',
+                  }}>
+                  {d}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="relative">
             <div className="absolute left-4 top-0 bottom-0 w-px" style={{ background: 'rgba(255,255,255,0.1)' }} />
             <div className="space-y-0">
-              {SCHEDULE.map((item, i) => (
-                <div key={i} className="relative flex items-start gap-6 py-5 pl-12">
-                  <div className="absolute left-0 w-20 text-right">
-                    <span className="text-sm font-medium" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>
-                      {item.time}
-                    </span>
+              {scheduleFiltered.map((item, i) => {
+                const trackIdx = TRACKS.indexOf(item.track);
+                const barColor = trackIdx >= 0 ? TRACK_COLORS[trackIdx % TRACK_COLORS.length] : accentColor;
+                return (
+                  <div key={i} className="relative flex items-start gap-6 py-5 pl-12">
+                    <div className="absolute left-0 w-20 text-right">
+                      <span className="text-sm font-medium" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>{item.time}</span>
+                    </div>
+                    <div className="flex-1 min-w-0 card py-4 flex gap-4">
+                      <div className="w-1 shrink-0 rounded-full self-stretch" style={{ background: item.track === 'All' ? 'rgba(255,255,255,0.2)' : barColor }} />
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{item.title}</span>
+                          {item.keynote && <span className="text-xs px-2 py-0.5 rounded" style={{ background: `${accentColor}20`, color: accentColor }}>Keynote</span>}
+                        </div>
+                        <div className="text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>{item.speaker}</div>
+                        {item.track !== 'All' && (
+                          <span className="inline-block mt-2 text-xs px-2 py-0.5 rounded"
+                            style={{ background: `${barColor}20`, color: barColor }}>
+                            {item.track}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0 card py-4">
-                    <div className="font-medium mb-1">{item.title}</div>
-                    <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>{item.speaker}</div>
-                    {item.track && (
-                      <span className="inline-block mt-2 text-xs px-2 py-0.5 rounded"
-                        style={{ background: `${accentColor}15`, color: accentColor }}>
-                        {item.track}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Venue */}
+      <WaveDivider />
+
+      {/* Venue — map + photo + amenities */}
       <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto">
           <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Venue</h2>
-          <div className="card">
-            <h3 className="text-xl font-semibold mb-2">{VENUE.name}</h3>
-            <p className="mb-2" style={{ color: 'var(--color-text-muted)' }}>{VENUE.address}</p>
-            <p className="text-sm" style={{ color: 'var(--color-text-muted)', opacity: 0.8 }}>{VENUE.capacity_note}</p>
+          <div className="rounded-xl overflow-hidden mb-4" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
+            <Image src={VENUE.photo} alt={VENUE.name} width={800} height={400} className="w-full h-48 object-cover" />
+          </div>
+          <div className="flex flex-wrap gap-2 mb-4">
+            {VENUE.amenities.map((a) => (
+              <span key={a} className="px-3 py-1.5 rounded-lg text-sm" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                {a}
+              </span>
+            ))}
+          </div>
+          <p className="text-sm mb-4" style={{ color: 'var(--color-text-muted)' }}>{VENUE.capacity_note}</p>
+          <div className="rounded-xl overflow-hidden border" style={{ borderColor: 'rgba(255,255,255,0.08)', height: 280 }}>
+            <iframe
+              title="Venue map"
+              src={`https://www.google.com/maps?q=${encodeURIComponent('Beurs van Berlage Amsterdam')}&z=15&output=embed`}
+              width="100%"
+              height="100%"
+              style={{ border: 0, filter: 'invert(0.9) hue-rotate(180deg)' }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
           </div>
         </div>
       </section>
+
+      {/* Hotels & Restaurants */}
+      <section className="px-6 py-16">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Stay & Dine</h2>
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            {HOTELS.map((h) => (
+              <div key={h.name} className="card overflow-hidden">
+                <div className="relative h-32 -m-6 mb-4">
+                  <Image src={h.img} alt={h.name} fill className="object-cover" />
+                </div>
+                <h3 className="font-semibold mb-1">{h.name}</h3>
+                <p className="text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>{h.distance} · {'★'.repeat(h.stars)}</p>
+                <p className="text-sm font-medium" style={{ color: accentColor }}>{h.price}/night</p>
+              </div>
+            ))}
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {RESTAURANTS.map((r) => (
+              <div key={r.name} className="card">
+                <h3 className="font-semibold mb-1">{r.name}</h3>
+                <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>{r.cuisine} · {r.distance} · {r.price}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider />
 
       {/* Pricing */}
       <section className="px-6 py-16">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-sm font-medium uppercase tracking-wider mb-8" style={{ color: 'var(--color-text-muted)' }}>Tickets</h2>
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="card text-center flex flex-col">
-              <div className="text-sm uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-muted)' }}>Early Bird</div>
-              <div className="text-3xl font-bold mb-2 flex-1" style={{ fontFamily: 'var(--font-display)', color: accentColor }}>
-                {PRICING.early_bird}
+            {[
+              { tier: 'early_bird' as const, label: 'Early Bird', price: PRICING.early_bird },
+              { tier: 'regular' as const, label: 'Regular', price: PRICING.regular, featured: true },
+              { tier: 'vip' as const, label: 'VIP', price: PRICING.vip },
+            ].map(({ tier, label, price, featured }) => (
+              <div key={tier} className={`card text-center flex flex-col ${featured ? 'border-[rgba(79,255,223,0.3)]' : ''}`} style={featured ? { boxShadow: '0 0 20px rgba(79,255,223,0.05)' } : {}}>
+                <div className="text-sm uppercase tracking-wider mb-2" style={{ color: featured ? accentColor : 'var(--color-text-muted)' }}>{label}</div>
+                <div className="text-3xl font-bold mb-2 flex-1" style={{ fontFamily: 'var(--font-display)', color: tier === 'vip' ? 'var(--color-warm)' : accentColor }}>{price}</div>
+                <div className="h-1.5 rounded-full mb-3 overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                  <div className="h-full rounded-full" style={{ width: `${SOLD_PCT[tier]}%`, background: tier === 'vip' ? 'var(--color-warm)' : accentColor }} />
+                </div>
+                <p className="text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>🎫 {ticketsRemaining(tier)} remaining</p>
+                <Link href={`/checkout/demo-conference?tier=${tier}&price=${encodeURIComponent(price)}`} className="btn-primary w-full py-3 text-sm text-center">
+                  Buy Ticket
+                </Link>
               </div>
-              <div className="text-xs mb-2" style={{ color: 'var(--color-text-muted)' }}>Limited availability</div>
-              <div className="h-1.5 rounded-full mb-3 overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                <div className="h-full rounded-full" style={{ width: `${SOLD_PCT.early_bird}%`, background: accentColor }} />
-              </div>
-              <p className="text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>🎫 {ticketsRemaining('early_bird')} tickets remaining</p>
-              <Link
-                href={`/checkout/demo-conference?tier=early_bird&price=${encodeURIComponent(PRICING.early_bird)}`}
-                className="btn-primary w-full py-3 text-sm text-center"
-              >
-                Buy Ticket
-              </Link>
-            </div>
-            <div className="card text-center flex flex-col" style={{ borderColor: 'rgba(79,255,223,0.3)', boxShadow: '0 0 20px rgba(79,255,223,0.05)' }}>
-              <div className="text-sm uppercase tracking-wider mb-2" style={{ color: accentColor }}>Regular</div>
-              <div className="text-3xl font-bold mb-2 flex-1" style={{ fontFamily: 'var(--font-display)' }}>
-                {PRICING.regular}
-              </div>
-              <div className="text-xs mb-2" style={{ color: 'var(--color-text-muted)' }}>Standard admission</div>
-              <div className="h-1.5 rounded-full mb-3 overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                <div className="h-full rounded-full" style={{ width: `${SOLD_PCT.regular}%`, background: accentColor }} />
-              </div>
-              <p className="text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>🎫 {ticketsRemaining('regular')} tickets remaining</p>
-              <Link
-                href={`/checkout/demo-conference?tier=regular&price=${encodeURIComponent(PRICING.regular)}`}
-                className="btn-primary w-full py-3 text-sm text-center"
-              >
-                Buy Ticket
-              </Link>
-            </div>
-            <div className="card text-center flex flex-col">
-              <div className="text-sm uppercase tracking-wider mb-2" style={{ color: 'var(--color-warm)' }}>VIP</div>
-              <div className="text-3xl font-bold mb-2 flex-1" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-warm)' }}>
-                {PRICING.vip}
-              </div>
-              <div className="text-xs mb-2" style={{ color: 'var(--color-text-muted)' }}>Premium access + perks</div>
-              <div className="h-1.5 rounded-full mb-3 overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                <div className="h-full rounded-full" style={{ width: `${SOLD_PCT.vip}%`, background: 'var(--color-warm)' }} />
-              </div>
-              <p className="text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>🎫 {ticketsRemaining('vip')} tickets remaining</p>
-              <Link
-                href={`/checkout/demo-conference?tier=vip&price=${encodeURIComponent(PRICING.vip)}`}
-                className="btn-primary w-full py-3 text-sm text-center"
-              >
-                Buy Ticket
-              </Link>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Sponsor CTA */}
       <section className="px-6 py-12" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="max-w-5xl mx-auto text-center mb-8">
+        <div className="max-w-5xl mx-auto text-center">
           <Link href="/sponsor" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all"
             style={{ background: 'rgba(79,255,223,0.1)', border: '1px solid rgba(79,255,223,0.3)', color: 'var(--color-accent)' }}>
             Become a Sponsor →
@@ -342,22 +651,8 @@ export default function DemoConferencePage() {
         </div>
       </section>
 
-      {/* Share */}
-      <section className="px-6 py-12" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="max-w-5xl mx-auto text-center">
-          <p className="mb-3" style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>Share this event</p>
-          <button
-            onClick={() => typeof window !== 'undefined' && navigator.clipboard.writeText(window.location.href)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-all hover:border-[var(--color-accent)]"
-            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontFamily: 'var(--font-mono)', fontSize: '0.875rem' }}
-          >
-            {typeof window !== 'undefined' ? window.location.href : '/e/demo-conference'}
-            <span style={{ color: 'var(--color-accent)' }}>📋</span>
-          </button>
-        </div>
-      </section>
+      <WaveDivider />
 
-      {/* Footer */}
       <footer className="px-6 py-8 text-center" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
           Generated by <Link href="/" className="hover:text-[var(--color-accent)] transition-colors">Launchpad</Link> — AI-powered conference generation

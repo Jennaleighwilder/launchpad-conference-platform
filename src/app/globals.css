@@ -138,3 +138,9 @@
   100% { transform: translateX(-50%); }
 }
 .marquee { animation: marquee 30s linear infinite; }
+
+@keyframes wave-flow {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.wave-flow { animation: wave-flow 8s linear infinite; }
