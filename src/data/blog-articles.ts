@@ -19,6 +19,11 @@ Traditional event planning is sequential: secure venue (weeks), recruit speakers
 Event planners who ship fast can **test topics** before committing budget, **respond to trends** (AI, climate, fintech) while they're hot, and **lower risk** — small bets, fast feedback, no big-bang launches. [Eventgroove's 2024 survey](https://eventgroove.com) found that **54% of attendees** prefer more in-person events post-pandemic. The demand is there. The constraint was always production speed.
 
 Launchpad collapses coordination to minutes. Investors, startups, and enterprises are already using it to ship events 10x faster.
+
+!youtube:f8DKD78BrQA
+
+!audio:https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3
+Listen to our podcast on AI event generation
   `,
 
   'free-to-premium-event-funnel': `

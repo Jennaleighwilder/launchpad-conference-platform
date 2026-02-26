@@ -36,6 +36,12 @@ yarn-error.log*
 # vercel
 .vercel
 
+# deck build venv
+.venv-deck
+
+# deploy zip (regenerate with: zip -r launchpad-deploy-$(date +%Y%m%d).zip . -x "node_modules/*" -x ".next/*" -x ".venv-deck/*" -x ".git/*" -x "*.zip" -x ".DS_Store" -x ".env*")
+launchpad-deploy-*.zip
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

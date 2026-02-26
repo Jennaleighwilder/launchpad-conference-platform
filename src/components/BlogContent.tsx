@@ -30,6 +30,35 @@ export function BlogContent({ content }: { content: string }) {
           );
         }
 
+        // !audio:URL — audio player block
+        if (trimmed.startsWith('!audio:')) {
+          const url = trimmed.slice(7).split('\n')[0].trim();
+          const label = trimmed.split('\n')[1]?.trim() || 'Listen';
+          return (
+            <div key={i} className="my-6 p-4 rounded-xl" style={{ background: 'rgba(79,255,223,0.08)', border: '1px solid rgba(79,255,223,0.3)', boxShadow: '0 0 20px rgba(79,255,223,0.1)' }}>
+              <div className="text-sm font-medium mb-2" style={{ color: 'var(--color-accent)' }}>🎧 {label}</div>
+              <audio controls className="w-full" style={{ borderRadius: 8 }}>
+                <source src={url} type="audio/mpeg" />
+                <source src={url} type="audio/mp3" />
+                <source src={url} type="audio/wav" />
+                <a href={url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-accent)' }}>Download audio</a>
+              </audio>
+            </div>
+          );
+        }
+
+        // !youtube:videoId — YouTube embed block
+        if (trimmed.startsWith('!youtube:')) {
+          const videoId = trimmed.slice(9).split('\n')[0].trim();
+          return (
+            <div key={i} className="my-6 rounded-xl overflow-hidden" style={{ border: '1px solid rgba(79,255,223,0.3)', boxShadow: '0 0 25px rgba(79,255,223,0.15)' }}>
+              <div className="aspect-video">
+                <iframe src={`https://www.youtube.com/embed/${videoId}`} title="YouTube" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen className="w-full h-full" />
+              </div>
+            </div>
+          );
+        }
+
         // Bullet list
         if (trimmed.startsWith('- ') || trimmed.match(/^- /m)) {
           const items = trimmed.split(/\n(?=- )/).map((line) => line.replace(/^- /, '').trim());

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { BLOG_POSTS, FEATURED_BLOG_SLUG, HIDDEN_FROM_INDEX } from '@/data/blog-posts';
+import { BlogParallaxBackground } from '@/components/BlogParallaxBackground';
 
 export default function BlogPage() {
   const featured = BLOG_POSTS.find((p) => p.slug === FEATURED_BLOG_SLUG) || BLOG_POSTS[0];
@@ -8,8 +9,9 @@ export default function BlogPage() {
   const rest = indexPosts.filter((p) => p.slug !== featured.slug);
 
   return (
-    <main className="min-h-screen" style={{ background: 'var(--color-bg)' }}>
-      <div className="max-w-5xl mx-auto px-6 py-16">
+    <main className="min-h-screen relative" style={{ background: 'var(--color-bg)' }}>
+      <BlogParallaxBackground />
+      <div className="max-w-5xl mx-auto px-6 py-16 relative z-10">
         <h1 className="text-4xl font-bold mb-4" style={{ fontFamily: 'var(--font-display)' }}>Blog</h1>
         <p className="mb-12" style={{ color: 'var(--color-text-muted)', fontSize: '1.125rem' }}>
           Product updates, event planning guides, and industry insights.

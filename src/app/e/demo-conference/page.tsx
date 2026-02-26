@@ -562,6 +562,30 @@ export default function DemoConferencePage() {
               </div>
             ))}
           </div>
+          {/* Audio: Keynote replays */}
+          <div className="mt-12 pt-8" style={{ borderTop: '1px solid rgba(79,255,223,0.15)' }}>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-2 h-8 rounded-full" style={{ background: '#EC4899', boxShadow: '0 0 20px #EC4899' }} />
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.2em]" style={{ color: '#EC4899', fontFamily: 'var(--font-mono)' }}>Listen</div>
+                <h2 className="text-lg font-semibold" style={{ fontFamily: 'var(--font-display)' }}>Keynote audio replays</h2>
+              </div>
+            </div>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="card p-4" style={{ borderColor: 'rgba(236,72,153,0.2)', boxShadow: '0 0 20px rgba(236,72,153,0.1)' }}>
+                <div className="text-sm font-medium mb-2" style={{ color: '#EC4899' }}>🎧 Opening Keynote — European AI in 2026</div>
+                <audio controls className="w-full" style={{ borderRadius: 8, height: 40 }}>
+                  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
+                </audio>
+              </div>
+              <div className="card p-4" style={{ borderColor: 'rgba(236,72,153,0.2)', boxShadow: '0 0 20px rgba(236,72,153,0.1)' }}>
+                <div className="text-sm font-medium mb-2" style={{ color: '#EC4899' }}>🎧 Day 2 Keynote — AI in European Banking</div>
+                <audio controls className="w-full" style={{ borderRadius: 8, height: 40 }}>
+                  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg" />
+                </audio>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
