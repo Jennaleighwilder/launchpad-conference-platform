@@ -312,34 +312,6 @@ export default function DemoConferencePage() {
     <main className="min-h-screen relative" style={{ background: 'transparent' }}>
       <div className="scanline" style={{ background: 'linear-gradient(to bottom, transparent, rgba(79,255,223,0.04), transparent)' }} aria-hidden />
 
-      {/* Visual layer — Ken Burns slideshow + particles + network graph */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <KenBurnsSlideshow images={SLIDESHOW_IMAGES} />
-        <div className="absolute inset-0" style={{
-          background: 'linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.35) 50%, rgba(10,10,10,0.8) 100%)',
-        }} />
-        <div className="absolute inset-0 opacity-30" style={{
-          background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}26 0%, transparent 70%)`,
-        }} />
-        {[...Array(45)].map((_, i) => (
-          <div key={i} className="absolute rounded-full" style={{
-            width: 3 + (i % 3),
-            height: 3 + (i % 3),
-            left: `${(i * 5) % 100}%`,
-            bottom: 0,
-            background: [accentColor, '#A78BFA', '#F472B6', '#34D399'][i % 4],
-            opacity: 0.3 + (i % 3) * 0.1,
-            boxShadow: `0 0 10px ${[accentColor, '#A78BFA', '#F472B6', '#34D399'][i % 4]}`,
-            animation: `floatUp ${10 + (i % 12)}s linear infinite`,
-            animationDelay: `${(i * 0.4) % 6}s`,
-            zIndex: 1,
-          }} />
-        ))}
-        <div className="absolute inset-0 pointer-events-none">
-          <NetworkGraph />
-        </div>
-      </div>
-
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4"
         style={{ background: 'rgba(10,10,10,0.9)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <Link href="/" className="flex items-center gap-2">
@@ -355,8 +327,34 @@ export default function DemoConferencePage() {
       </nav>
 
       {/* Hero */}
-      <section className="relative px-6 pt-32 pb-24 min-h-[70vh] flex flex-col justify-end">
-        <div className="max-w-5xl mx-auto">
+      <section className="relative px-6 pt-32 pb-24 min-h-[70vh] flex flex-col justify-end overflow-hidden isolate">
+        <div className="absolute inset-0 z-0">
+          <KenBurnsSlideshow images={SLIDESHOW_IMAGES} />
+        </div>
+        <div className="absolute inset-0 z-[1]" style={{
+          background: 'linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.35) 50%, rgba(10,10,10,0.8) 100%)',
+        }} />
+        <div className="absolute inset-0 z-[1] opacity-30 pointer-events-none" style={{
+          background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}26 0%, transparent 70%)`,
+        }} />
+        {[...Array(45)].map((_, i) => (
+          <div key={i} className="absolute rounded-full z-[1]" style={{
+            width: 3 + (i % 3),
+            height: 3 + (i % 3),
+            left: `${(i * 5) % 100}%`,
+            bottom: 0,
+            background: [accentColor, '#A78BFA', '#F472B6', '#34D399'][i % 4],
+            opacity: 0.3 + (i % 3) * 0.1,
+            boxShadow: `0 0 10px ${[accentColor, '#A78BFA', '#F472B6', '#34D399'][i % 4]}`,
+            animation: `floatUp ${10 + (i % 12)}s linear infinite`,
+            animationDelay: `${(i * 0.4) % 6}s`,
+            zIndex: 1,
+          }} />
+        ))}
+        <div className="absolute inset-0 z-[1] pointer-events-none">
+          <NetworkGraph />
+        </div>
+        <div className="relative z-10 max-w-5xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6"
             style={{ background: `${accentColor}15`, border: `1px solid ${accentColor}40` }}>
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#22c55e', boxShadow: '0 0 12px #22c55e' }} />

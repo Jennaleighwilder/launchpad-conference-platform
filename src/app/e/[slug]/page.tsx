@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { EventData, SpeakerData, ScheduleItem, PricingData, VenueData } from '@/lib/types';
-import { KenBurnsSlideshow, CountdownTimer } from '@/components/demo-event/DemoEventLayout';
+import { KenBurnsSlideshow, CountdownTimer, resolveHeroImages, resolveHeroVideo } from '@/components/demo-event/DemoEventLayout';
 import { getEventTheme } from '@/lib/event-themes';
 
 const TRACK_COLORS = ['#4FFFDF', '#A78BFA', '#34D399', '#F472B6', '#FBBF24', '#60A5FA'];
@@ -269,11 +269,14 @@ export default function EventPage() {
   const accentColor = customAccent || theme.accent;
   const displayName = customName || event.name;
   const displayTagline = customTagline !== undefined ? customTagline : event.tagline;
-  // Priority: user override > event's unique hero (from DB) > theme fallback. No image reuse.
-  const heroImages = customHeroImages.length > 0
-    ? customHeroImages
-    : (event.hero_image_url ? [event.hero_image_url] : theme.heroImages);
-  const heroVideoUrl = customHeroVideoUrl || event.hero_video_url || null;
+  const ev = event as unknown as Record<string, unknown>;
+  const heroImages = resolveHeroImages(ev, {
+    customImages: customHeroImages,
+    themeImages: theme.heroImages,
+    slug,
+    topic: event.topic,
+  });
+  const heroVideoUrl = resolveHeroVideo(ev, customHeroVideoUrl);
   const useVideoHero = !customHeroImages.length && !!heroVideoUrl;
   const displayDescription = customDescription || event.description || '';
   const videoEmbedId = (() => {
@@ -312,29 +315,33 @@ export default function EventPage() {
 
   return (
     <main className="min-h-screen relative" style={{ ...themeVars, background: 'transparent', color: theme.text }}>
-      {/* True hero section — real media (image or video), no gradient-only fallback */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        {useVideoHero ? (
+      {/* Hero — media layer inside section so it always fills */}
+      <section className="relative min-h-[85vh] flex flex-col justify-end pb-24 pt-32 px-6 overflow-hidden">
+        {/* HERO MEDIA LAYER — absolute, fills section */}
+        {useVideoHero && heroVideoUrl ? (
           <video
             autoPlay
             muted
             loop
             playsInline
-            className="absolute inset-0 w-full h-full object-cover"
-            src={heroVideoUrl!}
-          />
+            className="absolute inset-0 w-full h-full object-cover -z-10"
+            src={heroVideoUrl}
+          >
+            <source src={heroVideoUrl} type="video/mp4" />
+          </video>
         ) : (
-          <KenBurnsSlideshow images={heroImages} />
+          <div className="absolute inset-0 -z-10">
+            <KenBurnsSlideshow images={heroImages} />
+          </div>
         )}
-        <div className="absolute inset-0" style={{ background: theme.heroOverlay }} />
-        <div className="absolute inset-0 opacity-20" style={{
+        {/* Dark overlay */}
+        <div className="absolute inset-0 -z-10" style={{ background: theme.heroOverlay }} />
+        <div className="absolute inset-0 -z-10 opacity-20" style={{
           background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}30 0%, transparent 70%)`,
         }} />
-      </div>
 
-      {/* Hero — SuperNova style */}
-      <section className="relative px-6 min-h-[85vh] flex flex-col justify-end pb-24 pt-32">
-        <div className="max-w-5xl mx-auto w-full">
+        {/* Hero content */}
+        <div className="relative z-10 max-w-5xl mx-auto w-full">
           <div className="flex items-center justify-between mb-6">
             <Link href="/" className="inline-flex items-center gap-2 text-sm transition-colors hover:opacity-80"
               style={{ color: theme.textMuted }}>

@@ -14,20 +14,20 @@ function hasSupabase(): boolean {
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { id } = await params;
-    if (!id || !UUID_REGEX.test(id)) {
+    const { slug } = await params;
+    if (!slug || !UUID_REGEX.test(slug)) {
       return NextResponse.json({ error: 'Invalid event id' }, { status: 400 });
     }
 
     if (!hasSupabase()) {
-      return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
+      return NextResponse.json({ blocks: [] });
     }
 
     const supabase = createServiceClient();
-    const { data: event } = await supabase.from('events').select('id').eq('id', id).single();
+    const { data: event } = await supabase.from('events').select('id').eq('id', slug).single();
     if (!event) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });
     }
@@ -35,7 +35,7 @@ export async function GET(
     const { data: blocks, error } = await supabase
       .from('event_blocks')
       .select('*')
-      .eq('event_id', id)
+      .eq('event_id', slug)
       .order('sort_order', { ascending: true });
 
     if (error) {
@@ -51,11 +51,11 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { id } = await params;
-    if (!id || !UUID_REGEX.test(id)) {
+    const { slug } = await params;
+    if (!slug || !UUID_REGEX.test(slug)) {
       return NextResponse.json({ error: 'Invalid event id' }, { status: 400 });
     }
 
@@ -71,7 +71,7 @@ export async function POST(
     }
 
     const supabase = createServiceClient();
-    const { data: event } = await supabase.from('events').select('id').eq('id', id).single();
+    const { data: event } = await supabase.from('events').select('id').eq('id', slug).single();
     if (!event) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });
     }
@@ -80,7 +80,7 @@ export async function POST(
 
     const { data: block, error } = await supabase
       .from('event_blocks')
-      .insert({ event_id: id, type, data: data || {}, sort_order: order })
+      .insert({ event_id: slug, type, data: data || {}, sort_order: order })
       .select()
       .single();
 

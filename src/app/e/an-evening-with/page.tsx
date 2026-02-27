@@ -20,6 +20,7 @@ import { FALLBACK_HERO_POOL } from '@/lib/hero-images';
 const TRACK_COLORS = ['#D4AF37', '#E8C547', '#C9A227'];
 const SOLD_PCT = { early_bird: 62, regular: 38, vip: 8 };
 const accentColor = '#D4AF37';
+// Picsum for static demos — 100% reliable on Vercel (Unsplash can rate-limit)
 const SLIDESHOW_IMAGES = FALLBACK_HERO_POOL.slice(24, 36);
 
 const VENUE = {
@@ -62,15 +63,6 @@ export default function AnEveningWithPage() {
   return (
     <main className="min-h-screen relative" style={{ background: 'transparent' }}>
       <ScanlineOverlay color="212,175,55" />
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <KenBurnsSlideshow images={SLIDESHOW_IMAGES} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.35) 50%, rgba(10,10,10,0.8) 100%)' }} />
-        <div className="absolute inset-0 opacity-30" style={{ background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}26 0%, transparent 70%)` }} />
-        <div className="absolute inset-0 pointer-events-none">
-          <HelixDNA color={accentColor} />
-        </div>
-      </div>
-
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4" style={{ background: 'rgba(10,10,10,0.9)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <Link href="/" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold" style={{ background: accentColor, color: 'var(--color-bg)' }}>L</div>
@@ -82,8 +74,17 @@ export default function AnEveningWithPage() {
         </div>
       </nav>
 
-      <section className="relative px-6 pt-32 pb-24 min-h-[70vh] flex flex-col justify-end">
-        <div className="max-w-5xl mx-auto">
+      <section className="relative px-6 pt-32 pb-24 min-h-[70vh] flex flex-col justify-end overflow-hidden isolate">
+        {/* Hero media — z-0 (not -z-10) so it stays visible above body bg */}
+        <div className="absolute inset-0 z-0">
+          <KenBurnsSlideshow images={SLIDESHOW_IMAGES} />
+        </div>
+        <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.35) 50%, rgba(10,10,10,0.8) 100%)' }} />
+        <div className="absolute inset-0 z-[1] opacity-30 pointer-events-none" style={{ background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}26 0%, transparent 70%)` }} />
+        <div className="absolute inset-0 z-[1] pointer-events-none">
+          <HelixDNA color={accentColor} />
+        </div>
+        <div className="relative z-10 max-w-5xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6" style={{ background: `${accentColor}15`, border: `1px solid ${accentColor}40` }}>
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#22c55e', boxShadow: '0 0 8px #22c55e' }} />
             <span style={{ color: accentColor, fontSize: '0.75rem', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Tickets Available</span>

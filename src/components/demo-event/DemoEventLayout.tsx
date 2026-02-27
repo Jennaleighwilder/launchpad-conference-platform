@@ -3,7 +3,46 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FALLBACK_HERO_POOL } from '@/lib/hero-images';
+import { FALLBACK_HERO_POOL, getHeroImages } from '@/lib/hero-images';
+
+/** Resolve hero images from event — handles hero_image_url, hero_assets (array/object), theme, fallback */
+export function resolveHeroImages(
+  event: Record<string, unknown>,
+  options: {
+    customImages?: string[];
+    themeImages?: string[];
+    slug?: string;
+    topic?: string;
+  }
+): string[] {
+  if (options.customImages?.length) return options.customImages;
+  if (event.hero_image_url) return [event.hero_image_url as string];
+  const ha = event.hero_assets;
+  if (Array.isArray(ha) && ha[0]) {
+    const img = (ha[0] as Record<string, unknown>).image_url;
+    if (img) return [img as string];
+  }
+  if (ha && typeof ha === 'object' && !Array.isArray(ha)) {
+    const img = (ha as Record<string, unknown>).image_url;
+    if (img) return [img as string];
+  }
+  if (options.slug && options.topic) return getHeroImages(options.slug, options.topic);
+  if (options.themeImages?.length) return options.themeImages;
+  return FALLBACK_HERO_POOL;
+}
+
+/** Resolve hero video from event — handles hero_video_url, hero_assets (array/object) */
+export function resolveHeroVideo(
+  event: Record<string, unknown>,
+  customVideoUrl?: string
+): string | null {
+  if (customVideoUrl) return customVideoUrl;
+  if (event.hero_video_url) return event.hero_video_url as string;
+  const ha = event.hero_assets;
+  if (Array.isArray(ha) && ha[0]) return (ha[0] as Record<string, unknown>).video_url as string | null;
+  if (ha && typeof ha === 'object') return (ha as Record<string, unknown>).video_url as string | null;
+  return null;
+}
 
 export function ScanlineOverlay({ color = '79,255,223' }: { color?: string }) {
   return (
@@ -17,15 +56,21 @@ export function ScanlineOverlay({ color = '79,255,223' }: { color?: string }) {
 
 export function KenBurnsSlideshow({ images }: { images: string[] }) {
   const [idx, setIdx] = useState(0);
-  const pool = images?.length ? images : FALLBACK_HERO_POOL;
+  // Filter falsy URLs — [undefined] or [''] would render broken <img> elements
+  const filtered = (images ?? []).filter((u): u is string => !!u && typeof u === 'string');
+  const pool = filtered.length > 0 ? filtered : FALLBACK_HERO_POOL;
 
   useEffect(() => {
     const id = setInterval(() => setIdx((i) => (i + 1) % pool.length), 6000);
     return () => clearInterval(id);
   }, [pool.length]);
 
+  const fallbackBg = pool[0] ? `url(${pool[0]})` : undefined;
   return (
-    <div className="absolute inset-0" style={{ background: '#0a0a0a' }}>
+    <div
+      className="absolute inset-0 bg-cover bg-center"
+      style={{ background: fallbackBg ? `${fallbackBg} no-repeat center/cover, #0a0a0a` : '#0a0a0a' }}
+    >
       {pool.map((src, i) => (
         <div
           key={`${src}-${i}`}
