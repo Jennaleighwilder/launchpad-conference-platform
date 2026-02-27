@@ -1353,12 +1353,19 @@ function EventBlock({ block, accentColor }: { block: { type: string; data: Recor
           </div>
         </div>
       );
-    case 'image':
+    case 'image': {
+      const url = (d.url as string) || '';
+      const isVideo = url && (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov'));
       return (
         <div className="card overflow-hidden p-0">
-          <img src={(d.url as string) || ''} alt={(d.alt as string) || ''} className="w-full h-auto object-cover" />
+          {isVideo ? (
+            <video src={url} autoPlay muted loop playsInline className="w-full h-auto object-cover aspect-video" />
+          ) : (
+            <img src={url} alt={(d.alt as string) || ''} className="w-full h-auto object-cover" />
+          )}
         </div>
       );
+    }
     case 'video':
       return (
         <div className="card overflow-hidden p-0">
@@ -1370,9 +1377,16 @@ function EventBlock({ block, accentColor }: { block: { type: string; data: Recor
     case 'gallery':
       return (
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {((d.images as string[]) || []).map((src, i) => (
-            <img key={i} src={src} alt="" className="w-full aspect-square object-cover rounded-lg" />
-          ))}
+          {((d.images as string[]) || []).map((src, i) => {
+            const isVideo = src && (src.endsWith('.mp4') || src.endsWith('.webm') || src.endsWith('.mov'));
+            return isVideo ? (
+              <div key={i} className="rounded-lg overflow-hidden aspect-square">
+                <video src={src} autoPlay muted loop playsInline className="w-full h-full object-cover" />
+              </div>
+            ) : (
+              <img key={i} src={src} alt="" className="w-full aspect-square object-cover rounded-lg" />
+            );
+          })}
         </div>
       );
     case 'cta':

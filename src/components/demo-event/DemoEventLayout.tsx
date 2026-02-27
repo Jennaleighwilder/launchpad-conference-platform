@@ -77,27 +77,41 @@ export function KenBurnsSlideshow({ images }: { images: string[] }) {
       className="absolute inset-0 bg-cover bg-center"
       style={{ background: fallbackBg ? `${fallbackBg} no-repeat center/cover, #0a0a0a` : '#0a0a0a' }}
     >
-      {pool.map((src, i) => (
-        <div
-          key={`${src}-${i}`}
-          className="absolute inset-0"
-          style={{
-            opacity: i === idx ? 1 : 0,
-            transition: 'opacity 1.5s ease-in-out',
-            animation: i === idx ? 'kenBurns 20s ease-in-out infinite' : 'none',
-            willChange: i === idx ? 'transform' : 'auto',
-          }}
-        >
-          {/* Use img tag for reliable external image loading (CSS backgroundImage can fail) */}
-          <img
-            src={src}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ transform: 'scale(1)' }}
-            loading="eager"
-          />
-        </div>
-      ))}
+      {pool.map((src, i) => {
+        const isVideo = src && (src.endsWith('.mp4') || src.endsWith('.webm') || src.endsWith('.mov'));
+        return (
+          <div
+            key={`${src}-${i}`}
+            className="absolute inset-0"
+            style={{
+              opacity: i === idx ? 1 : 0,
+              transition: 'opacity 1.5s ease-in-out',
+              animation: i === idx && !isVideo ? 'kenBurns 20s ease-in-out infinite' : 'none',
+              willChange: i === idx ? 'transform' : 'auto',
+            }}
+          >
+            {isVideo ? (
+              <video
+                src={src}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{ transform: 'scale(1)' }}
+              />
+            ) : (
+              <img
+                src={src}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{ transform: 'scale(1)' }}
+                loading="eager"
+              />
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
