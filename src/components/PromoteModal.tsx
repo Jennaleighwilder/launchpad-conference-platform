@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getEventTheme, type EventTheme } from '@/lib/event-themes';
+import { type EventTheme } from '@/lib/event-themes';
 
 export interface PromoteEventData {
   name: string;
@@ -57,6 +57,7 @@ export function PromoteModal({
   theme?: EventTheme;
   accentColor?: string;
 }) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- promo API returns dynamic shape
   const [promoData, setPromoData] = useState<any>(null);
   const [promoLoading, setPromoLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<string>('social');
@@ -175,7 +176,7 @@ export function PromoteModal({
                     {['linkedin', 'twitter', 'instagram'].map((platform) => (
                       <div key={platform}>
                         <h3 className="text-sm font-semibold mb-2 uppercase" style={{ color: color }}>{platform}</h3>
-                        {(promoData.social[platform] || []).map((post: any, i: number) => (
+                        {(promoData.social[platform] || []).map((post: { text?: string; hashtags?: string }, i: number) => (
                           <div key={i} className="p-4 rounded-xl mb-3 relative" style={cardStyle}>
                             <p className="text-sm mb-2" style={{ color: theme.text }}>{post.text}</p>
                             {post.hashtags && <p className="text-xs mb-2" style={{ color: theme.textMuted }}>{post.hashtags}</p>}
@@ -190,7 +191,7 @@ export function PromoteModal({
                 )}
                 {activeTab === 'communities' && promoData.communities && (
                   <div className="space-y-3">
-                    {(promoData.communities || []).map((c: any, i: number) => (
+                    {(promoData.communities || []).map((c: { platform?: string; name?: string; relevance?: string; draft_post?: string }, i: number) => (
                       <div key={i} className="p-4 rounded-xl relative" style={cardStyle}>
                         <div className="flex justify-between items-start mb-2">
                           <span className="font-medium" style={{ color: theme.text }}>{c.platform}: {c.name}</span>
@@ -206,7 +207,7 @@ export function PromoteModal({
                 )}
                 {activeTab === 'email' && promoData.emails?.emails && (
                   <div className="space-y-4">
-                    {(promoData.emails.emails || []).map((e: any, i: number) => (
+                    {(promoData.emails.emails || []).map((e: { name?: string; send_day?: number; subject_a?: string; subject_b?: string; body_text?: string }, i: number) => (
                       <div key={i} className="p-4 rounded-xl relative" style={cardStyle}>
                         <h3 className="font-medium mb-2" style={{ color: color }}>{e.name} (Day {e.send_day})</h3>
                         <p className="text-sm mb-1" style={{ color: theme.text }}>A: {e.subject_a}</p>
@@ -221,7 +222,7 @@ export function PromoteModal({
                 )}
                 {activeTab === 'partners' && promoData.partners && (
                   <div className="space-y-3">
-                    {(promoData.partners || []).map((p: any, i: number) => (
+                    {(promoData.partners || []).map((p: { name?: string; partnership_type?: string; outreach_email_draft?: string }, i: number) => (
                       <div key={i} className="p-4 rounded-xl relative" style={cardStyle}>
                         <div className="flex justify-between mb-2">
                           <span className="font-medium" style={{ color: theme.text }}>{p.name}</span>
@@ -254,7 +255,7 @@ export function PromoteModal({
                     </div>
                     <div className="p-4 rounded-xl" style={cardStyle}>
                       <h3 className="font-medium mb-2" style={{ color: color }}>Blog outlines</h3>
-                      {(promoData.seo.blog_outlines || []).map((b: any, i: number) => (
+                      {(promoData.seo.blog_outlines || []).map((b: { title?: string }, i: number) => (
                         <p key={i} className="text-sm mb-1" style={{ color: theme.text }}>• {b.title}</p>
                       ))}
                     </div>
@@ -265,7 +266,7 @@ export function PromoteModal({
                     {['meta', 'google', 'linkedin'].map((platform) => (
                       <div key={platform}>
                         <h3 className="text-sm font-semibold mb-2 uppercase" style={{ color: color }}>{platform}</h3>
-                        {(promoData.ads[platform] || []).map((ad: any, i: number) => (
+                        {(promoData.ads[platform] || []).map((ad: { headline?: string; body?: string; audience_targeting?: string; suggested_daily_budget?: string }, i: number) => (
                           <div key={`${platform}-${i}`} className="p-4 rounded-xl mb-3 relative" style={cardStyle}>
                             <p className="font-medium text-sm mb-1" style={{ color: theme.text }}>{ad.headline}</p>
                             <p className="text-sm mb-1" style={{ color: theme.textMuted }}>{ad.body}</p>

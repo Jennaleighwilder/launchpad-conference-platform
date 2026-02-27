@@ -48,8 +48,8 @@ export default function AgendaPage() {
   }, [heroImages]);
 
   const schedule = event?.schedule || [];
-  const day1 = schedule.filter((s) => s.time?.startsWith('9') || s.time?.startsWith('10') || s.time?.startsWith('11'));
-  const day2 = schedule.filter((s) => s.time?.startsWith('1') || s.time?.startsWith('2') || s.time?.startsWith('3') || s.time?.startsWith('4') || s.time?.startsWith('5'));
+  const _day1 = schedule.filter((s) => s.time?.startsWith('9') || s.time?.startsWith('10') || s.time?.startsWith('11'));
+  const _day2 = schedule.filter((s) => s.time?.startsWith('1') || s.time?.startsWith('2') || s.time?.startsWith('3') || s.time?.startsWith('4') || s.time?.startsWith('5'));
 
   return (
     <main className="min-h-screen" style={{ background: '#0A0A0A' }}>

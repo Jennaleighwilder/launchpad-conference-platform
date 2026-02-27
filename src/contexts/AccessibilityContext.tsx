@@ -32,7 +32,9 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) setPrefs({ ...defaultPrefs, ...JSON.parse(stored) });
+      if (stored) {
+        queueMicrotask(() => setPrefs({ ...defaultPrefs, ...JSON.parse(stored) }));
+      }
     } catch {}
   }, []);
 

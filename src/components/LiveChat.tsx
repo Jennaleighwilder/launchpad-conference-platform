@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { nanoid } from 'nanoid';
 
 const QUICK_REPLIES = [
   'How does event generation work?',
@@ -52,23 +53,28 @@ export function LiveChat() {
   }, [messages, typing]);
 
   useEffect(() => {
-    if (open) setUnread(0);
+    if (open) queueMicrotask(() => setUnread(0));
   }, [open]);
+
+  const botDelayRef = useRef(1000);
+  useEffect(() => {
+    botDelayRef.current = 800 + Math.random() * 400;
+  }, []);
 
   const sendMessage = (text: string) => {
     if (!text.trim()) return;
-    const userMsg: Message = { id: `${Date.now()}-u`, text: text.trim(), sender: 'user', timestamp: new Date() };
+    const userMsg: Message = { id: `u-${nanoid()}`, text: text.trim(), sender: 'user', timestamp: new Date() };
     setMessages((m) => [...m, userMsg]);
     setInput('');
     setTyping(true);
 
     setTimeout(() => {
       const botText = getBotResponse(text);
-      const botMsg: Message = { id: `${Date.now()}-b`, text: botText, sender: 'bot', timestamp: new Date() };
+      const botMsg: Message = { id: `b-${nanoid()}`, text: botText, sender: 'bot', timestamp: new Date() };
       setMessages((m) => [...m, botMsg]);
       setTyping(false);
       if (!open) setUnread((u) => u + 1);
-    }, 800 + Math.random() * 400);
+    }, botDelayRef.current);
   };
 
   const handleQuickReply = (text: string) => {

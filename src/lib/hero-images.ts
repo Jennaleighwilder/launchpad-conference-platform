@@ -161,7 +161,7 @@ const PICSUM_POOL = [
 ];
 
 // Unsplash — no API key for direct URLs, but can rate-limit
-const UNSPLASH_POOL = [
+const _UNSPLASH_POOL = [
   'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop',
   'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1920&h=1080&fit=crop',
   'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1920&h=1080&fit=crop',

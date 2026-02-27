@@ -284,7 +284,7 @@ export default function AIFestivalUK2026Page() {
             <h2 className="text-base font-medium uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>10 experts across 9 tracks</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-            {SPEAKERS.map((speaker, i) => {
+            {SPEAKERS.map((speaker) => {
               const trackColor = TRACK_COLORS[TRACKS.indexOf(speaker.track) % TRACK_COLORS.length] || accentColor;
               const expanded = expandedSpeaker === speaker.id;
               return (

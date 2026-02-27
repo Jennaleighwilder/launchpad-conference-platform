@@ -31,9 +31,9 @@ export async function sendEmail({
       ...(replyTo ? { replyTo } : {}),
     });
     return { success: true, id: result.data?.id };
-  } catch (err: any) {
-    console.error('[email:error]', err.message);
-    return { success: false, error: err.message };
+  } catch (err: unknown) {
+    console.error('[email:error]', err instanceof Error ? err.message : err);
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
   }
 }
 

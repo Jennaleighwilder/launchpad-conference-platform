@@ -8,7 +8,6 @@ export function AccessibilityBody() {
 
   useEffect(() => {
     const html = document.documentElement;
-    const body = document.body;
 
     html.dataset.dyslexia = String(prefs.dyslexia);
     html.dataset.adhdFocus = String(prefs.adhdFocus);

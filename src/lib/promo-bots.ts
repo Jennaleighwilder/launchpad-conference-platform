@@ -140,9 +140,9 @@ export async function runPromoSwarm(input: PromoInput): Promise<PromoResult> {
       const result = await fn();
       timings[name] = Date.now() - start;
       return result;
-    } catch (err: any) {
+    } catch (err: unknown) {
       timings[name] = Date.now() - start;
-      errors.push(`${name}: ${err.message || 'failed'}`);
+      errors.push(`${name}: ${err instanceof Error ? err.message : 'failed'}`);
       return fallback;
     }
   }

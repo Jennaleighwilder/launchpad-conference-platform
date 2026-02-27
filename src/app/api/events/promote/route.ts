@@ -9,7 +9,8 @@ export async function POST(req: Request) {
     }
     const result = await runPromoSwarm(input);
     return NextResponse.json({ success: true, promo: result, timing: result.agentTimings, errors: result.errors });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || 'Promotion generation failed' }, { status: 500 });
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : 'Promotion generation failed';
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

@@ -216,7 +216,7 @@ export async function GET(
           ensureHeroUrl(ev);
           return NextResponse.json({ event: ev });
         }
-      } catch (dbErr) {
+      } catch (_dbErr) {
         console.warn('Supabase unavailable, checking memory store');
       }
     }

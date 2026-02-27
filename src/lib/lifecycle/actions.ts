@@ -34,8 +34,8 @@ export async function generateEventDescription(event: EventForActions): Promise<
         return text;
       }
     }
-  } catch (err: any) {
-    console.log('[lifecycle] generateEventDescription: fallback', err.message);
+  } catch (err: unknown) {
+    console.log('[lifecycle] generateEventDescription: fallback', err instanceof Error ? err.message : err);
   }
   return event.description || `Join us for ${event.name} on ${event.date} in ${event.city}.`;
 }
@@ -59,8 +59,8 @@ export async function generateSocialAnnouncement(event: EventForActions): Promis
         return text;
       }
     }
-  } catch (err: any) {
-    console.log('[lifecycle] generateSocialAnnouncement: fallback', err.message);
+  } catch (err: unknown) {
+    console.log('[lifecycle] generateSocialAnnouncement: fallback', err instanceof Error ? err.message : err);
   }
   return `${event.name} — ${event.date} in ${event.city}. Get your ticket!`;
 }
@@ -72,8 +72,8 @@ export async function sendSpeakerEmails(event: EventForActions): Promise<void> {
     try {
       await sendEmail({ to: 'speakers@launchpad.events', subject, text: body });
       console.log('[lifecycle] sendSpeakerEmails: sent');
-    } catch (err: any) {
-      console.log('[lifecycle] sendSpeakerEmails: failed', err.message);
+    } catch (err: unknown) {
+      console.log('[lifecycle] sendSpeakerEmails: failed', err instanceof Error ? err.message : err);
     }
   } else {
     console.log('[lifecycle] sendSpeakerEmails: demo mode — would send to speakers@launchpad.events', { subject, body: body.slice(0, 80) });
@@ -87,8 +87,8 @@ export async function sendAttendeeReminder(event: EventForActions): Promise<void
     try {
       await sendEmail({ to: 'attendees@launchpad.events', subject, text: body });
       console.log('[lifecycle] sendAttendeeReminder: sent');
-    } catch (err: any) {
-      console.log('[lifecycle] sendAttendeeReminder: failed', err.message);
+    } catch (err: unknown) {
+      console.log('[lifecycle] sendAttendeeReminder: failed', err instanceof Error ? err.message : err);
     }
   } else {
     console.log('[lifecycle] sendAttendeeReminder: demo mode — would send', { subject, body: body.slice(0, 80) });

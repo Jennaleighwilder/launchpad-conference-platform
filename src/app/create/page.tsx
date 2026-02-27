@@ -137,7 +137,7 @@ export default function CreatePage() {
         setError(data.error || 'Something went wrong. Try again.');
         setLoading(false);
       }
-    } catch (err) {
+    } catch (_err) {
       if (stepInterval) clearInterval(stepInterval);
       setError('Network error. Check your connection and try again.');
       setLoading(false);

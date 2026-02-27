@@ -223,12 +223,12 @@ function ticketsRemaining(tier: keyof typeof SOLD_PCT) {
   return Math.max(0, Math.round(cap / 3) - sold);
 }
 
+const REGISTRATION_BASE = [1200, 1250, 1320, 1380, 1420, 1480, 1520, 1580, 1620, 1680, 1720, 1780, 1820, 1847];
+
 function RegistrationLineChart() {
-  const [points, setPoints] = useState<number[]>([]);
+  const [points, setPoints] = useState<number[]>(() => REGISTRATION_BASE);
   const countRef = useRef(1200);
   useEffect(() => {
-    const base = [1200, 1250, 1320, 1380, 1420, 1480, 1520, 1580, 1620, 1680, 1720, 1780, 1820, 1847];
-    setPoints(base);
     const id = setInterval(() => {
       countRef.current = Math.min(countRef.current + Math.floor(Math.random() * 4) + 1, 2500);
       setPoints((p) => (p.length >= 20 ? [...p.slice(1), countRef.current] : [...p, countRef.current]));
