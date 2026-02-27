@@ -226,7 +226,7 @@ export default function HomePage() {
         {/* Hero image reel — 5 photos cycle every 6s with crossfade + Ken Burns */}
         <div className="absolute inset-0 z-0">
           <KenBurnsSlideshow images={HERO_IMAGES} />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(5,5,8,0.5) 0%, rgba(5,5,8,0.6) 40%, rgba(5,5,8,0.9) 100%)' }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(4,4,14,0.4) 0%, rgba(4,4,14,0.85) 65%, #04040E 100%)' }} />
         </div>
         <div className="absolute inset-0" style={{
           background: 'radial-gradient(ellipse 80% 50% at 50% 30%, rgba(79,255,223,0.08) 0%, transparent 60%)',
@@ -477,7 +477,9 @@ export default function HomePage() {
               ].map((v) => (
                 <div key={v.src} className="rounded-xl overflow-hidden group" style={{ border: '1px solid rgba(79,255,223,0.2)', boxShadow: '0 0 20px rgba(79,255,223,0.1)' }}>
                   <div className="aspect-video relative">
-                    <video src={v.src} className="absolute inset-0 w-full h-full object-cover" autoPlay muted loop playsInline />
+                    <video className="absolute inset-0 w-full h-full object-cover" autoPlay muted loop playsInline preload="auto">
+                      <source src={v.src} type="video/mp4" />
+                    </video>
                   </div>
                   <div className="p-2" style={{ background: 'rgba(0,0,0,0.4)' }}>
                     <div className="text-xs font-medium">{v.title}</div>
