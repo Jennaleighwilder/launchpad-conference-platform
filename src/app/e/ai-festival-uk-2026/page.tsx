@@ -157,7 +157,7 @@ export default function AIFestivalUK2026Page() {
         <div className="absolute inset-0 z-0">
           <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" src="/videos/9b68ed1f-ef9b-437c-b0bc-642f911e47a3_hd.mp4" />
         </div>
-        <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.85) 40%, rgba(0,0,0,0.95) 100%)' }} />
+        <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)' }} />
         <div className="absolute inset-0 z-[1] opacity-20 pointer-events-none" style={{ background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}30 0%, transparent 70%)` }} />
         <div className="relative z-10 max-w-5xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6" style={{ background: `${accentColor}15`, border: `1px solid ${accentColor}40` }}>
@@ -165,17 +165,17 @@ export default function AIFestivalUK2026Page() {
             <span style={{ color: accentColor, fontSize: '0.75rem', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>30% Early Bird</span>
           </div>
           <h1 className="mb-4 text-white" style={{ fontFamily: 'var(--font-tech)', fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.1, textShadow: '0 2px 20px rgba(0,0,0,0.5)' }}>AI Festival UK 2026</h1>
-          <p className="mb-6" style={{ color: accentColor, fontSize: '1.25rem', fontFamily: 'var(--font-mono)', textShadow: '0 1px 8px rgba(0,0,0,0.8)' }}>10 tracks · 2 days · Bury St Edmunds</p>
-          <div className="flex flex-wrap gap-6 mb-6" style={{ color: 'rgba(255,255,255,0.95)', fontSize: '1rem', textShadow: '0 1px 8px rgba(0,0,0,0.8)' }}>
+          <p className="mb-6" style={{ color: accentColor, fontSize: '1.25rem', fontFamily: 'var(--font-mono)', textShadow: '0 1px 10px rgba(0,0,0,0.5)' }}>10 tracks · 2 days · Bury St Edmunds</p>
+          <div className="flex flex-wrap gap-6 mb-6" style={{ color: 'rgba(255,255,255,0.95)', fontSize: '1rem', textShadow: '0 1px 10px rgba(0,0,0,0.5)' }}>
             <div className="flex items-center gap-2"><span>📍</span><span>STEM Centre, 73 Western Way, Bury St Edmunds</span></div>
             <div className="flex items-center gap-2"><span>📅</span><span>May 27–28, 2026</span></div>
             <div className="flex items-center gap-2"><span>👥</span><span><LiveRegistrationCounter count={1247} max={2000} accentColor={accentColor} /> registered</span></div>
           </div>
           <div className="mb-8">
-            <p className="text-xs uppercase tracking-wider mb-2" style={{ color: 'rgba(255,255,255,0.9)', textShadow: '0 1px 8px rgba(0,0,0,0.8)' }}>Festival starts in</p>
+            <p className="text-xs uppercase tracking-wider mb-2" style={{ color: 'rgba(255,255,255,0.9)', textShadow: '0 1px 10px rgba(0,0,0,0.5)' }}>Festival starts in</p>
             <CountdownTimer endDate="2026-05-27T09:00:00" accentColor={accentColor} />
           </div>
-          <p className="max-w-3xl mb-8" style={{ color: 'rgba(255,255,255,0.95)', fontSize: '1.125rem', lineHeight: 1.7, textShadow: '0 1px 8px rgba(0,0,0,0.8)' }}>
+          <p className="max-w-3xl mb-8" style={{ color: 'rgba(255,255,255,0.95)', fontSize: '1.125rem', lineHeight: 1.7, textShadow: '0 1px 10px rgba(0,0,0,0.5)' }}>
             The UK&apos;s premier AI festival. Two days at West Suffolk College&apos;s STEM Centre (£2M XR Lab). Energy, Quantum, Robotics, Cyber, Healthcare, Creative, XR, Agriculture, and PitchFest.
           </p>
           <div className="flex flex-wrap gap-2">

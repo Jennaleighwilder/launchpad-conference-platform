@@ -423,7 +423,7 @@ export default function EventPage() {
             </div>
           </div>
 
-          <p className="mb-4 text-sm" style={{ color: theme.textMuted, fontFamily: theme.fontMono }}>
+          <p className="mb-4 text-sm" style={{ color: theme.textMuted, fontFamily: theme.fontMono, textShadow: '0 1px 10px rgba(0,0,0,0.5)' }}>
             {heroBreadcrumb}
           </p>
 
@@ -433,12 +433,13 @@ export default function EventPage() {
             lineHeight: 1.05,
             letterSpacing: '-0.02em',
             color: theme.text,
+            textShadow: '0 2px 20px rgba(0,0,0,0.6), 0 4px 40px rgba(0,0,0,0.3)',
           }}>
             {displayName}
           </h1>
 
           {displayTagline && (
-            <p className="mb-8 max-w-2xl" style={{ color: accentColor, fontSize: '1.25rem', fontFamily: theme.fontMono }}>
+            <p className="mb-8 max-w-2xl" style={{ color: accentColor, fontSize: '1.25rem', fontFamily: theme.fontMono, textShadow: '0 1px 10px rgba(0,0,0,0.5)' }}>
               {displayTagline}
             </p>
           )}
