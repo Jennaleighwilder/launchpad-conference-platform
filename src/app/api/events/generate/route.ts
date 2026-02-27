@@ -24,6 +24,22 @@ function makeSlug(topic: string, city: string): string {
   return `${topic.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 20)}-${city.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 15)}-${id}`;
 }
 
+/** Ensure event date is realistic (3–6 months out). Avoids countdowns showing 1000+ days. */
+function sanitizeEventDate(dateStr: string): string {
+  const parsed = new Date(dateStr + 'T12:00:00');
+  if (isNaN(parsed.getTime())) return '2026-09-15';
+  const now = new Date();
+  const maxMonths = 12;
+  const maxDate = new Date(now);
+  maxDate.setMonth(maxDate.getMonth() + maxMonths);
+  if (parsed > maxDate) {
+    const sixMonths = new Date(now);
+    sixMonths.setMonth(sixMonths.getMonth() + 6);
+    return sixMonths.toISOString().slice(0, 10);
+  }
+  return dateStr;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body: CreateEventInput = await request.json();
@@ -36,6 +52,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const eventDate = sanitizeEventDate(body.date);
+
     let eventData: any;
     const days = (body.days === 2 || body.days === 3 ? body.days : 1) as 1 | 2 | 3;
 
@@ -46,7 +64,7 @@ export async function POST(request: NextRequest) {
         const swarmResult = await runSwarm({
           topic: body.topic,
           city: body.city,
-          date: body.date,
+          date: eventDate,
           capacity: body.capacity || 500,
           budget: body.budget || 'growth',
           vibe: body.vibe || 'professional',
@@ -61,7 +79,7 @@ export async function POST(request: NextRequest) {
           name: swarmResult.branding.name,
           topic: body.topic,
           city: body.city,
-          date: body.date,
+          date: eventDate,
           capacity: body.capacity || 500,
           budget: body.budget || 'growth',
           vibe: body.vibe || 'professional',
@@ -85,7 +103,7 @@ export async function POST(request: NextRequest) {
         eventData = await generateEvent({
           topic: body.topic,
           city: body.city,
-          date: body.date,
+          date: eventDate,
           capacity: body.capacity || 500,
           budget: body.budget || 'growth',
           vibe: body.vibe || 'professional',
@@ -99,7 +117,7 @@ export async function POST(request: NextRequest) {
       eventData = await generateEvent({
         topic: body.topic,
         city: body.city,
-        date: body.date,
+        date: eventDate,
         capacity: body.capacity || 500,
         budget: body.budget || 'growth',
         vibe: body.vibe || 'professional',
