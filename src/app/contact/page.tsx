@@ -5,10 +5,31 @@ import Link from 'next/link';
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({ name: '', company: '', email: '', companySize: '', message: '' });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setError('');
+    setLoading(true);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: form.name, email: form.email, message: form.message, company: form.company || undefined }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Failed to send');
+        return;
+      }
+      setSubmitted(true);
+    } catch {
+      setError('Failed to send');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -42,6 +63,7 @@ export default function ContactPage() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
+              {error && <p className="text-sm" style={{ color: '#EF4444' }}>{error}</p>}
               <div>
                 <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Name</label>
                 <input
@@ -49,15 +71,18 @@ export default function ContactPage() {
                   required
                   placeholder="Jane Doe"
                   className="input-field w-full"
+                  value={form.name}
+                  onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                 />
               </div>
               <div>
                 <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Company</label>
                 <input
                   type="text"
-                  required
                   placeholder="Acme Inc"
                   className="input-field w-full"
+                  value={form.company}
+                  onChange={(e) => setForm((f) => ({ ...f, company: e.target.value }))}
                 />
               </div>
               <div>
@@ -67,11 +92,13 @@ export default function ContactPage() {
                   required
                   placeholder="jane@company.com"
                   className="input-field w-full"
+                  value={form.email}
+                  onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
                 />
               </div>
               <div>
                 <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Company Size</label>
-                <select className="input-field w-full" style={{ background: 'var(--color-bg)', borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }}>
+                <select className="input-field w-full" style={{ background: 'var(--color-bg)', borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }} value={form.companySize} onChange={(e) => setForm((f) => ({ ...f, companySize: e.target.value }))}>
                   <option value="">Select size</option>
                   <option value="1-10">1-10</option>
                   <option value="11-50">11-50</option>
@@ -82,13 +109,16 @@ export default function ContactPage() {
               <div>
                 <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Message</label>
                 <textarea
+                  required
                   placeholder="Tell us about your event needs..."
                   rows={5}
                   className="input-field w-full resize-none"
+                  value={form.message}
+                  onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
                 />
               </div>
-              <button type="submit" className="btn-primary w-full">
-                Request Demo
+              <button type="submit" className="btn-primary w-full" disabled={loading}>
+                {loading ? 'Sending...' : 'Request Demo'}
               </button>
             </form>
           )}

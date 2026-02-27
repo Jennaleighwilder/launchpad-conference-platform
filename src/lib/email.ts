@@ -2,6 +2,41 @@ import { Resend } from 'resend';
 
 const resendKey = process.env.RESEND_API_KEY;
 
+export async function sendEmail({
+  to,
+  subject,
+  html,
+  text,
+  replyTo,
+}: {
+  to: string;
+  subject: string;
+  html?: string;
+  text?: string;
+  replyTo?: string;
+}): Promise<{ success: boolean; demo?: boolean; id?: string; error?: string }> {
+  if (!process.env.RESEND_API_KEY) {
+    console.log('[email:demo]', { to, subject, preview: (text || html || '').slice(0, 80) });
+    return { success: true, demo: true };
+  }
+
+  try {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const result = await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Launchpad <notifications@launchpad.events>',
+      to,
+      subject,
+      html: html || text || '',
+      text: text || '',
+      ...(replyTo ? { replyTo } : {}),
+    });
+    return { success: true, id: result.data?.id };
+  } catch (err: any) {
+    console.error('[email:error]', err.message);
+    return { success: false, error: err.message };
+  }
+}
+
 type TicketEmailArgs = {
   to: string;
   eventName: string;
