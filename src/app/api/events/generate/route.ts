@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
 
         const slug = makeSlug(body.topic, body.city);
         const { getUniqueHeroForEvent } = await import('@/lib/hero-images');
+        const { getUniqueHeroVideoForEvent } = await import('@/lib/hero-videos');
         eventData = {
           slug,
           name: swarmResult.branding.name,
@@ -73,6 +74,7 @@ export async function POST(request: NextRequest) {
           schedule: swarmResult.schedule,
           pricing: swarmResult.pricing,
           hero_image_url: getUniqueHeroForEvent(body.topic, body.city, slug),
+          hero_video_url: getUniqueHeroVideoForEvent(body.topic, body.city, slug),
           hero_media_type: 'image',
           _swarm: { timings: swarmResult.agentTimings, errors: swarmResult.errors },
         };
@@ -126,6 +128,7 @@ export async function POST(request: NextRequest) {
 
         // Generate relevant hero (AI → Unsplash → Picsum) with 15s timeout to avoid long hangs
         const { getUniqueHeroForEvent } = await import('@/lib/hero-images');
+        const { getUniqueHeroVideoForEvent } = await import('@/lib/hero-videos');
         let hero: { image_url: string; provider: string; provider_asset_id?: string | null };
         try {
           hero = await Promise.race([
@@ -166,7 +169,7 @@ export async function POST(request: NextRequest) {
             tagline: fullEvent.tagline,
             topic_key: fullEvent.topic_key,
             hero_image_url: hero.image_url,
-            hero_video_url: null,
+            hero_video_url: getUniqueHeroVideoForEvent(fullEvent.topic, fullEvent.city, fullEvent.slug),
             hero_media_type: 'image',
             status: 'draft',
           })

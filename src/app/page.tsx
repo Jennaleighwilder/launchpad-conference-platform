@@ -8,6 +8,7 @@ import { PromotionEngine } from '@/components/PromotionEngine';
 import { AnimatedTerminal } from '@/components/AnimatedTerminal';
 import { SocialProofTicker } from '@/components/SocialProofTicker';
 import { KenBurnsSlideshow } from '@/components/demo-event/DemoEventLayout';
+import { PROMO_VIDEO_POOL } from '@/lib/hero-videos';
 
 const DEMO_EVENTS = [
   { slug: 'ai-festival-uk-2026', name: 'AI Festival UK 2026', date: 'May 27-28, 2026', desc: 'Live event · Bury St Edmunds · £2M XR Lab', color: '#22C55E', img: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&h=400&fit=crop', live: true },
@@ -498,12 +499,7 @@ export default function HomePage() {
           <div className="mb-16">
             <h3 className="text-2xl font-semibold mb-6" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-accent)', textShadow: '0 0 20px rgba(79,255,223,0.5)' }}>Promo videos</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-              {[
-                '/videos/8d0ea574-bdda-47c4-8ce8-e9318d70e7b8_hd.mp4',
-                '/videos/19a52e15-e11c-41a2-89ae-6a7949390ff3_hd.mp4',
-                '/videos/38bf5980-84f6-41a7-b7a0-843826866b12_hd.mp4',
-                '/videos/Bayou_Scene_Video_Generation.mp4',
-              ].map((src) => (
+              {PROMO_VIDEO_POOL.slice(0, 8).map((src) => (
                 <div key={src} className="rounded-xl overflow-hidden group" style={{ border: '1px solid rgba(79,255,223,0.2)', boxShadow: '0 0 20px rgba(79,255,223,0.1)' }}>
                   <div className="aspect-video relative">
                     <video className="absolute inset-0 w-full h-full object-cover" autoPlay muted loop playsInline preload="auto">
