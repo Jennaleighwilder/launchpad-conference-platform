@@ -63,4 +63,6 @@ export interface CreateEventInput {
   budget: string;
   vibe: string;
   speakers_hint?: string;
+  days?: 1 | 2 | 3;
+  enhanced?: boolean;
 }

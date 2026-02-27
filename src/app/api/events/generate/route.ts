@@ -37,44 +37,61 @@ export async function POST(request: NextRequest) {
     }
 
     let eventData: any;
+    const days = (body.days === 2 || body.days === 3 ? body.days : 1) as 1 | 2 | 3;
 
-    // ── SWARM MODE: 5 parallel AI agents ────────────────────────────
-    if (useSwarm && hasOpenAI()) {
-      console.log('[swarm] Dispatching 5 agents...');
-      const swarmResult = await runSwarm({
-        topic: body.topic,
-        city: body.city,
-        date: body.date,
-        capacity: body.capacity || 500,
-        budget: body.budget || 'growth',
-        vibe: body.vibe || 'professional',
-        speakers_hint: body.speakers_hint,
-      });
+    // ── SWARM MODE: 5 parallel AI agents (or enhanced fallback when no key) ──
+    if (useSwarm) {
+      if (hasOpenAI()) {
+        console.log('[swarm] Dispatching 5 agents...');
+        const swarmResult = await runSwarm({
+          topic: body.topic,
+          city: body.city,
+          date: body.date,
+          capacity: body.capacity || 500,
+          budget: body.budget || 'growth',
+          vibe: body.vibe || 'professional',
+          speakers_hint: body.speakers_hint,
+        });
 
-      const slug = makeSlug(body.topic, body.city);
-      const { getUniqueHeroForEvent } = await import('@/lib/hero-images');
-      eventData = {
-        slug,
-        name: swarmResult.branding.name,
-        topic: body.topic,
-        city: body.city,
-        date: body.date,
-        capacity: body.capacity || 500,
-        budget: body.budget || 'growth',
-        vibe: body.vibe || 'professional',
-        tagline: swarmResult.branding.tagline,
-        description: swarmResult.branding.description,
-        topic_key: swarmResult.branding.topic_key,
-        venue: swarmResult.venue,
-        tracks: swarmResult.tracks,
-        speakers: swarmResult.speakers,
-        schedule: swarmResult.schedule,
-        pricing: swarmResult.pricing,
-        hero_image_url: getUniqueHeroForEvent(body.topic, body.city, slug),
-        hero_media_type: 'image',
-        _swarm: { timings: swarmResult.agentTimings, errors: swarmResult.errors },
-      };
-      console.log('[swarm] Complete:', swarmResult.agentTimings);
+        const slug = makeSlug(body.topic, body.city);
+        const { getUniqueHeroForEvent } = await import('@/lib/hero-images');
+        eventData = {
+          slug,
+          name: swarmResult.branding.name,
+          topic: body.topic,
+          city: body.city,
+          date: body.date,
+          capacity: body.capacity || 500,
+          budget: body.budget || 'growth',
+          vibe: body.vibe || 'professional',
+          tagline: swarmResult.branding.tagline,
+          description: swarmResult.branding.description,
+          topic_key: swarmResult.branding.topic_key,
+          venue: swarmResult.venue,
+          tracks: swarmResult.tracks,
+          speakers: swarmResult.speakers,
+          schedule: swarmResult.schedule,
+          pricing: swarmResult.pricing,
+          hero_image_url: getUniqueHeroForEvent(body.topic, body.city, slug),
+          hero_media_type: 'image',
+          _swarm: { timings: swarmResult.agentTimings, errors: swarmResult.errors },
+        };
+        console.log('[swarm] Complete:', swarmResult.agentTimings);
+      } else {
+        // Swarm without API key: use enhanced built-in generation (12 speakers, richer content)
+        console.log('[swarm] Enhanced fallback (no API key)');
+        eventData = await generateEvent({
+          topic: body.topic,
+          city: body.city,
+          date: body.date,
+          capacity: body.capacity || 500,
+          budget: body.budget || 'growth',
+          vibe: body.vibe || 'professional',
+          speakers_hint: body.speakers_hint,
+          days,
+          enhanced: true,
+        });
+      }
     } else {
       // ── STANDARD MODE: single-pass generation ──────────────────────
       eventData = await generateEvent({
@@ -85,6 +102,7 @@ export async function POST(request: NextRequest) {
         budget: body.budget || 'growth',
         vibe: body.vibe || 'professional',
         speakers_hint: body.speakers_hint,
+        days,
       });
     }
 

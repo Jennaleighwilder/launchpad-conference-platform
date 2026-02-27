@@ -7,6 +7,8 @@ import Image from 'next/image';
 import type { EventData, SpeakerData, ScheduleItem, PricingData, VenueData } from '@/lib/types';
 import { KenBurnsSlideshow, CountdownTimer, resolveHeroImages, resolveHeroVideo } from '@/components/demo-event/DemoEventLayout';
 import { getEventTheme } from '@/lib/event-themes';
+import { useAccessibility } from '@/contexts/AccessibilityContext';
+import type { AccessibilityPrefs } from '@/contexts/AccessibilityContext';
 
 const TRACK_COLORS = ['#4FFFDF', '#A78BFA', '#34D399', '#F472B6', '#FBBF24', '#60A5FA'];
 
@@ -155,6 +157,8 @@ export default function EventPage() {
   const [sectionVisible, setSectionVisible] = useState<Record<string, boolean>>({
     speakers: true, schedule: true, venue: true, travel: true, gallery: true, video: true, engagement: true, pricing: true, sponsor: true, share: true, faq: true,
   });
+  const [customLang, setCustomLang] = useState('en');
+  const [customTranslations, setCustomTranslations] = useState<Record<string, { name: string; tagline: string; description: string }>>({});
   const shareUrl = typeof window !== 'undefined' ? window.location.href : `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/e/${slug}`;
 
   useEffect(() => {
@@ -188,6 +192,8 @@ export default function EventPage() {
                   if (cust.description) setCustomDescription(cust.description);
                   if (cust.sectionOrder?.length) setSectionOrder(cust.sectionOrder);
                   if (cust.sectionVisible) setSectionVisible((v) => ({ ...v, ...cust.sectionVisible }));
+                  if (cust.lang) setCustomLang(cust.lang);
+                  if (cust.translations) setCustomTranslations(cust.translations);
                 }
               } catch { /* ignore */ }
               return;
@@ -219,6 +225,8 @@ export default function EventPage() {
               if (parsed.description) setCustomDescription(parsed.description);
               if (parsed.sectionOrder?.length) setSectionOrder(parsed.sectionOrder);
               if (parsed.sectionVisible) setSectionVisible((v) => ({ ...v, ...parsed.sectionVisible }));
+              if (parsed.lang) setCustomLang(parsed.lang);
+              if (parsed.translations) setCustomTranslations(parsed.translations);
             }
           } catch { /* ignore */ }
         } else {
@@ -301,8 +309,11 @@ export default function EventPage() {
   const tracks = (event.tracks || []) as string[];
   const theme = getEventTheme(event.topic, event.vibe, event.slug);
   const accentColor = customAccent || theme.accent;
-  const displayName = customName || event.name;
-  const displayTagline = customTagline !== undefined ? customTagline : event.tagline;
+  const baseName = customName || event.name;
+  const baseTagline = customTagline !== undefined ? customTagline : event.tagline;
+  const t = customLang && customLang !== 'en' ? customTranslations[customLang] : null;
+  const displayName = t?.name || baseName;
+  const displayTagline = t?.tagline ?? baseTagline;
   const ev = event as unknown as Record<string, unknown>;
   const heroImages = resolveHeroImages(ev, {
     customImages: customHeroImages,
@@ -312,7 +323,7 @@ export default function EventPage() {
   });
   const heroVideoUrl = resolveHeroVideo(ev, customHeroVideoUrl);
   const useVideoHero = !customHeroImages.length && !!heroVideoUrl;
-  const displayDescription = customDescription || event.description || '';
+  const displayDescription = (t?.description || customDescription || event.description || '');
   const videoEmbedId = (() => {
     if (!customVideoUrl.trim()) return DEFAULT_VIDEO_ID;
     const yt = customVideoUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
@@ -347,8 +358,10 @@ export default function EventPage() {
     '--color-warm-dim': `${accentColor}20`,
   } as React.CSSProperties;
 
+  const hasTranslations = Object.keys(customTranslations).length > 0;
+
   return (
-    <main className="min-h-screen relative" style={{ ...themeVars, background: 'transparent', color: theme.text }}>
+    <main className="min-h-screen relative" style={{ ...themeVars, background: 'transparent', color: theme.text }} lang={customLang || undefined}>
       {/* Hero — media layer inside section so it always fills */}
       <section className="relative isolate min-h-[85vh] flex flex-col justify-end pb-24 pt-32 px-6 overflow-hidden">
         {/* HERO MEDIA LAYER — z-0 so visible above body, below overlays */}
@@ -376,15 +389,38 @@ export default function EventPage() {
 
         {/* Hero content */}
         <div className="relative z-10 max-w-5xl mx-auto w-full">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
             <Link href="/" className="inline-flex items-center gap-2 text-sm transition-colors hover:opacity-80"
               style={{ color: theme.textMuted }}>
               ← Back to Launchpad
             </Link>
-            <button onClick={() => setCustomizeOpen(true)} className="px-4 py-2 text-sm font-medium transition-colors"
-              style={{ background: theme.cardBg, border: `1px solid ${theme.cardBorder}`, color: theme.text, borderRadius: theme.buttonRadius }}>
-              ✏️ Customize Event
-            </button>
+            <div className="flex items-center gap-2">
+              {hasTranslations && (
+                <select value={customLang} onChange={(e) => {
+                  const next = e.target.value;
+                  setCustomLang(next);
+                  try {
+                    const key = `event-customize-${slug}`;
+                    const saved = localStorage.getItem(key);
+                    if (saved) {
+                      const cust = JSON.parse(saved);
+                      localStorage.setItem(key, JSON.stringify({ ...cust, lang: next }));
+                    }
+                  } catch { /* ignore */ }
+                }}
+                  className="px-3 py-2 text-sm rounded-lg"
+                  style={{ background: theme.cardBg, border: `1px solid ${theme.cardBorder}`, color: theme.text, borderRadius: theme.buttonRadius }}>
+                  <option value="en">English</option>
+                  {Object.keys(customTranslations).map((code) => (
+                    <option key={code} value={code}>{LANGUAGES.find((l) => l.code === code)?.label || code}</option>
+                  ))}
+                </select>
+              )}
+              <button onClick={() => setCustomizeOpen(true)} className="px-4 py-2 text-sm font-medium transition-colors"
+                style={{ background: theme.cardBg, border: `1px solid ${theme.cardBorder}`, color: theme.text, borderRadius: theme.buttonRadius }}>
+                ✏️ Customize Event
+              </button>
+            </div>
           </div>
 
           <p className="mb-4 text-sm" style={{ color: theme.textMuted, fontFamily: theme.fontMono }}>
@@ -967,10 +1003,12 @@ export default function EventPage() {
           initialHeroVideoUrl={customHeroVideoUrl}
           initialVideoUrl={customVideoUrl}
           initialDescription={customDescription || event.description || ''}
+          initialLang={customLang}
+          initialTranslations={customTranslations}
           sectionOrder={sectionOrder}
           sectionVisible={sectionVisible}
           onClose={() => setCustomizeOpen(false)}
-          onSave={async (name, tagline, accent, heroImages, heroVidUrl, videoUrl, description, order, visible) => {
+          onSave={async (name, tagline, accent, heroImages, heroVidUrl, videoUrl, description, order, visible, lang, translations) => {
             setCustomName(name);
             setCustomTagline(tagline);
             setCustomAccent(accent);
@@ -980,6 +1018,8 @@ export default function EventPage() {
             setCustomDescription(description);
             setSectionOrder(order);
             setSectionVisible(visible);
+            if (lang) setCustomLang(lang);
+            if (translations) setCustomTranslations(translations);
 
             const isDbEvent = /^[0-9a-f-]{36}$/i.test(event.id);
             if (isDbEvent) {
@@ -1001,7 +1041,7 @@ export default function EventPage() {
               } catch { /* ignore */ }
             } else {
               try {
-                localStorage.setItem(`event-customize-${slug}`, JSON.stringify({ name, tagline, accent, heroImages, heroVideoUrl: heroVidUrl, videoUrl, description, sectionOrder: order, sectionVisible: visible }));
+                localStorage.setItem(`event-customize-${slug}`, JSON.stringify({ name, tagline, accent, heroImages, heroVideoUrl: heroVidUrl, videoUrl, description, sectionOrder: order, sectionVisible: visible, lang, translations }));
               } catch { /* ignore */ }
             }
             setCustomizeOpen(false);
@@ -1020,6 +1060,24 @@ const SECTION_LABELS: Record<string, string> = {
   engagement: 'Networking & Live Engagement', pricing: 'Tickets', sponsor: 'Sponsor CTA', share: 'Share & Calendar', faq: 'Event FAQ',
 };
 
+const TABS = [
+  { id: 'content', label: 'Content', icon: '✏️' },
+  { id: 'media', label: 'Media', icon: '🖼️' },
+  { id: 'accessibility', label: 'Accessibility', icon: '♿' },
+  { id: 'language', label: 'Language', icon: '🌐' },
+] as const;
+
+const LANGUAGES = [
+  { code: 'en', label: 'English' },
+  { code: 'es', label: 'Spanish' },
+  { code: 'fr', label: 'French' },
+  { code: 'de', label: 'German' },
+  { code: 'nl', label: 'Dutch' },
+  { code: 'pt', label: 'Portuguese' },
+  { code: 'it', label: 'Italian' },
+  { code: 'ja', label: 'Japanese' },
+];
+
 function CustomizeModal({
   event,
   initialName,
@@ -1029,6 +1087,8 @@ function CustomizeModal({
   initialHeroVideoUrl,
   initialVideoUrl,
   initialDescription,
+  initialLang,
+  initialTranslations,
   sectionOrder,
   sectionVisible,
   onClose,
@@ -1042,11 +1102,14 @@ function CustomizeModal({
   initialHeroVideoUrl: string;
   initialVideoUrl: string;
   initialDescription: string;
+  initialLang?: string;
+  initialTranslations?: Record<string, { name: string; tagline: string; description: string }>;
   sectionOrder: string[];
   sectionVisible: Record<string, boolean>;
   onClose: () => void;
-  onSave: (name: string, tagline: string, accent: string | null, heroImages: string[], heroVideoUrl: string, videoUrl: string, description: string, order: string[], visible: Record<string, boolean>) => void;
+  onSave: (name: string, tagline: string, accent: string | null, heroImages: string[], heroVideoUrl: string, videoUrl: string, description: string, order: string[], visible: Record<string, boolean>, lang?: string, translations?: Record<string, { name: string; tagline: string; description: string }>) => void;
 }) {
+  const [activeTab, setActiveTab] = useState<(typeof TABS)[number]['id']>('content');
   const [name, setName] = useState(initialName);
   const [tagline, setTagline] = useState(initialTagline);
   const [accent, setAccent] = useState<string | null>(initialAccent);
@@ -1058,6 +1121,10 @@ function CustomizeModal({
   const [order, setOrder] = useState(sectionOrder);
   const [visible, setVisible] = useState(sectionVisible);
   const [dragged, setDragged] = useState<string | null>(null);
+  const [lang, setLang] = useState(initialLang || 'en');
+  const [translations, setTranslations] = useState<Record<string, { name: string; tagline: string; description: string }>>(initialTranslations || {});
+
+  const { prefs, setPref, togglePref } = useAccessibility();
 
   const handleDragStart = (id: string) => setDragged(id);
   const handleDragOver = (e: React.DragEvent) => e.preventDefault();
@@ -1073,109 +1140,200 @@ function CustomizeModal({
     setDragged(null);
   };
 
+  const handleSave = () => {
+    const heroImages = heroImagesText.split('\n').map((u) => u.trim()).filter(Boolean);
+    const hasTranslations = Object.keys(translations).some((code) => {
+      const t = translations[code];
+      return t?.name || t?.tagline || t?.description;
+    });
+    onSave(name, tagline, accent, heroImages, heroVideoUrl.trim(), videoUrl.trim(), description.trim(), order, visible, lang, hasTranslations ? translations : undefined);
+  };
+
+  const inputStyle = { borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' };
+  const labelStyle = { color: 'var(--color-text-muted)' };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.8)' }} onClick={onClose}>
-      <div className="max-w-lg w-full max-h-[90vh] overflow-y-auto rounded-2xl p-6" style={{ background: 'var(--color-bg)', border: '1px solid rgba(255,255,255,0.1)' }} onClick={(e) => e.stopPropagation()}>
-        <h3 className="text-xl font-bold mb-6" style={{ fontFamily: 'var(--font-display)' }}>Customize Event</h3>
-        <div className="space-y-4 mb-6">
-          <div>
-            <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Event name</label>
-            <input value={name} onChange={(e) => setName(e.target.value)} className="w-full px-4 py-3 rounded-lg bg-transparent border" style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }} />
-          </div>
-          <div>
-            <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Tagline</label>
-            <input value={tagline} onChange={(e) => setTagline(e.target.value)} className="w-full px-4 py-3 rounded-lg bg-transparent border" style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }} />
-          </div>
-          <div>
-            <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Accent color</label>
-            <div className="flex gap-2 flex-wrap">
-              {ACCENT_COLORS.map((c) => (
-                <button key={c} onClick={() => setAccent(accent === c ? null : c)} className="w-10 h-10 rounded-full border-2 transition-transform" style={{ background: c, borderColor: accent === c ? '#fff' : 'transparent', transform: accent === c ? 'scale(1.1)' : 'scale(1)' }} />
+      <div className="max-w-xl w-full max-h-[90vh] flex flex-col rounded-2xl overflow-hidden" style={{ background: 'var(--color-bg)', border: '1px solid rgba(255,255,255,0.1)' }} onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+          <h3 className="text-xl font-bold" style={{ fontFamily: 'var(--font-display)' }}>Edit Event</h3>
+          <button onClick={onClose} className="text-sm p-2 -m-2 rounded-lg hover:bg-white/5" style={labelStyle}>✕</button>
+        </div>
+        <div className="flex border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setActiveTab(t.id)}
+              className="flex-1 px-4 py-3 text-sm font-medium transition-colors"
+              style={{
+                color: activeTab === t.id ? 'var(--color-accent)' : 'var(--color-text-muted)',
+                borderBottom: activeTab === t.id ? '2px solid var(--color-accent)' : '2px solid transparent',
+              }}
+            >
+              {t.icon} {t.label}
+            </button>
+          ))}
+        </div>
+        <div className="flex-1 overflow-y-auto p-6 min-h-0">
+          {activeTab === 'content' && (
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm mb-2" style={labelStyle}>Event name</label>
+                <input value={name} onChange={(e) => setName(e.target.value)} className="w-full px-4 py-3 rounded-lg bg-transparent border" style={inputStyle} />
+              </div>
+              <div>
+                <label className="block text-sm mb-2" style={labelStyle}>Tagline</label>
+                <input value={tagline} onChange={(e) => setTagline(e.target.value)} className="w-full px-4 py-3 rounded-lg bg-transparent border" style={inputStyle} />
+              </div>
+              <div>
+                <label className="block text-sm mb-2" style={labelStyle}>Event description</label>
+                <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} placeholder="Why attend section" className="w-full px-4 py-3 rounded-lg bg-transparent border text-sm" style={inputStyle} />
+              </div>
+              <div>
+                <label className="block text-sm mb-2" style={labelStyle}>Accent color</label>
+                <div className="flex gap-2 flex-wrap">
+                  {ACCENT_COLORS.map((c) => (
+                    <button key={c} onClick={() => setAccent(accent === c ? null : c)} className="w-10 h-10 rounded-full border-2 transition-transform" style={{ background: c, borderColor: accent === c ? '#fff' : 'transparent', transform: accent === c ? 'scale(1.1)' : 'scale(1)' }} />
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm mb-2" style={labelStyle}>Section order (drag to reorder)</label>
+                <div className="space-y-2">
+                  {order.map((id) => (
+                    <div key={id} draggable onDragStart={() => handleDragStart(id)} onDragOver={handleDragOver} onDrop={() => handleDrop(id)}
+                      className="flex items-center gap-3 p-3 rounded-lg cursor-grab active:cursor-grabbing" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <span className="text-gray-500">⋮⋮</span>
+                      <span className="flex-1">{SECTION_LABELS[id] || id}</span>
+                      <button onClick={() => setVisible((v) => ({ ...v, [id]: !v[id] }))} className="text-sm" style={{ color: visible[id] ? 'var(--color-accent)' : 'var(--color-text-muted)' }}>
+                        {visible[id] ? 'Visible' : 'Hidden'}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+          {activeTab === 'media' && (
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm mb-2" style={labelStyle}>Hero images</label>
+                <div className="flex gap-2 mb-2">
+                  <label className="flex-1 px-4 py-2 rounded-lg border text-center text-sm cursor-pointer transition-colors hover:border-[var(--color-accent)]" style={{ borderColor: 'rgba(255,255,255,0.2)', color: 'var(--color-text)' }}>
+                    <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setUploading('image');
+                      try {
+                        const fd = new FormData();
+                        fd.append('file', file);
+                        fd.append('type', 'image');
+                        const heroUrl = /^[0-9a-f-]{36}$/i.test(event.id) ? `/api/events/${event.id}/hero` : `/api/events/${event.slug}/hero`;
+                        const r = await fetch(heroUrl, { method: 'POST', body: fd });
+                        const d = await r.json();
+                        if (d.url) setHeroImagesText((t) => (t ? `${t}\n${d.url}` : d.url));
+                        else alert(d.error || 'Upload failed');
+                      } catch { alert('Upload failed'); }
+                      finally { setUploading(null); e.target.value = ''; }
+                    }} />
+                    {uploading === 'image' ? 'Uploading…' : '📷 Upload'}
+                  </label>
+                  <label className="flex-1 px-4 py-2 rounded-lg border text-center text-sm cursor-pointer transition-colors hover:border-[var(--color-accent)]" style={{ borderColor: 'rgba(255,255,255,0.2)', color: 'var(--color-text)' }}>
+                    <input type="file" accept="video/mp4,video/webm" className="hidden" onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setUploading('video');
+                      try {
+                        const fd = new FormData();
+                        fd.append('file', file);
+                        fd.append('type', 'video');
+                        const heroUrl = /^[0-9a-f-]{36}$/i.test(event.id) ? `/api/events/${event.id}/hero` : `/api/events/${event.slug}/hero`;
+                        const r = await fetch(heroUrl, { method: 'POST', body: fd });
+                        const d = await r.json();
+                        if (d.url) setHeroVideoUrl(d.url);
+                        else alert(d.error || 'Upload failed');
+                      } catch { alert('Upload failed'); }
+                      finally { setUploading(null); e.target.value = ''; }
+                    }} />
+                    {uploading === 'video' ? 'Uploading…' : '🎬 Hero video'}
+                  </label>
+                </div>
+                <p className="text-xs mb-2" style={labelStyle}>Or paste image URLs (one per line). Hero video overrides images.</p>
+                <textarea value={heroImagesText} onChange={(e) => setHeroImagesText(e.target.value)} rows={2} placeholder="https://..." className="w-full px-4 py-3 rounded-lg bg-transparent border text-sm" style={inputStyle} />
+                <input value={heroVideoUrl} onChange={(e) => setHeroVideoUrl(e.target.value)} placeholder="Hero video URL (mp4)" className="w-full mt-2 px-4 py-2 rounded-lg bg-transparent border text-sm" style={inputStyle} />
+              </div>
+              <div>
+                <label className="block text-sm mb-2" style={labelStyle}>Watch section video (YouTube or Vimeo)</label>
+                <input value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://youtube.com/watch?v=... or https://vimeo.com/..." className="w-full px-4 py-3 rounded-lg bg-transparent border text-sm" style={inputStyle} />
+              </div>
+            </div>
+          )}
+          {activeTab === 'accessibility' && (
+            <div className="space-y-4">
+              <p className="text-sm mb-4" style={labelStyle}>Adjust display for readability. Changes apply to this page.</p>
+              <label className="flex items-center gap-3 p-3 rounded-lg cursor-pointer" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <input type="checkbox" checked={prefs.dyslexia} onChange={() => togglePref('dyslexia')} className="rounded" />
+                <div>
+                  <span className="font-medium">Dyslexia Mode</span>
+                  <span className="block text-xs" style={labelStyle}>OpenDyslexic font, wider spacing</span>
+                </div>
+              </label>
+              <label className="flex items-center gap-3 p-3 rounded-lg cursor-pointer" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <input type="checkbox" checked={prefs.adhdFocus} onChange={() => togglePref('adhdFocus')} className="rounded" />
+                <div>
+                  <span className="font-medium">ADHD Focus</span>
+                  <span className="block text-xs" style={labelStyle}>No animations, narrow text</span>
+                </div>
+              </label>
+              <label className="flex items-center gap-3 p-3 rounded-lg cursor-pointer" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <input type="checkbox" checked={prefs.highContrast} onChange={() => togglePref('highContrast')} className="rounded" />
+                <span className="font-medium">High Contrast</span>
+              </label>
+              <label className="flex items-center gap-3 p-3 rounded-lg cursor-pointer" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <input type="checkbox" checked={prefs.reducedMotion} onChange={() => togglePref('reducedMotion')} className="rounded" />
+                <span className="font-medium">Reduced Motion</span>
+              </label>
+              <div>
+                <label className="block text-sm mb-2" style={labelStyle}>Text size</label>
+                <select value={prefs.textSize} onChange={(e) => setPref('textSize', e.target.value as AccessibilityPrefs['textSize'])}
+                  className="w-full rounded px-4 py-3" style={{ background: 'rgba(255,255,255,0.05)', ...inputStyle }}>
+                  <option value="normal">Normal</option>
+                  <option value="large">Large</option>
+                  <option value="xlarge">Extra Large</option>
+                </select>
+              </div>
+            </div>
+          )}
+          {activeTab === 'language' && (
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm mb-2" style={labelStyle}>Display language</label>
+                <select value={lang} onChange={(e) => setLang(e.target.value)} className="w-full rounded px-4 py-3" style={{ background: 'rgba(255,255,255,0.05)', ...inputStyle }}>
+                  {LANGUAGES.map((l) => (
+                    <option key={l.code} value={l.code}>{l.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="p-4 rounded-xl" style={{ background: 'rgba(79,255,223,0.06)', border: '1px solid rgba(79,255,223,0.2)' }}>
+                <p className="text-sm mb-2" style={{ color: 'var(--color-accent)' }}>Add translations</p>
+                <p className="text-xs" style={labelStyle}>Select a language and paste translated name, tagline, and description. Translation API integration coming soon.</p>
+              </div>
+              {LANGUAGES.filter((l) => l.code !== 'en').map((l) => (
+                <div key={l.code} className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                  <h4 className="font-medium mb-3">{l.label}</h4>
+                  <input value={translations[l.code]?.name ?? ''} onChange={(e) => setTranslations((t) => ({ ...t, [l.code]: { ...(t[l.code] || { name: '', tagline: '', description: '' }), name: e.target.value } }))}
+                    placeholder="Event name" className="w-full px-3 py-2 rounded-lg text-sm mb-2 bg-transparent border" style={inputStyle} />
+                  <input value={translations[l.code]?.tagline ?? ''} onChange={(e) => setTranslations((t) => ({ ...t, [l.code]: { ...(t[l.code] || { name: '', tagline: '', description: '' }), tagline: e.target.value } }))}
+                    placeholder="Tagline" className="w-full px-3 py-2 rounded-lg text-sm mb-2 bg-transparent border" style={inputStyle} />
+                  <textarea value={translations[l.code]?.description ?? ''} onChange={(e) => setTranslations((t) => ({ ...t, [l.code]: { ...(t[l.code] || { name: '', tagline: '', description: '' }), description: e.target.value } }))}
+                    placeholder="Description" rows={2} className="w-full px-3 py-2 rounded-lg text-sm bg-transparent border" style={inputStyle} />
+                </div>
               ))}
             </div>
-          </div>
-          <div>
-            <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Hero media</label>
-            <div className="flex gap-2 mb-2">
-              <label className="flex-1 px-4 py-2 rounded-lg border text-center text-sm cursor-pointer transition-colors hover:border-[var(--color-accent)]" style={{ borderColor: 'rgba(255,255,255,0.2)', color: 'var(--color-text)' }}>
-                <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  setUploading('image');
-                  try {
-                    const fd = new FormData();
-                    fd.append('file', file);
-                    fd.append('type', 'image');
-                    const heroUrl = /^[0-9a-f-]{36}$/i.test(event.id) ? `/api/events/${event.id}/hero` : `/api/events/${event.slug}/hero`;
-                    const r = await fetch(heroUrl, { method: 'POST', body: fd });
-                    const d = await r.json();
-                    if (d.url) setHeroImagesText((t) => (t ? `${t}\n${d.url}` : d.url));
-                    else alert(d.error || 'Upload failed');
-                  } catch { alert('Upload failed'); }
-                  finally { setUploading(null); e.target.value = ''; }
-                }} />
-                {uploading === 'image' ? 'Uploading…' : '📷 Upload hero image'}
-              </label>
-              <label className="flex-1 px-4 py-2 rounded-lg border text-center text-sm cursor-pointer transition-colors hover:border-[var(--color-accent)]" style={{ borderColor: 'rgba(255,255,255,0.2)', color: 'var(--color-text)' }}>
-                <input type="file" accept="video/mp4,video/webm" className="hidden" onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  setUploading('video');
-                  try {
-                    const fd = new FormData();
-                    fd.append('file', file);
-                    fd.append('type', 'video');
-                    const heroUrl = /^[0-9a-f-]{36}$/i.test(event.id) ? `/api/events/${event.id}/hero` : `/api/events/${event.slug}/hero`;
-                    const r = await fetch(heroUrl, { method: 'POST', body: fd });
-                    const d = await r.json();
-                    if (d.url) setHeroVideoUrl(d.url);
-                    else alert(d.error || 'Upload failed');
-                  } catch { alert('Upload failed'); }
-                  finally { setUploading(null); e.target.value = ''; }
-                }} />
-                {uploading === 'video' ? 'Uploading…' : '🎬 Upload hero video'}
-              </label>
-            </div>
-            <p className="text-xs mb-2" style={{ color: 'var(--color-text-muted)' }}>Or paste image URLs below (one per line). Hero video overrides hero images.</p>
-            <textarea value={heroImagesText} onChange={(e) => setHeroImagesText(e.target.value)} rows={2} placeholder="Paste image URLs, one per line" className="w-full px-4 py-3 rounded-lg bg-transparent border text-sm" style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }} />
-            <input value={heroVideoUrl} onChange={(e) => setHeroVideoUrl(e.target.value)} placeholder="Or paste hero video URL (mp4)" className="w-full mt-2 px-4 py-2 rounded-lg bg-transparent border text-sm" style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }} />
-          </div>
-          <div>
-            <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Watch section video (YouTube or Vimeo)</label>
-            <input value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://youtube.com/watch?v=... or https://vimeo.com/..." className="w-full px-4 py-3 rounded-lg bg-transparent border text-sm" style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }} />
-          </div>
-          <div>
-            <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Event description</label>
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} placeholder="Custom description for the &quot;Why attend&quot; section" className="w-full px-4 py-3 rounded-lg bg-transparent border text-sm" style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' }} />
-          </div>
+          )}
         </div>
-        <div className="mb-6">
-          <label className="block text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Section order (drag to reorder)</label>
-          <div className="space-y-2">
-            {order.map((id) => (
-              <div
-                key={id}
-                draggable
-                onDragStart={() => handleDragStart(id)}
-                onDragOver={handleDragOver}
-                onDrop={() => handleDrop(id)}
-                className="flex items-center gap-3 p-3 rounded-lg cursor-grab active:cursor-grabbing"
-                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
-              >
-                <span className="text-gray-500">⋮⋮</span>
-                <span className="flex-1">{SECTION_LABELS[id] || id}</span>
-                <button onClick={() => setVisible((v) => ({ ...v, [id]: !v[id] }))} className="text-sm" style={{ color: visible[id] ? 'var(--color-accent)' : 'var(--color-text-muted)' }}>
-                  {visible[id] ? 'Visible' : 'Hidden'}
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="flex gap-3">
-          <button onClick={() => {
-            const heroImages = heroImagesText.split('\n').map((u) => u.trim()).filter(Boolean);
-            onSave(name, tagline, accent, heroImages, heroVideoUrl.trim(), videoUrl.trim(), description.trim(), order, visible);
-          }} className="flex-1 py-3 rounded-lg font-semibold" style={{ background: 'var(--color-accent)', color: 'var(--color-bg)' }}>Save</button>
+        <div className="flex gap-3 p-6" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <button onClick={handleSave} className="flex-1 py-3 rounded-lg font-semibold" style={{ background: 'var(--color-accent)', color: 'var(--color-bg)' }}>Save</button>
           <button onClick={onClose} className="flex-1 py-3 rounded-lg font-semibold" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)' }}>Cancel</button>
         </div>
       </div>
