@@ -1,8 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
+import { getHeroImages, FALLBACK_HERO_POOL } from '@/lib/hero-images';
 
 const TRACKS = [
   { name: 'Mainstage', desc: 'Keynotes and the most significant topics shaping the future.', color: '#4FFFDF' },
@@ -25,7 +27,7 @@ const STAGES = [
 export default function AgendaPage() {
   const params = useParams();
   const slug = params.slug as string;
-  const [event, setEvent] = useState<{ name: string; date: string; schedule?: { time: string; title: string; track?: string }[] } | null>(null);
+  const [event, setEvent] = useState<{ name: string; topic?: string; date: string; hero_image_url?: string; schedule?: { time: string; title: string; track?: string }[] } | null>(null);
 
   useEffect(() => {
     fetch(`/api/events/${slug}`)
@@ -33,6 +35,17 @@ export default function AgendaPage() {
       .then((d) => d.event && setEvent(d.event))
       .catch(() => {});
   }, [slug]);
+
+  const heroImages = useMemo(() => getHeroImages(slug, event?.topic || ''), [slug, event?.topic]);
+  const heroImage = event?.hero_image_url || heroImages[0] || FALLBACK_HERO_POOL[0];
+  const trackImages = useMemo(() => {
+    const pool = heroImages.length ? heroImages : FALLBACK_HERO_POOL;
+    return TRACKS.map((_, i) => pool[i % pool.length]);
+  }, [heroImages]);
+  const stageImages = useMemo(() => {
+    const pool = heroImages.length ? heroImages : FALLBACK_HERO_POOL;
+    return STAGES.map((_, i) => pool[(i + 3) % pool.length]);
+  }, [heroImages]);
 
   const schedule = event?.schedule || [];
   const day1 = schedule.filter((s) => s.time?.startsWith('9') || s.time?.startsWith('10') || s.time?.startsWith('11'));
@@ -58,7 +71,10 @@ export default function AgendaPage() {
               {event?.name || 'Event'} brings together the best minds. Explore the full agenda below.
             </p>
           </div>
-          <div className="rounded-2xl overflow-hidden h-64" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)' }} />
+          <div className="relative rounded-2xl overflow-hidden h-64 min-h-[256px]">
+            <Image src={heroImage} alt="" fill className="object-cover" unoptimized />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          </div>
         </div>
       </section>
 
@@ -98,10 +114,16 @@ export default function AgendaPage() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-normal mb-16" style={{ fontFamily: 'var(--font-display)' }}>Content Tracks</h2>
           <div className="grid md:grid-cols-3 gap-8">
-            {TRACKS.map((t) => (
-              <div key={t.name} className="rounded-xl p-6" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <h3 className="text-xl font-semibold mb-2">{t.name}</h3>
-                <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>{t.desc}</p>
+            {TRACKS.map((t, i) => (
+              <div key={t.name} className="rounded-xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="relative h-40">
+                  <Image src={trackImages[i]} alt="" fill className="object-cover" unoptimized />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold mb-2">{t.name}</h3>
+                  <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>{t.desc}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -113,9 +135,13 @@ export default function AgendaPage() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-normal mb-16" style={{ fontFamily: 'var(--font-display)' }}>Stages</h2>
           <div className="grid md:grid-cols-3 gap-8">
-            {STAGES.map((s) => (
+            {STAGES.map((s, i) => (
               <div key={s.name} className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <div className="h-48" style={{ background: s.gradient }} />
+                <div className="relative h-48">
+                  <Image src={stageImages[i]} alt="" fill className="object-cover" unoptimized />
+                  <div className="absolute inset-0 opacity-80" style={{ background: s.gradient }} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/90 via-transparent to-transparent" />
+                </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold mb-2">{s.name}</h3>
                   <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>{s.desc}</p>
