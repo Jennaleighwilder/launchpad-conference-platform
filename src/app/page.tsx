@@ -152,7 +152,35 @@ function CountdownWidget() {
         <span>{diff.s}s</span>
       </div>
       <p className="text-xs mt-2" style={{ color: '#666' }}>Avg. generation time: 47s</p>
-      <button type="button" onClick={() => alert('Calendar invite coming soon!')} className="text-sm mt-3 block text-left w-full" style={{ color: 'var(--color-accent)', background: 'none', border: 'none', cursor: 'pointer' }}>Add to calendar 📅</button>
+      <button
+        type="button"
+        onClick={() => {
+          const start = new Date('2026-03-28T09:00:00');
+          const end = new Date('2026-03-28T23:59:00');
+          const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '').slice(0, 15);
+          const ics = [
+            'BEGIN:VCALENDAR',
+            'VERSION:2.0',
+            'BEGIN:VEVENT',
+            `DTSTART:${fmt(start)}`,
+            `DTEND:${fmt(end)}`,
+            'SUMMARY:Launchpad Early Bird — Free until March 28',
+            'DESCRIPTION:Launchpad early bird pricing ends. Create your event for free before the countdown.',
+            'END:VEVENT',
+            'END:VCALENDAR',
+          ].join('\r\n');
+          const blob = new Blob([ics], { type: 'text/calendar' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'launchpad-early-bird.ics';
+          a.click();
+          URL.revokeObjectURL(a.href);
+        }}
+        className="text-sm mt-3 block text-left w-full hover:underline"
+        style={{ color: 'var(--color-accent)', background: 'none', border: 'none', cursor: 'pointer' }}
+      >
+        Add to calendar 📅
+      </button>
     </div>
   );
 }
