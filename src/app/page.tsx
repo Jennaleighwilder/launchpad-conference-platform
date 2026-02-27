@@ -10,10 +10,10 @@ import { SocialProofTicker } from '@/components/SocialProofTicker';
 import { KenBurnsSlideshow } from '@/components/demo-event/DemoEventLayout';
 
 const DEMO_EVENTS = [
+  { slug: 'ai-festival-uk-2026', name: 'AI Festival UK 2026', date: 'May 27-28, 2026', desc: 'Live event · Bury St Edmunds · £2M XR Lab', color: '#22C55E', img: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&h=400&fit=crop', live: true },
   { slug: 'the-future-forum', name: 'The Future Forum', date: 'March 23, 2026', desc: 'Gen Z energy · Tokyo · Matrix rain', color: '#EC4899', img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop' },
   { slug: 'cybernova', name: 'CyberNova', date: 'March 24, 2026', desc: 'Hacker vibes · Berlin · Radar sweep', color: '#EF4444', img: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&h=400&fit=crop' },
   { slug: 'ai-summit-2026', name: 'AI Summit 2026', date: 'March 25-26, 2026', desc: 'Flagship · San Francisco · 50-node graph', color: '#A78BFA', img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=400&fit=crop' },
-  { slug: 'ai-festival-uk-2026', name: 'AI Festival UK 2026', date: 'May 27-28, 2026', desc: 'UK premier · Bury St Edmunds · £2M XR Lab', color: '#22C55E', img: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&h=400&fit=crop' },
   { slug: 'startup-zaken', name: 'Startup Zaken', date: 'March 28, 2026', desc: 'Dutch biz · Amsterdam · Constellation', color: '#34D399', img: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600&h=400&fit=crop' },
   { slug: 'an-evening-with', name: 'An Evening With', date: 'March 29, 2026', desc: 'Intimate keynote · London · Helix DNA', color: '#D4AF37', img: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600&h=400&fit=crop' },
   { slug: 'demo-conference', name: 'Demo Conference', date: 'March 25-26, 2026', desc: 'Tech immersive · Amsterdam · Live graphs', color: '#4FFFDF', img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=400&fit=crop' },
@@ -566,15 +566,20 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto relative">
           <div className="text-center text-xs uppercase tracking-[0.2em] mb-4" style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-tech)' }}>Launchpad Showcase</div>
           <h2 className="text-center text-4xl font-semibold mb-4" style={{ fontFamily: 'var(--font-tech)' }}>Hackers meet cool world</h2>
-          <p className="text-center max-w-2xl mx-auto mb-12" style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>6 fully unique demo events. Each with its own viz, vibe, and moving graphics.</p>
+          <p className="text-center max-w-2xl mx-auto mb-12" style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>AI Festival UK 2026 is live — May 27–28 at West Suffolk College. Plus 6 more demo events.</p>
           <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory" style={{ scrollbarWidth: 'none' }}>
-            {DEMO_EVENTS.map((e, idx) => (
-              <Link key={e.slug} href={`/e/${e.slug}`} className="flex-shrink-0 w-72 snap-center rounded-2xl overflow-hidden group transition-all duration-300 hover:scale-[1.03]" style={{
+            {DEMO_EVENTS.map((e, idx) => {
+              const isLive = 'live' in e && e.live;
+              return (
+              <Link key={e.slug} href={`/e/${e.slug}`} className="flex-shrink-0 w-72 snap-center rounded-2xl overflow-hidden group transition-all duration-300 hover:scale-[1.03] relative" style={{
                 background: 'rgba(255,255,255,0.03)',
-                border: `1px solid rgba(255,255,255,0.08)`,
-                boxShadow: `0 0 12px ${e.color}20`,
+                border: `1px solid ${isLive ? `${e.color}60` : 'rgba(255,255,255,0.08)'}`,
+                boxShadow: `0 0 12px ${isLive ? `${e.color}40` : `${e.color}20`}`,
                 animationDelay: `${idx * 0.2}s`,
               }}>
+                {isLive && (
+                  <div className="absolute top-3 right-3 z-10 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider" style={{ background: e.color, color: 'var(--color-bg)' }}>Live Event</div>
+                )}
                 <div className="h-48 relative overflow-hidden">
                   <Image src={e.img} alt={e.name} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: `linear-gradient(to top, ${e.color}40 0%, transparent 60%)` }} />
@@ -588,7 +593,8 @@ export default function HomePage() {
                   <span className="text-sm group-hover:tracking-wider transition-all" style={{ color: e.color }}>Explore event →</span>
                 </div>
               </Link>
-            ))}
+            );
+            })}
           </div>
         </div>
       </section>
