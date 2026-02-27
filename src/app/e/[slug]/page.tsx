@@ -160,6 +160,40 @@ export default function EventPage() {
   useEffect(() => {
     async function fetchEvent() {
       try {
+        // Check sessionStorage first — in-memory events (no Supabase) are stashed by create page
+        const stashed = typeof window !== 'undefined' ? sessionStorage.getItem(`event-${slug}`) : null;
+        if (stashed) {
+          try {
+            const parsed = JSON.parse(stashed);
+            if (parsed?.slug === slug) {
+              setEvent(parsed);
+              sessionStorage.removeItem(`event-${slug}`);
+              if (/^[0-9a-f-]{36}$/i.test(parsed.id)) {
+                fetch(`/api/events/${parsed.id}/blocks`)
+                  .then((r) => r.json())
+                  .then((d) => setBlocks(d.blocks || []))
+                  .catch(() => {});
+              }
+              try {
+                const key = `event-customize-${slug}`;
+                const saved = localStorage.getItem(key);
+                if (saved) {
+                  const cust = JSON.parse(saved);
+                  if (cust.name) setCustomName(cust.name);
+                  if (cust.tagline) setCustomTagline(cust.tagline);
+                  if (cust.accent) setCustomAccent(cust.accent);
+                  if (cust.heroImages?.length) setCustomHeroImages(cust.heroImages);
+                  if (cust.heroVideoUrl) setCustomHeroVideoUrl(cust.heroVideoUrl);
+                  if (cust.videoUrl) setCustomVideoUrl(cust.videoUrl);
+                  if (cust.description) setCustomDescription(cust.description);
+                  if (cust.sectionOrder?.length) setSectionOrder(cust.sectionOrder);
+                  if (cust.sectionVisible) setSectionVisible((v) => ({ ...v, ...cust.sectionVisible }));
+                }
+              } catch { /* ignore */ }
+              return;
+            }
+          } catch { /* fall through to API */ }
+        }
         const res = await fetch(`/api/events/${slug}`);
         const data = await res.json();
         if (data.event) {
@@ -316,27 +350,27 @@ export default function EventPage() {
   return (
     <main className="min-h-screen relative" style={{ ...themeVars, background: 'transparent', color: theme.text }}>
       {/* Hero — media layer inside section so it always fills */}
-      <section className="relative min-h-[85vh] flex flex-col justify-end pb-24 pt-32 px-6 overflow-hidden">
-        {/* HERO MEDIA LAYER — absolute, fills section */}
+      <section className="relative isolate min-h-[85vh] flex flex-col justify-end pb-24 pt-32 px-6 overflow-hidden">
+        {/* HERO MEDIA LAYER — z-0 so visible above body, below overlays */}
         {useVideoHero && heroVideoUrl ? (
           <video
             autoPlay
             muted
             loop
             playsInline
-            className="absolute inset-0 w-full h-full object-cover -z-10"
+            className="absolute inset-0 w-full h-full object-cover z-0"
             src={heroVideoUrl}
           >
             <source src={heroVideoUrl} type="video/mp4" />
           </video>
         ) : (
-          <div className="absolute inset-0 -z-10">
+          <div className="absolute inset-0 z-0">
             <KenBurnsSlideshow images={heroImages} />
           </div>
         )}
         {/* Dark overlay */}
-        <div className="absolute inset-0 -z-10" style={{ background: theme.heroOverlay }} />
-        <div className="absolute inset-0 -z-10 opacity-20" style={{
+        <div className="absolute inset-0 z-[1]" style={{ background: theme.heroOverlay }} />
+        <div className="absolute inset-0 z-[1] opacity-20" style={{
           background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}30 0%, transparent 70%)`,
         }} />
 

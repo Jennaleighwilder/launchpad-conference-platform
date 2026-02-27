@@ -117,6 +117,12 @@ export default function CreatePage() {
           setAgentStatus(allDone);
           await new Promise(r => setTimeout(r, 500));
         }
+        // When not persisted (memory store), stash event for client hydration — serverless can't share in-memory state
+        if (!data.persisted && data.event) {
+          try {
+            sessionStorage.setItem(`event-${data.event.slug}`, JSON.stringify(data.event));
+          } catch { /* ignore */ }
+        }
         router.push(`/e/${data.event.slug}`);
       } else {
         setError(data.error || 'Something went wrong. Try again.');
