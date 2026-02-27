@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateEvent } from '@/lib/generate';
 import { runSwarm } from '@/lib/swarm';
+import { getServerUser } from '@/lib/auth';
 import type { CreateEventInput, EventData } from '@/lib/types';
 
 // In-memory store for events (works without Supabase)
@@ -42,6 +43,7 @@ function sanitizeEventDate(dateStr: string): string {
 
 export async function POST(request: NextRequest) {
   try {
+    const user = await getServerUser(request);
     const body: CreateEventInput = await request.json();
     const useSwarm = request.nextUrl.searchParams.get('mode') === 'swarm';
 
@@ -73,8 +75,7 @@ export async function POST(request: NextRequest) {
         });
 
         const slug = makeSlug(body.topic, body.city);
-        const { getUniqueHeroForEvent } = await import('@/lib/hero-images');
-        const { getUniqueHeroVideoForEvent } = await import('@/lib/hero-videos');
+        const { selectHeroImage } = await import('@/lib/hero-images');
         eventData = {
           slug,
           name: swarmResult.branding.name,
@@ -92,8 +93,8 @@ export async function POST(request: NextRequest) {
           speakers: swarmResult.speakers,
           schedule: swarmResult.schedule,
           pricing: swarmResult.pricing,
-          hero_image_url: getUniqueHeroForEvent(body.topic, body.city, slug),
-          hero_video_url: getUniqueHeroVideoForEvent(body.topic, body.city, slug),
+          hero_image_url: selectHeroImage(swarmResult.branding.topic_key, body.hero_style || 'auto', slug),
+          hero_video_url: null,
           hero_media_type: 'image',
           _swarm: { timings: swarmResult.agentTimings, errors: swarmResult.errors },
         };
@@ -102,6 +103,7 @@ export async function POST(request: NextRequest) {
         // Swarm without API key: use enhanced built-in generation (12 speakers, richer content)
         console.log('[swarm] Enhanced fallback (no API key)');
         eventData = await generateEvent({
+          ...body,
           topic: body.topic,
           city: body.city,
           date: eventDate,
@@ -116,6 +118,7 @@ export async function POST(request: NextRequest) {
     } else {
       // ── STANDARD MODE: single-pass generation ──────────────────────
       eventData = await generateEvent({
+        ...body,
         topic: body.topic,
         city: body.city,
         date: eventDate,
@@ -127,11 +130,12 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const fullEvent: EventData = {
+    const fullEvent: EventData & { user_id?: string } = {
       ...eventData,
       id: crypto.randomUUID(),
       status: 'draft',
       created_at: new Date().toISOString(),
+      ...(user?.id && { user_id: user.id }),
     };
 
     // Try Supabase first, fall back to in-memory
@@ -145,53 +149,64 @@ export async function POST(request: NextRequest) {
         const { data: usedRows } = await supabase.from('hero_assets').select('provider_asset_id').not('provider_asset_id', 'is', null);
         const usedIds = new Set((usedRows || []).map((r) => r.provider_asset_id as string).filter(Boolean));
 
-        // Generate relevant hero (AI → Unsplash → Picsum) with 15s timeout to avoid long hangs
+        // Use pre-resolved hero when user chose custom/abstract/minimal; otherwise generate
         const { getUniqueHeroForEvent } = await import('@/lib/hero-images');
-        const { getUniqueHeroVideoForEvent } = await import('@/lib/hero-videos');
-        let hero: { image_url: string; provider: string; provider_asset_id?: string | null };
-        try {
-          hero = await Promise.race([
-            generateHeroForEvent(
-              { name: fullEvent.name, topic: fullEvent.topic, city: fullEvent.city, slug: fullEvent.slug, vibe: fullEvent.vibe },
-              usedIds
-            ),
-            new Promise<never>((_, reject) =>
-              setTimeout(() => reject(new Error('Hero generation timeout')), 15000)
-            ),
-          ]);
-        } catch (heroErr) {
-          console.warn('Hero generation failed, using fallback:', heroErr);
-          hero = {
-            image_url: getUniqueHeroForEvent(fullEvent.topic, fullEvent.city, fullEvent.slug),
-            provider: 'fallback',
-            provider_asset_id: null,
-          };
+        let heroImageUrl: string | null;
+        let heroProvider = 'fallback';
+        let heroAssetId: string | null = null;
+
+        if (fullEvent.hero_style === 'abstract' || fullEvent.hero_style === 'minimal') {
+          heroImageUrl = null;
+        } else if (fullEvent.hero_image_url) {
+          heroImageUrl = fullEvent.hero_image_url;
+          heroProvider = fullEvent.hero_image_url.includes('pollinations') ? 'pollinations' : 'url';
+        } else {
+          try {
+            const heroResult = await Promise.race([
+              generateHeroForEvent(
+                { name: fullEvent.name, topic: fullEvent.topic, city: fullEvent.city, slug: fullEvent.slug, vibe: fullEvent.vibe },
+                usedIds
+              ),
+              new Promise<never>((_, reject) =>
+                setTimeout(() => reject(new Error('Hero generation timeout')), 15000)
+              ),
+            ]);
+            heroImageUrl = heroResult.image_url;
+            heroProvider = heroResult.provider;
+            heroAssetId = heroResult.provider_asset_id ?? null;
+          } catch (heroErr) {
+            console.warn('Hero generation failed, using fallback:', heroErr);
+            heroImageUrl = getUniqueHeroForEvent(fullEvent.topic, fullEvent.city, fullEvent.slug);
+          }
         }
+
+        const insertPayload: Record<string, unknown> = {
+          slug: fullEvent.slug,
+          name: fullEvent.name,
+          topic: fullEvent.topic,
+          city: fullEvent.city,
+          date: fullEvent.date,
+          capacity: fullEvent.capacity,
+          budget: fullEvent.budget,
+          vibe: fullEvent.vibe,
+          venue: fullEvent.venue,
+          tracks: fullEvent.tracks,
+          speakers: fullEvent.speakers,
+          schedule: fullEvent.schedule,
+          pricing: fullEvent.pricing,
+          description: fullEvent.description,
+          tagline: fullEvent.tagline,
+          topic_key: fullEvent.topic_key,
+          hero_image_url: heroImageUrl,
+          hero_video_url: null,
+          hero_media_type: 'image',
+          status: 'draft',
+        };
+        if (user?.id) insertPayload.user_id = user.id;
 
         const { data, error } = await supabase
           .from('events')
-          .insert({
-            slug: fullEvent.slug,
-            name: fullEvent.name,
-            topic: fullEvent.topic,
-            city: fullEvent.city,
-            date: fullEvent.date,
-            capacity: fullEvent.capacity,
-            budget: fullEvent.budget,
-            vibe: fullEvent.vibe,
-            venue: fullEvent.venue,
-            tracks: fullEvent.tracks,
-            speakers: fullEvent.speakers,
-            schedule: fullEvent.schedule,
-            pricing: fullEvent.pricing,
-            description: fullEvent.description,
-            tagline: fullEvent.tagline,
-            topic_key: fullEvent.topic_key,
-            hero_image_url: hero.image_url,
-            hero_video_url: getUniqueHeroVideoForEvent(fullEvent.topic, fullEvent.city, fullEvent.slug),
-            hero_media_type: 'image',
-            status: 'draft',
-          })
+          .insert(insertPayload)
           .select()
           .single();
 
@@ -199,19 +214,21 @@ export async function POST(request: NextRequest) {
           console.error('[Supabase] Insert error:', JSON.stringify(error));
         }
         if (!error && data) {
-          // Create hero_asset and link (hero_assets table enforces no reuse)
-          const { data: heroAsset } = await supabase
-            .from('hero_assets')
-            .insert({
-              event_id: data.id,
-              image_url: hero.image_url,
-              provider: hero.provider,
-              provider_asset_id: hero.provider_asset_id ?? null,
-            })
-            .select('id')
-            .single();
-          if (heroAsset) {
-            await supabase.from('events').update({ hero_asset_id: heroAsset.id }).eq('id', data.id);
+          // Create hero_asset only when we have an image (skip for abstract/minimal CSS)
+          if (heroImageUrl) {
+            const { data: heroAsset } = await supabase
+              .from('hero_assets')
+              .insert({
+                event_id: data.id,
+                image_url: heroImageUrl,
+                provider: heroProvider,
+                provider_asset_id: heroAssetId,
+              })
+              .select('id')
+              .single();
+            if (heroAsset) {
+              await supabase.from('events').update({ hero_asset_id: heroAsset.id }).eq('id', data.id);
+            }
           }
           // Record affiliate conversion if tagged
           const affiliate = request.headers.get('cookie')?.match(/affiliate=([^;]+)/)?.[1];
@@ -224,7 +241,8 @@ export async function POST(request: NextRequest) {
               console.warn('Affiliate conversion tracking failed:', e);
             }
           }
-          return NextResponse.json({ success: true, event: data, persisted: true });
+          const eventWithStyle = { ...data, hero_style: fullEvent.hero_style };
+          return NextResponse.json({ success: true, event: eventWithStyle, persisted: true });
         }
       } catch (dbErr) {
         console.warn('Supabase unavailable, using in-memory store:', dbErr);

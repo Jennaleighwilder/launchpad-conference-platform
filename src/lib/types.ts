@@ -25,6 +25,8 @@ export interface EventData {
   hero_image_url?: string | null;
   hero_video_url?: string | null;
   hero_media_type?: HeroMediaType;
+  /** When 'abstract' or 'minimal', use CSS gradient instead of image */
+  hero_style?: string;
 }
 
 export interface VenueData {
@@ -65,4 +67,6 @@ export interface CreateEventInput {
   speakers_hint?: string;
   days?: 1 | 2 | 3;
   enhanced?: boolean;
+  hero_style?: string;
+  hero_prompt?: string;
 }

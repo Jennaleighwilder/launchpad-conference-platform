@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { EventData, SpeakerData, ScheduleItem, PricingData, VenueData } from '@/lib/types';
 import { KenBurnsSlideshow, CountdownTimer, resolveHeroImages, resolveHeroVideo } from '@/components/demo-event/DemoEventLayout';
+import { generateHeroCSS, generateHeroSVG } from '@/lib/hero-generator';
 import { getEventTheme } from '@/lib/event-themes';
 import { PromoteModal } from '@/components/PromoteModal';
 import { useAccessibility } from '@/contexts/AccessibilityContext';
@@ -376,7 +377,7 @@ export default function EventPage() {
     slug,
     topic: topicForHero,
   });
-  const heroVideoUrl = resolveHeroVideo(ev, customHeroVideoUrl, { slug: event.slug, topic: topicForHero, city: event.city });
+  const heroVideoUrl = resolveHeroVideo(ev, customHeroVideoUrl);
   const useVideoHero = !customHeroImages.length && !!heroVideoUrl;
   const displayDescription = (t?.description || customDescription || event.description || '');
   const videoEmbedId = (() => {
@@ -432,6 +433,13 @@ export default function EventPage() {
           >
             <source src={heroVideoUrl} type="video/mp4" />
           </video>
+        ) : (event.hero_style === 'abstract' || event.hero_style === 'minimal') && !heroImages.filter(Boolean).length ? (
+          <div className="absolute inset-0 z-0" style={{ background: generateHeroCSS(event.hero_style || 'abstract', slug) }}>
+            <div className="absolute inset-0 opacity-40" style={{
+              backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(generateHeroSVG(slug))}")`,
+              backgroundRepeat: 'repeat',
+            }} />
+          </div>
         ) : (
           <div className="absolute inset-0 z-0">
             <KenBurnsSlideshow images={heroImages} />

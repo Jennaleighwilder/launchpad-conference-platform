@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerUser } from '@/lib/auth';
 
 function hasSupabase(): boolean {
   return !!(
@@ -8,17 +9,25 @@ function hasSupabase(): boolean {
   );
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const user = await getServerUser(request);
+
     // Try Supabase first
     if (hasSupabase()) {
       try {
         const { createServiceClient } = await import('@/lib/supabase');
         const supabase = createServiceClient();
-        const { data, error } = await supabase
+        let query = supabase
           .from('events')
           .select('id, slug, name, topic, city, date, status, created_at')
           .order('created_at', { ascending: false });
+
+        if (user?.id) {
+          query = query.eq('user_id', user.id);
+        }
+
+        const { data, error } = await query;
 
         if (!error && data) {
           return NextResponse.json({ events: data });
@@ -30,7 +39,11 @@ export async function GET() {
 
     // Fallback to in-memory store
     const { memoryStore } = await import('./generate/route');
-    const events = Array.from(memoryStore.values()).map((e) => ({
+    const allEvents = Array.from(memoryStore.values());
+    const events = (user?.id
+      ? allEvents.filter((e) => (e as { user_id?: string }).user_id === user.id)
+      : allEvents
+    ).map((e) => ({
       id: e.id,
       slug: e.slug,
       name: e.name,
@@ -42,7 +55,7 @@ export async function GET() {
     }));
     events.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
 
-    return NextResponse.json({ events });
+    return NextResponse.json({ events: events });
   } catch (error) {
     console.error('Events list error:', error);
     return NextResponse.json(
