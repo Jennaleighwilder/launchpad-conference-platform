@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { RequireAuth } from '@/components/RequireAuth';
+import { useAuth } from '@/components/AuthProvider';
 
 type EventSummary = {
   id: string;
@@ -24,6 +26,7 @@ function formatDate(dateStr: string): string {
 }
 
 export default function DashboardPage() {
+  const { session, user, signOut } = useAuth();
   const [events, setEvents] = useState<EventSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -31,7 +34,9 @@ export default function DashboardPage() {
   useEffect(() => {
     async function fetchEvents() {
       try {
-        const res = await fetch('/api/events');
+        const headers: Record<string, string> = {};
+        if (session?.access_token) headers['Authorization'] = `Bearer ${session.access_token}`;
+        const res = await fetch('/api/events', { headers });
         const data = await res.json();
         if (data.events) {
           setEvents(data.events);
@@ -45,9 +50,10 @@ export default function DashboardPage() {
       }
     }
     fetchEvents();
-  }, []);
+  }, [session?.access_token]);
 
   return (
+    <RequireAuth>
     <main className="min-h-screen" style={{ background: 'var(--color-bg)' }}>
       <nav className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
@@ -56,6 +62,9 @@ export default function DashboardPage() {
           <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem' }}>Launchpad</span>
         </Link>
         <div className="flex items-center gap-4">
+          {user && (
+            <span className="text-sm hidden sm:inline" style={{ color: 'var(--color-text-muted)' }}>{user.email}</span>
+          )}
           <Link href="/dashboard" className="text-sm font-medium" style={{ color: 'var(--color-accent)' }}>
             Dashboard
           </Link>
@@ -65,6 +74,11 @@ export default function DashboardPage() {
           <Link href="/create" className="btn-primary" style={{ padding: '0.5rem 1.25rem', fontSize: '0.875rem' }}>
             Create New Event
           </Link>
+          {user && (
+            <button type="button" onClick={() => signOut()} className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>
+              Sign Out
+            </button>
+          )}
         </div>
       </nav>
 
@@ -137,5 +151,6 @@ export default function DashboardPage() {
         )}
       </div>
     </main>
+    </RequireAuth>
   );
 }

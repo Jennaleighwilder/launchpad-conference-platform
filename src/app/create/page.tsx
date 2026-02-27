@@ -3,6 +3,8 @@
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { RequireAuth } from '@/components/RequireAuth';
+import { useAuth } from '@/components/AuthProvider';
 
 const STANDARD_STEPS = [
   'Researching speakers...',
@@ -36,6 +38,18 @@ const VIBE_OPTIONS = [
   { value: 'festival', label: 'Festival', desc: 'Creative / experiential' },
 ];
 
+const HERO_STYLE_OPTIONS = [
+  { value: 'auto', label: '✨ Auto-match', desc: 'AI picks the best look for your topic' },
+  { value: 'conference', label: '🎤 Conference Stage', desc: 'Speaker podiums, big screens, audience' },
+  { value: 'networking', label: '🤝 Networking', desc: 'People connecting, conversations, meetups' },
+  { value: 'tech', label: '💻 Technology', desc: 'Code, circuits, futuristic, digital' },
+  { value: 'nature', label: '🌿 Nature & Outdoor', desc: 'Green, natural, sustainability vibes' },
+  { value: 'urban', label: '🏙️ Urban & City', desc: 'City skylines, modern architecture' },
+  { value: 'abstract', label: '🎨 Abstract & Creative', desc: 'Gradients, geometric, artistic' },
+  { value: 'minimal', label: '⬜ Minimal & Clean', desc: 'Solid colors, typography-focused' },
+  { value: 'custom', label: '📝 Custom Prompt', desc: 'Describe exactly what you want' },
+];
+
 /** Default event date: 6 months from now (realistic for countdowns) */
 function getDefaultEventDate(): string {
   const d = new Date();
@@ -45,6 +59,7 @@ function getDefaultEventDate(): string {
 
 export default function CreatePage() {
   const router = useRouter();
+  const { session } = useAuth();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(0);
   const [error, setError] = useState('');
@@ -62,6 +77,8 @@ export default function CreatePage() {
     budget: 'growth',
     vibe: 'professional',
     speakers_hint: '',
+    hero_style: 'auto',
+    hero_prompt: '',
   });
 
   const update = (field: string, value: string | number) => {
@@ -110,9 +127,11 @@ export default function CreatePage() {
 
     try {
       const url = useSwarm ? '/api/events/generate?mode=swarm' : '/api/events/generate';
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (session?.access_token) headers['Authorization'] = `Bearer ${session.access_token}`;
       const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ ...form, capacity: form.capacity, days: form.days }),
       });
 
@@ -147,6 +166,7 @@ export default function CreatePage() {
   // ── SWARM LOADING ────────────────────────────────────────────────
   if (loading && useSwarm) {
     return (
+      <RequireAuth>
       <main className="min-h-screen flex items-center justify-center transition-opacity duration-300" style={{ background: 'var(--color-bg)' }}>
         <div className="text-center max-w-md mx-auto px-6 animate-[fadeUp_0.4s_ease-out]">
           <div className="mb-8">
@@ -194,12 +214,14 @@ export default function CreatePage() {
           </div>
         </div>
       </main>
+      </RequireAuth>
     );
   }
 
   // ── STANDARD LOADING ─────────────────────────────────────────────
   if (loading) {
     return (
+      <RequireAuth>
       <main className="min-h-screen flex items-center justify-center transition-opacity duration-300" style={{ background: 'var(--color-bg)' }}>
         <div className="text-center animate-[fadeUp_0.4s_ease-out]">
           <div className="mb-8">
@@ -234,11 +256,13 @@ export default function CreatePage() {
           </div>
         </div>
       </main>
+      </RequireAuth>
     );
   }
 
   // ── FORM ─────────────────────────────────────────────────────────
   return (
+    <RequireAuth>
     <main className="min-h-screen" style={{ background: 'var(--color-bg)' }}>
       <nav className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
@@ -375,6 +399,40 @@ export default function CreatePage() {
             </div>
           </div>
 
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label className="label">Hero Visual Style</label>
+            <div className="grid grid-cols-3 gap-2 mt-2">
+              {HERO_STYLE_OPTIONS.map((o) => (
+                <button
+                  key={o.value}
+                  type="button"
+                  onClick={() => update('hero_style', o.value)}
+                  className="p-3 rounded-lg text-left transition-all"
+                  style={{
+                    border: `1px solid ${form.hero_style === o.value ? 'rgba(79,255,223,0.5)' : 'rgba(255,255,255,0.08)'}`,
+                    background: form.hero_style === o.value ? 'rgba(79,255,223,0.06)' : 'rgba(255,255,255,0.02)',
+                  }}
+                >
+                  <div className="text-xs font-semibold" style={{ color: form.hero_style === o.value ? 'var(--color-accent)' : 'var(--color-text-muted)' }}>{o.label}</div>
+                  <div className="text-[10px] mt-0.5" style={{ color: 'var(--color-text-muted)', opacity: 0.8 }}>{o.desc}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {form.hero_style === 'custom' && (
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label className="label">Describe your hero visual</label>
+              <input
+                type="text"
+                className="input-field"
+                value={form.hero_prompt}
+                onChange={(e) => update('hero_prompt', e.target.value)}
+                placeholder="e.g., Dramatic aerial shot of a packed stadium at night with spotlights"
+              />
+            </div>
+          )}
+
           <div>
             <label className="label">Preferred Speakers (optional)</label>
             <input type="text" className="input-field" placeholder="Names, companies, or types of speakers you'd like..."
@@ -423,5 +481,6 @@ export default function CreatePage() {
         </form>
       </div>
     </main>
+    </RequireAuth>
   );
 }

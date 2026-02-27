@@ -12,7 +12,6 @@ import {
 } from '@/components/demo-event/DemoEventLayout';
 import { PromoteModal } from '@/components/PromoteModal';
 import { DemoCustomizeModal } from '@/components/DemoCustomizeModal';
-import { NetworkGraph } from '@/components/event-viz/NetworkGraph';
 
 const accentColor = '#22C55E';
 const TRACK_COLORS = ['#22C55E', '#3B82F6', '#8B5CF6', '#EF4444', '#F59E0B', '#EC4899', '#06B6D4', '#84CC16', '#F97316'];
@@ -211,13 +210,10 @@ export default function AIFestivalUK2026Page() {
 
       <section className="relative px-6 pt-32 pb-24 min-h-[70vh] flex flex-col justify-end overflow-hidden isolate">
         <div className="absolute inset-0 z-0">
-          <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" src="/videos/9b68ed1f-ef9b-437c-b0bc-642f911e47a3_hd.mp4" />
+          <Image src="/images/hero-ai-festival-space.png" alt="" fill className="object-cover" priority sizes="100vw" unoptimized />
         </div>
         <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)' }} />
         <div className="absolute inset-0 z-[1] opacity-20 pointer-events-none" style={{ background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}30 0%, transparent 70%)` }} />
-        <div className="absolute inset-0 z-[1] pointer-events-none opacity-50">
-          <NetworkGraph nodeCount={40} colors={[accentColor, '#4ADE80', '#86EFAC']} />
-        </div>
         <div className="relative z-10 max-w-5xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6" style={{ background: `${accentColor}15`, border: `1px solid ${accentColor}40` }}>
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: accentColor, boxShadow: `0 0 8px ${accentColor}` }} />

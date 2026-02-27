@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { DemoBanner } from "./DemoBanner";
+import { AuthProvider } from "@/components/AuthProvider";
 import { AccessibilityProvider } from "@/contexts/AccessibilityContext";
 import { AccessibilityToggle } from "@/components/AccessibilityToggle";
 import { AccessibilityBody } from "@/components/AccessibilityBody";
@@ -31,13 +32,15 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
-        <AccessibilityProvider>
-          <AccessibilityBody />
-          <DemoBanner />
-          {children}
-          <AccessibilityToggle />
-          <LiveChat />
-        </AccessibilityProvider>
+        <AuthProvider>
+          <AccessibilityProvider>
+            <AccessibilityBody />
+            <DemoBanner />
+            {children}
+            <AccessibilityToggle />
+            <LiveChat />
+          </AccessibilityProvider>
+        </AuthProvider>
       </body>
     </html>
   );

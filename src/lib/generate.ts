@@ -1,7 +1,6 @@
 import OpenAI from 'openai';
 import type { EventData, CreateEventInput, SpeakerData, ScheduleItem, VenueData, PricingData } from './types';
-import { getUniqueHeroForEvent } from './hero-images';
-import { getUniqueHeroVideoForEvent } from './hero-videos';
+import { resolveHeroImageUrl } from './hero-images';
 import { generateRelevantHero } from './hero-generation';
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
@@ -102,7 +101,12 @@ function mapAIResponse(data: any, input: CreateEventInput, slug: string): Omit<E
     description: data.description || '',
     tagline: data.tagline || '',
     topic_key: data.topic_key || detectTopicKey(input.topic),
-    hero_image_url: getUniqueHeroForEvent(input.topic, input.city, slug),
+    ...((): { hero_image_url: string | null; hero_style?: string } => {
+      const topicKey = data.topic_key || detectTopicKey(input.topic);
+      const { url, useCss } = resolveHeroImageUrl(topicKey, input.hero_style || 'auto', slug, input.hero_prompt);
+      if (useCss) return { hero_image_url: null, hero_style: input.hero_style || 'abstract' };
+      return { hero_image_url: url };
+    })(),
     hero_media_type: 'image',
   };
 }
@@ -141,8 +145,12 @@ function fallbackGenerate(input: CreateEventInput, slug: string): Omit<EventData
       : `Join ${input.capacity} leaders in ${input.topic.toLowerCase()} for a ${input.vibe} experience in ${input.city}. Featuring world-class speakers, hands-on workshops, and unmatched networking.`,
     tagline,
     topic_key: topicKey,
-    hero_image_url: getUniqueHeroForEvent(input.topic, input.city, slug),
-    hero_video_url: getUniqueHeroVideoForEvent(input.topic, input.city, slug),
+    ...((): { hero_image_url: string | null; hero_style?: string } => {
+      const { url, useCss } = resolveHeroImageUrl(topicKey, input.hero_style || 'auto', slug, input.hero_prompt);
+      if (useCss) return { hero_image_url: null, hero_style: input.hero_style || 'abstract' };
+      return { hero_image_url: url };
+    })(),
+    hero_video_url: null,
     hero_media_type: 'image',
   };
 }

@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { FALLBACK_HERO_POOL, getHeroImages } from '@/lib/hero-images';
-import { getUniqueHeroVideoForEvent } from '@/lib/hero-videos';
 
 /** Resolve hero images from event — handles hero_image_url, hero_assets (array/object), theme, fallback */
 export function resolveHeroImages(
@@ -15,6 +14,7 @@ export function resolveHeroImages(
   }
 ): string[] {
   if (options.customImages?.length) return options.customImages;
+  if ((event.hero_style === 'abstract' || event.hero_style === 'minimal') && !event.hero_image_url) return [];
   if (event.hero_image_url) return [event.hero_image_url as string];
   const ha = event.hero_assets;
   if (Array.isArray(ha) && ha[0]) {
@@ -30,21 +30,17 @@ export function resolveHeroImages(
   return FALLBACK_HERO_POOL;
 }
 
-/** Resolve hero video from event — handles hero_video_url, hero_assets, or pool fallback */
+/** Resolve hero video from event — only returns video if explicitly set by user (customize modal).
+ * Generated events NEVER get random videos from the pool. */
 export function resolveHeroVideo(
   event: Record<string, unknown>,
-  customVideoUrl?: string,
-  options?: { slug?: string; topic?: string; city?: string }
+  customVideoUrl?: string
 ): string | null {
   if (customVideoUrl) return customVideoUrl;
   if (event.hero_video_url) return event.hero_video_url as string;
   const ha = event.hero_assets;
   if (Array.isArray(ha) && ha[0]) return (ha[0] as Record<string, unknown>).video_url as string | null;
   if (ha && typeof ha === 'object') return (ha as Record<string, unknown>).video_url as string | null;
-  // Fallback: use video pool for events without custom video (e.g. pre-video-pool events)
-  if (options?.slug && options?.topic && options?.city) {
-    return getUniqueHeroVideoForEvent(options.topic, options.city, options.slug);
-  }
   return null;
 }
 

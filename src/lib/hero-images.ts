@@ -219,6 +219,136 @@ export function getHeroImages(seed?: string, topic?: string): string[] {
 
 export const HERO_POOL_FOR_THEMES = PICSUM_POOL;
 
+/** Curated, topic-and-style-matched images. Deterministic per event. */
+const HERO_IMAGE_LIBRARY: Record<string, Record<string, string[]>> = {
+  conference: {
+    ai: [
+      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1587825140708-dfaf18c4c3d6?w=1920&h=1080&fit=crop&q=80',
+    ],
+    web3: [
+      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=1920&h=1080&fit=crop&q=80',
+    ],
+    fintech: [
+      'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1920&h=1080&fit=crop&q=80',
+    ],
+    general: [
+      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=1920&h=1080&fit=crop&q=80',
+    ],
+  },
+  networking: {
+    _default: [
+      'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1920&h=1080&fit=crop&q=80',
+    ],
+  },
+  tech: {
+    ai: [
+      'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=1920&h=1080&fit=crop&q=80',
+    ],
+    web3: [
+      'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1920&h=1080&fit=crop&q=80',
+    ],
+    _default: [
+      'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1920&h=1080&fit=crop&q=80',
+    ],
+  },
+  nature: {
+    climate: [
+      'https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&h=1080&fit=crop&q=80',
+    ],
+    health: [
+      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=1920&h=1080&fit=crop&q=80',
+    ],
+    _default: [
+      'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=1920&h=1080&fit=crop&q=80',
+    ],
+  },
+  urban: {
+    _default: [
+      'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1920&h=1080&fit=crop&q=80',
+    ],
+  },
+  abstract: {
+    _default: [
+      'https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1920&h=1080&fit=crop&q=80',
+    ],
+  },
+  minimal: {
+    _default: [
+      'https://images.unsplash.com/photo-1557683316-973673baf926?w=1920&h=1080&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1553356084-58ef4a67b2a7?w=1920&h=1080&fit=crop&q=80',
+    ],
+  },
+};
+
+const AUTO_STYLE_MAP: Record<string, string> = {
+  ai: 'tech',
+  web3: 'tech',
+  climate: 'nature',
+  health: 'nature',
+  fintech: 'urban',
+  general: 'conference',
+};
+
+/** Pollinations.ai — free AI image generation, no API key */
+function getPollinationsUrl(prompt: string, width = 1920, height = 1080): string {
+  const encoded = encodeURIComponent(prompt);
+  return `https://image.pollinations.ai/prompt/${encoded}?width=${width}&height=${height}&nologo=true`;
+}
+
+/**
+ * Resolve hero image URL. For custom+prompt uses Pollinations; for abstract/minimal returns empty (use CSS).
+ * Otherwise uses curated library.
+ */
+export function resolveHeroImageUrl(
+  topicKey: string,
+  heroStyle: string,
+  slug: string,
+  heroPrompt?: string
+): { url: string | null; useCss: boolean } {
+  if (heroStyle === 'custom' && heroPrompt?.trim()) {
+    const prompt = `Professional event banner: ${heroPrompt.trim()}, high quality, cinematic lighting, wide angle`;
+    return { url: getPollinationsUrl(prompt), useCss: false };
+  }
+  if (heroStyle === 'abstract' || heroStyle === 'minimal') {
+    return { url: null, useCss: true };
+  }
+  return { url: selectHeroImage(topicKey, heroStyle, slug), useCss: false };
+}
+
+/**
+ * Smart hero image selection by topic + style. Deterministic per slug.
+ * Use hero_style from form; 'auto' maps topic to best style.
+ */
+export function selectHeroImage(topicKey: string, heroStyle: string, slug: string): string {
+  const style = heroStyle === 'auto' ? (AUTO_STYLE_MAP[topicKey] || 'conference') : heroStyle;
+  const stylePool = HERO_IMAGE_LIBRARY[style] || HERO_IMAGE_LIBRARY.conference;
+  const images = stylePool[topicKey] || stylePool._default || (stylePool as Record<string, string[]>)[Object.keys(stylePool)[0]];
+  if (!images?.length) return 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop&q=80';
+  let hash = 0;
+  for (let i = 0; i < slug.length; i++) hash = ((hash << 5) - hash) + slug.charCodeAt(i);
+  return images[Math.abs(hash) % images.length];
+}
+
 /**
  * Assign a unique hero image per event. Topic-aware: AI events get tech imagery, etc.
  * Deterministic: same event = same image. Different events get different images.
