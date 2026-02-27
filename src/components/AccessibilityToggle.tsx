@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useAccessibility } from '@/contexts/AccessibilityContext';
 import type { AccessibilityPrefs } from '@/contexts/AccessibilityContext';
+import { GoogleTranslateWidget } from '@/components/GoogleTranslateWidget';
 
 export function AccessibilityToggle() {
   const { prefs, setPref, togglePref } = useAccessibility();
@@ -69,6 +70,7 @@ export function AccessibilityToggle() {
                 <option value="xlarge">Extra Large</option>
               </select>
             </div>
+            <GoogleTranslateWidget />
           </div>
         </div>
       )}

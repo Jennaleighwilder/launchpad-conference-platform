@@ -223,6 +223,12 @@ html[data-high-contrast="true"] { --color-bg: #000; --color-text: #fff; --color-
 html[data-text-size="large"] { font-size: 112.5%; }
 html[data-text-size="xlarge"] { font-size: 125%; }
 
+/* Google Translate — hide default widget, we use custom dropdown in accessibility panel */
+iframe.skiptranslate,
+#google_translate_element .skiptranslate,
+.goog-te-banner-frame { display: none !important; }
+body { top: 0 !important; }
+
 /* Checkout success — print ticket only */
 @media print {
   body * { visibility: hidden; }
