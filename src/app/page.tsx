@@ -477,7 +477,7 @@ export default function HomePage() {
               ].map((v) => (
                 <div key={v.src} className="rounded-xl overflow-hidden group" style={{ border: '1px solid rgba(79,255,223,0.2)', boxShadow: '0 0 20px rgba(79,255,223,0.1)' }}>
                   <div className="aspect-video relative">
-                    <video src={v.src} className="absolute inset-0 w-full h-full object-cover" muted loop playsInline preload="metadata" />
+                    <video src={v.src} className="absolute inset-0 w-full h-full object-cover" autoPlay muted loop playsInline />
                   </div>
                   <div className="p-2" style={{ background: 'rgba(0,0,0,0.4)' }}>
                     <div className="text-xs font-medium">{v.title}</div>
