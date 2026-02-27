@@ -222,3 +222,20 @@ html[data-reduced-motion="true"] * { animation: none !important; transition-dura
 html[data-high-contrast="true"] { --color-bg: #000; --color-text: #fff; --color-text-muted: #ccc; }
 html[data-text-size="large"] { font-size: 112.5%; }
 html[data-text-size="xlarge"] { font-size: 125%; }
+
+/* Checkout success — print ticket only */
+@media print {
+  body * { visibility: hidden; }
+  main, main > div { visibility: visible; }
+  main > div > *:not(.ticket-card) { visibility: hidden; }
+  .ticket-card, .ticket-card * { visibility: visible; }
+  .ticket-card {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    max-width: none;
+    box-shadow: none;
+    margin: 0;
+  }
+}

@@ -105,7 +105,7 @@ function SuccessContent() {
         </p>
 
         {isDemoFlow && (
-          <div className="rounded-2xl p-6 mb-8 text-left" style={{ background: '#fff', color: '#0A0A0A' }}>
+          <div id="ticket-print" className="ticket-card rounded-2xl p-6 mb-8 text-left" style={{ background: '#fff', color: '#0A0A0A' }}>
             <div className="text-xs uppercase tracking-wider mb-4" style={{ color: '#666' }}>Your ticket</div>
             <h3 className="text-xl font-semibold mb-1">{eventName}</h3>
             <p className="text-sm mb-4" style={{ color: '#666' }}>{eventDate} · {event?.city || ''}</p>
@@ -135,11 +135,12 @@ function SuccessContent() {
           {isDemoFlow && (
             <>
               <button
-                onClick={() => alert('PDF download coming soon')}
+                onClick={() => window.print()}
                 className="px-4 py-2 rounded-lg text-sm font-medium transition-all"
                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+                title="Print or save as PDF"
               >
-                Download Ticket
+                Print / Save PDF
               </button>
               <button
                 onClick={handleAddToCalendar}
