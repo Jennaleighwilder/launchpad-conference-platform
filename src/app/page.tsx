@@ -459,15 +459,32 @@ export default function HomePage() {
                   loop
                   playsInline
                   className="w-full h-full object-cover"
-                  poster="https://assets.mixkit.co/videos/99786/99786-thumb-720-3.jpg"
                 >
-                  <source src="https://assets.mixkit.co/videos/99786/99786-720.mp4" type="video/mp4" />
+                  <source src="/videos/9b68ed1f-ef9b-437c-b0bc-642f911e47a3_hd.mp4" type="video/mp4" />
                 </video>
               </div>
             </div>
           </div>
-          {/* YouTube featured talks */}
+          {/* Promo videos + YouTube featured talks */}
           <div className="mb-16">
+            <h3 className="text-2xl font-semibold mb-6" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-accent)', textShadow: '0 0 20px rgba(79,255,223,0.5)' }}>Promo videos</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+              {[
+                { src: '/videos/8d0ea574-bdda-47c4-8ce8-e9318d70e7b8_hd.mp4', title: 'Promo 1' },
+                { src: '/videos/19a52e15-e11c-41a2-89ae-6a7949390ff3_hd.mp4', title: 'Promo 2' },
+                { src: '/videos/38bf5980-84f6-41a7-b7a0-843826866b12_hd.mp4', title: 'Promo 3' },
+                { src: '/videos/Bayou_Scene_Video_Generation.mp4', title: 'Bayou Scene' },
+              ].map((v) => (
+                <div key={v.src} className="rounded-xl overflow-hidden group" style={{ border: '1px solid rgba(79,255,223,0.2)', boxShadow: '0 0 20px rgba(79,255,223,0.1)' }}>
+                  <div className="aspect-video relative">
+                    <video src={v.src} className="absolute inset-0 w-full h-full object-cover" muted loop playsInline preload="metadata" />
+                  </div>
+                  <div className="p-2" style={{ background: 'rgba(0,0,0,0.4)' }}>
+                    <div className="text-xs font-medium">{v.title}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
             <h3 className="text-2xl font-semibold mb-6" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-accent)', textShadow: '0 0 20px rgba(79,255,223,0.5)' }}>Featured conference talks</h3>
             <div className="grid md:grid-cols-3 gap-6">
               {[

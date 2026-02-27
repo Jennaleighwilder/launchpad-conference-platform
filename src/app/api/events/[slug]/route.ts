@@ -79,7 +79,7 @@ function buildDemoEvents(): Record<string, Record<string, unknown>> {
       city: 'Bury St Edmunds, UK',
       date: '2026-05-27',
       capacity: 2000,
-      venue: { name: 'West Suffolk College XR Labs', address: 'Out Risbygate, Bury St Edmunds IP33 3RL', capacity_note: '£2M state-of-the-art XR Lab' },
+      venue: { name: 'West Suffolk College STEM Centre', address: '73 Western Way, Bury St Edmunds IP33 3TB', capacity_note: '£2M state-of-the-art XR Lab' },
       tracks: ['PitchFest', 'Cyber Security', 'Robotics & Automation', 'AI & Quantum Computing', 'Energy Environment & Infrastructure', 'Agriculture & Food', 'XR & AI', 'Creative & Media', 'Healthcare'],
       speakers: [],
       schedule: [],
