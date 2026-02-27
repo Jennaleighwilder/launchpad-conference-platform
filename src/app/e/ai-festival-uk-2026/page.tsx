@@ -5,17 +5,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getSpeakerPhoto } from '@/lib/speaker-photos';
 import {
-  KenBurnsSlideshow,
   WaveDivider,
   LiveRegistrationCounter,
   CountdownTimer,
   ScanlineOverlay,
 } from '@/components/demo-event/DemoEventLayout';
-import { FALLBACK_HERO_POOL } from '@/lib/hero-images';
 
 const accentColor = '#22C55E';
 const TRACK_COLORS = ['#22C55E', '#3B82F6', '#8B5CF6', '#EF4444', '#F59E0B', '#EC4899', '#06B6D4', '#84CC16', '#F97316'];
-const SLIDESHOW_IMAGES = FALLBACK_HERO_POOL.slice(0, 12);
 
 const TRACKS = [
   'PitchFest',
@@ -85,31 +82,31 @@ const PROMO_VIDEOS = [
 ];
 
 const HOTELS = [
-  { name: 'The Angel Hotel', distance: '8 min walk', price: '£120', stars: 4, img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop' },
-  { name: 'Premier Inn Town Centre', distance: '12 min walk', price: '£75', stars: 3, img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop' },
-  { name: 'Ravenwood Hall', distance: '15 min drive', price: '£180', stars: 4, img: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=400&h=300&fit=crop' },
-  { name: 'Premier Inn North', distance: '10 min drive', price: '£65', stars: 3, img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop' },
+  { name: 'The Angel Hotel', distance: '8 min walk', price: '£120', stars: 4, img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=The+Angel+Hotel+Bury+St+Edmunds' },
+  { name: 'Premier Inn Town Centre', distance: '12 min walk', price: '£75', stars: 3, img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Premier+Inn+Bury+St+Edmunds+Town+Centre' },
+  { name: 'Ravenwood Hall', distance: '15 min drive', price: '£180', stars: 4, img: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=400&h=300&fit=crop', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Ravenwood+Hall+Hotel+Suffolk' },
+  { name: 'Premier Inn North', distance: '10 min drive', price: '£65', stars: 3, img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Premier+Inn+Bury+St+Edmunds+North' },
 ];
 
 const DINING = [
-  { name: 'Bellota', cuisine: 'Chef\'s table tasting menu', rating: '4.9★', distance: '0.5 km' },
-  { name: 'Verve', cuisine: 'Cocktails & pizza', rating: '4.8★', distance: '0.6 km' },
-  { name: 'Rustico', cuisine: 'Italian · near venue', rating: '4.7★', distance: '0.3 km' },
-  { name: 'Damson & Wilde', cuisine: 'Modern British', rating: '4.6★', distance: '0.7 km' },
-  { name: 'Edmunds Restaurant', cuisine: 'At West Suffolk College', rating: '4.9★', distance: 'On site' },
+  { name: 'Bellota', cuisine: 'Chef\'s table tasting menu', rating: '4.9★', distance: '0.5 km', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Bellota+Bury+St+Edmunds' },
+  { name: 'Verve', cuisine: 'Cocktails & pizza', rating: '4.8★', distance: '0.6 km', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Verve+Bury+St+Edmunds' },
+  { name: 'Rustico', cuisine: 'Italian · near venue', rating: '4.7★', distance: '0.3 km', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Rustico+Italian+Bury+St+Edmunds' },
+  { name: 'Damson & Wilde', cuisine: 'Modern British', rating: '4.6★', distance: '0.7 km', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Damson+Wilde+Bury+St+Edmunds' },
+  { name: 'Edmunds Restaurant', cuisine: 'At West Suffolk College', rating: '4.9★', distance: 'On site', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Edmunds+Restaurant+West+Suffolk+College' },
 ];
 
 const COFFEE = [
-  { name: 'Midgar Coffee', rating: '4.7★', note: 'Specialty roasters' },
-  { name: 'Sector 7', rating: '5.0★', note: 'Independent' },
-  { name: 'Blend Coffee & Wine', rating: '4.8★', note: 'All-day' },
-  { name: 'The Suffolk Carver', rating: '4.7★', note: 'Café & deli' },
+  { name: 'Midgar Coffee', rating: '4.7★', note: 'Specialty roasters', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Midgar+Coffee+Bury+St+Edmunds' },
+  { name: 'Sector 7', rating: '5.0★', note: 'Independent', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Sector+7+Bury+St+Edmunds' },
+  { name: 'Blend Coffee & Wine', rating: '4.8★', note: 'All-day', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Blend+Coffee+Wine+Bury+St+Edmunds' },
+  { name: 'The Suffolk Carver', rating: '4.7★', note: 'Café & deli', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=The+Suffolk+Carver+Bury+St+Edmunds' },
 ];
 
 const EXPLORE = [
-  { name: 'Abbey Gardens & Ruins', note: 'Historic abbey, botanical gardens' },
-  { name: 'Arc Shopping Centre', note: 'High street shopping' },
-  { name: 'West Stow Anglo-Saxon Village', note: 'Living history, 15 min drive' },
+  { name: 'Abbey Gardens & Ruins', note: 'Historic abbey, botanical gardens', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Abbey+Gardens+Bury+St+Edmunds' },
+  { name: 'Arc Shopping Centre', note: 'High street shopping', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Arc+Shopping+Centre+Bury+St+Edmunds' },
+  { name: 'West Stow Anglo-Saxon Village', note: 'Living history, 15 min drive', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=West+Stow+Anglo-Saxon+Village' },
 ];
 
 const TRANSPORT = [
@@ -119,22 +116,29 @@ const TRANSPORT = [
 ];
 
 const SPONSORS = [
-  { name: 'BT', tier: 'Platinum', logo: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=120&h=60&fit=crop' },
-  { name: 'Orbital Global', tier: 'Platinum', logo: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=120&h=60&fit=crop' },
-  { name: 'VirtTuri', tier: 'Platinum', logo: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=120&h=60&fit=crop' },
-  { name: 'AWS', tier: 'Platinum', logo: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=120&h=60&fit=crop' },
-  { name: 'Barclays Eagle Labs', tier: 'Platinum', logo: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=120&h=60&fit=crop' },
-  { name: 'University of Essex', tier: 'Academic', logo: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=120&h=60&fit=crop' },
-  { name: 'UEA', tier: 'Academic', logo: 'https://images.unsplash.com/photo-1562774053-701939374585?w=120&h=60&fit=crop' },
-  { name: 'University of Suffolk', tier: 'Academic', logo: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=120&h=60&fit=crop' },
-  { name: 'Eastern Education Group', tier: 'Partner', logo: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=120&h=60&fit=crop' },
-  { name: 'Birketts', tier: 'Partner', logo: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=120&h=60&fit=crop' },
-  { name: 'Connected Innovation', tier: 'Partner', logo: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=120&h=60&fit=crop' },
-  { name: 'Creative East', tier: 'Partner', logo: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=120&h=60&fit=crop' },
-  { name: 'Health Innovation East', tier: 'Partner', logo: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=120&h=60&fit=crop' },
-  { name: 'Babergh Mid Suffolk', tier: 'Partner', logo: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=120&h=60&fit=crop' },
-  { name: 'Suffolk Economy', tier: 'Partner', logo: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=120&h=60&fit=crop' },
-  { name: 'Tech East', tier: 'Partner', logo: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=120&h=60&fit=crop' },
+  { name: 'BT', tier: 'Platinum' },
+  { name: 'Orbital Global', tier: 'Platinum' },
+  { name: 'VirtTuri', tier: 'Platinum' },
+  { name: 'AWS', tier: 'Platinum' },
+  { name: 'Barclays Eagle Labs', tier: 'Platinum' },
+  { name: 'University of Essex', tier: 'Academic' },
+  { name: 'UEA', tier: 'Academic' },
+  { name: 'University of Suffolk', tier: 'Academic' },
+  { name: 'Eastern Education Group', tier: 'Partner' },
+  { name: 'Birketts', tier: 'Partner' },
+  { name: 'Connected Innovation', tier: 'Partner' },
+  { name: 'Creative East', tier: 'Partner' },
+  { name: 'Health Innovation East', tier: 'Partner' },
+  { name: 'Babergh Mid Suffolk', tier: 'Partner' },
+  { name: 'Suffolk Economy', tier: 'Partner' },
+  { name: 'Tech East', tier: 'Partner' },
+];
+
+const VENUE_GALLERY = [
+  'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&h=400&fit=crop',
+  'https://images.unsplash.com/photo-1573164713988-8665fc963095?w=600&h=400&fit=crop',
+  'https://images.unsplash.com/photo-1617802690992-15d93263d3a9?w=600&h=400&fit=crop',
+  'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop',
 ];
 
 type LocalTab = 'hotels' | 'dining' | 'coffee' | 'explore';
@@ -163,7 +167,7 @@ export default function AIFestivalUK2026Page() {
 
       <section className="relative px-6 pt-32 pb-24 min-h-[70vh] flex flex-col justify-end overflow-hidden isolate">
         <div className="absolute inset-0 z-0">
-          <KenBurnsSlideshow images={SLIDESHOW_IMAGES} />
+          <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" src="/videos/9b68ed1f-ef9b-437c-b0bc-642f911e47a3_hd.mp4" />
         </div>
         <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.35) 50%, rgba(10,10,10,0.8) 100%)' }} />
         <div className="absolute inset-0 z-[1] opacity-30 pointer-events-none" style={{ background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}26 0%, transparent 70%)` }} />
@@ -208,18 +212,18 @@ export default function AIFestivalUK2026Page() {
               const trackColor = TRACK_COLORS[TRACKS.indexOf(speaker.track) % TRACK_COLORS.length] || accentColor;
               const expanded = expandedSpeaker === speaker.id;
               return (
-                <div key={speaker.id} className="card group">
-                  <div className="relative w-full aspect-[4/5] rounded-lg mb-4 overflow-hidden">
+                <div key={speaker.id} className="rounded-xl p-5 group" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                  <div className="relative w-full aspect-square rounded-lg mb-4 overflow-hidden">
                     <Image src={speaker.img} alt={speaker.name} fill className="object-cover transition-transform group-hover:scale-105" sizes="20vw" unoptimized />
                   </div>
-                  <h3 className="font-semibold mb-1.5 text-base">{speaker.name}</h3>
+                  <h3 className="font-semibold mb-1 text-base">{speaker.name}</h3>
                   <p className="text-sm mb-2" style={{ color: 'var(--color-text-muted)', lineHeight: 1.4 }}>{speaker.role}</p>
-                  <p className="text-sm font-medium mb-1.5" style={{ color: accentColor, lineHeight: 1.4 }}>{speaker.talk}</p>
-                  <span className="text-xs px-2 py-0.5 rounded" style={{ background: `${trackColor}20`, color: trackColor }}>{speaker.track}</span>
-                  <button onClick={() => setExpandedSpeaker(expanded ? null : speaker.id)} className="mt-3 text-xs block" style={{ color: accentColor }}>{expanded ? '− Less' : '+ Bio'}</button>
+                  <p className="text-sm font-medium mb-2" style={{ color: accentColor, lineHeight: 1.4 }}>{speaker.talk}</p>
+                  <span className="text-xs px-2 py-1 rounded-md" style={{ background: `${trackColor}15`, color: trackColor }}>{speaker.track}</span>
+                  <button onClick={() => setExpandedSpeaker(expanded ? null : speaker.id)} className="mt-3 text-xs block hover:underline" style={{ color: accentColor }}>{expanded ? '− Less' : '+ Bio'}</button>
                   {expanded && (
-                    <div className="mt-3 flex gap-3 items-start">
-                      <div className="relative w-16 h-16 rounded-full overflow-hidden shrink-0">
+                    <div className="mt-3 pt-3 flex gap-3 items-start" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                      <div className="relative w-14 h-14 rounded-full overflow-hidden shrink-0">
                         <Image src={speaker.img} alt={speaker.name} fill className="object-cover" unoptimized />
                       </div>
                       <p className="text-xs flex-1" style={{ color: 'var(--color-text-muted)', lineHeight: 1.5 }}>{speaker.bio}</p>
@@ -295,10 +299,10 @@ export default function AIFestivalUK2026Page() {
                   <video
                     src={v.src}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    autoPlay
                     muted
                     loop
                     playsInline
-                    preload="metadata"
                   />
                 </div>
                 <h3 className="font-semibold text-sm">{v.title}</h3>
@@ -312,15 +316,12 @@ export default function AIFestivalUK2026Page() {
 
       <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Sponsors</h2>
-          <div className="flex flex-wrap gap-6 items-center justify-center">
+          <h2 className="text-base font-medium uppercase tracking-wider mb-8" style={{ color: 'var(--color-text-muted)' }}>Sponsors</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-4">
             {SPONSORS.map((s) => (
-              <div key={s.name} className="card px-6 py-4 flex flex-col items-center gap-2 min-w-[100px]">
-                <div className="relative w-16 h-16 rounded-lg overflow-hidden">
-                  <Image src={s.logo} alt={s.name} fill className="object-contain" unoptimized />
-                </div>
-                <span className="font-medium text-sm">{s.name}</span>
-                <span className="text-xs" style={{ color: accentColor }}>{s.tier}</span>
+              <div key={s.name} className="px-4 py-3 rounded-lg text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <span className="font-medium text-sm block">{s.name}</span>
+                <span className="text-[10px] uppercase tracking-wider" style={{ color: accentColor }}>{s.tier}</span>
               </div>
             ))}
           </div>
@@ -332,6 +333,13 @@ export default function AIFestivalUK2026Page() {
       <section className="px-6 py-20">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-base font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Venue</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            {VENUE_GALLERY.map((img, i) => (
+              <div key={i} className="rounded-lg overflow-hidden relative aspect-[4/3]" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
+                <Image src={img} alt={`${VENUE.name} ${i + 1}`} fill className="object-cover" sizes="(max-width: 768px) 50vw, 25vw" unoptimized />
+              </div>
+            ))}
+          </div>
           <div className="rounded-xl overflow-hidden mb-4" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
             <Image src={VENUE.photo} alt={VENUE.name} width={800} height={400} className="w-full h-48 object-cover" unoptimized />
           </div>
@@ -370,14 +378,14 @@ export default function AIFestivalUK2026Page() {
             <>
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {HOTELS.map((h) => (
-                  <div key={h.name} className="card overflow-hidden">
+                  <a key={h.name} href={h.mapsUrl} target="_blank" rel="noopener noreferrer" className="card overflow-hidden block hover:opacity-90 transition-opacity">
                     <div className="relative h-32 -m-6 mb-4">
                       <Image src={h.img} alt={h.name} fill className="object-cover" unoptimized />
                     </div>
                     <h3 className="font-semibold mb-1">{h.name}</h3>
                     <p className="text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>{h.distance} · {'★'.repeat(h.stars)}</p>
-                    <p className="text-sm font-medium" style={{ color: accentColor }}>{h.price}/night</p>
-                  </div>
+                    <p className="text-sm font-medium" style={{ color: accentColor }}>{h.price}/night · Map →</p>
+                  </a>
                 ))}
               </div>
               <a href="https://www.booking.com/searchresults.html?ss=Bury+St+Edmunds&checkin=2026-05-27&checkout=2026-05-29" target="_blank" rel="noopener noreferrer" className="inline-block mt-6 text-sm font-medium" style={{ color: accentColor }}>View all hotels in Bury St Edmunds →</a>
@@ -386,32 +394,33 @@ export default function AIFestivalUK2026Page() {
           {localTab === 'dining' && (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {DINING.map((r) => (
-                <div key={r.name} className="card">
+                <a key={r.name} href={r.mapsUrl} target="_blank" rel="noopener noreferrer" className="card block hover:opacity-90 transition-opacity">
                   <h3 className="font-semibold mb-1">{r.name}</h3>
                   <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>{r.cuisine} · {r.distance}</p>
-                  <p className="text-xs mt-1" style={{ color: accentColor }}>{r.rating}</p>
-                </div>
+                  <p className="text-xs mt-1" style={{ color: accentColor }}>{r.rating} · Map →</p>
+                </a>
               ))}
             </div>
           )}
           {localTab === 'coffee' && (
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {COFFEE.map((c) => (
-                <div key={c.name} className="card">
+                <a key={c.name} href={c.mapsUrl} target="_blank" rel="noopener noreferrer" className="card block hover:opacity-90 transition-opacity">
                   <h3 className="font-semibold mb-1">{c.name}</h3>
                   <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>{c.note}</p>
-                  <p className="text-xs mt-1" style={{ color: accentColor }}>{c.rating}</p>
-                </div>
+                  <p className="text-xs mt-1" style={{ color: accentColor }}>{c.rating} · Map →</p>
+                </a>
               ))}
             </div>
           )}
           {localTab === 'explore' && (
             <div className="grid sm:grid-cols-3 gap-6">
               {EXPLORE.map((e) => (
-                <div key={e.name} className="card">
+                <a key={e.name} href={e.mapsUrl} target="_blank" rel="noopener noreferrer" className="card block hover:opacity-90 transition-opacity">
                   <h3 className="font-semibold mb-2">{e.name}</h3>
                   <p className="text-sm" style={{ color: 'var(--color-text-muted)', lineHeight: 1.5 }}>{e.note}</p>
-                </div>
+                  <p className="text-xs mt-2" style={{ color: accentColor }}>View on map →</p>
+                </a>
               ))}
             </div>
           )}
