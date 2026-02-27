@@ -333,7 +333,8 @@ export default function EventPage() {
     return DEFAULT_VIDEO_ID;
   })();
   const ticketsAvailable = event.status === 'ticket_sales' || event.status === 'live';
-  const formattedDate = formatDate(event.date);
+  const displayDate = sanitizeDateForCountdown(event.date);
+  const formattedDate = formatDate(displayDate);
 
   // Map speaker names to their talks from schedule
   const speakerTalks = schedule.reduce<Record<string, { title: string; track?: string }>>((acc, item) => {
@@ -342,7 +343,7 @@ export default function EventPage() {
   }, {});
 
   const heroBreadcrumb = `${venue.name}, ${event.city} · ${formattedDate}`;
-  const countdownEnd = `${event.date}T09:00:00`;
+  const countdownEnd = `${displayDate}T09:00:00-04:00`;
 
   const themeVars = {
     '--color-bg': theme.bg,
@@ -456,7 +457,7 @@ export default function EventPage() {
           </div>
 
           <div className="mb-4">
-            <p className="text-xs uppercase tracking-wider mb-2" style={{ color: theme.textMuted }}>Event starts in</p>
+            <p className="text-xs uppercase tracking-wider mb-2" style={{ color: theme.textMuted, textShadow: '0 1px 10px rgba(0,0,0,0.5)' }}>Event starts in</p>
             <CountdownTimer endDate={countdownEnd} accentColor={accentColor} />
           </div>
         </div>
@@ -1441,5 +1442,19 @@ function formatDate(dateStr: string): string {
     return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   } catch {
     return dateStr;
+  }
+}
+
+/** Use realistic date for countdown when event date is unreasonably far (e.g. 2029). */
+function sanitizeDateForCountdown(dateStr: string): string {
+  try {
+    const parsed = new Date(dateStr + 'T12:00:00');
+    if (isNaN(parsed.getTime())) return '2026-09-15';
+    const now = new Date();
+    const daysDiff = (parsed.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
+    if (daysDiff > 400) return '2026-09-15';
+    return dateStr;
+  } catch {
+    return '2026-09-15';
   }
 }
