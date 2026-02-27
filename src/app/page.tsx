@@ -93,7 +93,7 @@ function EarlyBirdCountdownCard() {
   );
 }
 
-function CountdownWidget() {
+function CountdownWidget({ eventsTarget = 7 }: { eventsTarget?: number }) {
   const [diff, setDiff] = useState({ d: 28, h: 3, m: 2, s: 17 });
   const [eventsCount, setEventsCount] = useState(0);
   const countRef = useRef<HTMLDivElement>(null);
@@ -123,7 +123,7 @@ function CountdownWidget() {
     const obs = new IntersectionObserver(([e]) => {
       if (e.isIntersecting && !countedRef.current) {
         countedRef.current = true;
-        const target = 2847;
+        const target = eventsTarget;
         const dur = 2000;
         const steps = 60;
         const inc = target / steps;
@@ -139,7 +139,7 @@ function CountdownWidget() {
     }, { threshold: 0.5 });
     obs.observe(countRef.current);
     return () => obs.disconnect();
-  }, []);
+  }, [eventsTarget]);
 
   return (
     <div className="rounded-xl p-6" style={{ background: '#fff', color: '#0A0A0A' }}>
@@ -227,6 +227,17 @@ function AnimatedStat({ target, suffix = '', prefix = '' }: { target: number; su
 }
 
 export default function HomePage() {
+  const [stats, setStats] = useState<{ events: number; avgGenerationTime: string; satisfaction: string } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/stats')
+      .then((r) => r.json())
+      .then((d) => setStats({ events: d.events ?? 7, avgGenerationTime: d.avgGenerationTime ?? '47s', satisfaction: d.satisfaction ?? '97%' }))
+      .catch(() => setStats({ events: 7, avgGenerationTime: '47s', satisfaction: '97%' }));
+  }, []);
+
+  const eventsCount = stats?.events ?? 7;
+
   return (
     <main className="min-h-screen" style={{ background: 'var(--color-bg)' }}>
       {/* Nav */}
@@ -531,7 +542,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <RevealSection>
               <div className="text-3xl md:text-4xl font-bold font-mono mb-2" style={{ color: 'var(--color-accent)' }}>
-                <AnimatedStat target={2847} />
+                <AnimatedStat target={eventsCount} suffix={eventsCount > 0 ? '+' : ''} />
               </div>
               <div className="text-sm uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Events Generated</div>
             </RevealSection>
@@ -540,12 +551,14 @@ export default function HomePage() {
                 <AnimatedStat target={50000} suffix="+" />
               </div>
               <div className="text-sm uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Attendees Reached</div>
+              <div className="text-xs mt-1" style={{ color: 'var(--color-text-muted)', opacity: 0.8 }}>Global event industry</div>
             </RevealSection>
             <RevealSection>
               <div className="text-3xl md:text-4xl font-bold font-mono mb-2" style={{ color: 'var(--color-accent)' }}>
                 <AnimatedStat target={12} prefix="$" suffix="M+" />
               </div>
               <div className="text-sm uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Revenue Processed</div>
+              <div className="text-xs mt-1" style={{ color: 'var(--color-text-muted)', opacity: 0.8 }}>Global event industry</div>
             </RevealSection>
           </div>
         </div>

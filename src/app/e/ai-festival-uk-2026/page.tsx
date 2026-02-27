@@ -158,6 +158,37 @@ export default function AIFestivalUK2026Page() {
   const [localTab, setLocalTab] = useState<LocalTab>('hotels');
   const scheduleFiltered = SCHEDULE.filter((s) => s.day === scheduleDay);
 
+  useEffect(() => {
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: 'AI Festival UK 2026',
+      description: 'Two-day AI festival at West Suffolk College STEM Centre. PitchFest, keynotes, XR Lab demos, and 9 tracks including AI & Quantum, Cyber Security, Healthcare, and more.',
+      startDate: '2026-05-27T09:00:00',
+      endDate: '2026-05-28T16:00:00',
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      location: {
+        '@type': 'Place',
+        name: VENUE.name,
+        address: { '@type': 'PostalAddress', streetAddress: VENUE.address, addressLocality: 'Bury St Edmunds', addressCountry: 'GB' },
+      },
+      organizer: { '@type': 'Organization', name: 'Launchpad', url: 'https://launchpad-conference-platform.vercel.app' },
+      offers: { '@type': 'Offer', url: 'https://launchpad-conference-platform.vercel.app/e/ai-festival-uk-2026', availability: 'https://schema.org/InStock' },
+      performer: SPEAKERS.slice(0, 5).map((s) => ({ '@type': 'Person', name: s.name })),
+    };
+    let el = document.getElementById('event-schema');
+    if (!el) {
+      el = document.createElement('script');
+      el.id = 'event-schema';
+      el.setAttribute('type', 'application/ld+json');
+      document.head.appendChild(el);
+    }
+    el.textContent = JSON.stringify(schema);
+    document.title = 'AI Festival UK 2026 — Bury St Edmunds | Launchpad';
+    return () => { el?.remove(); };
+  }, []);
+
   return (
     <main className="min-h-screen relative" style={{ background: 'transparent' }}>
       <ScanlineOverlay color="34,197,94" />
