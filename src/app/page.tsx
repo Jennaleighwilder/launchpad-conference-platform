@@ -256,7 +256,7 @@ export default function HomePage() {
         {/* Hero image reel — 5 photos cycle every 6s with crossfade + Ken Burns */}
         <div className="absolute inset-0 z-0">
           <KenBurnsSlideshow images={HERO_IMAGES} />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(4,4,14,0.4) 0%, rgba(4,4,14,0.85) 65%, #04040E 100%)' }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)' }} />
         </div>
         <div className="absolute inset-0" style={{
           background: 'radial-gradient(ellipse 80% 50% at 50% 30%, rgba(79,255,223,0.08) 0%, transparent 60%)',
@@ -268,10 +268,10 @@ export default function HomePage() {
             <span className="px-3 py-1 rounded-full text-xs uppercase tracking-wider" style={{ background: 'rgba(79,255,223,0.15)', border: '1px solid rgba(79,255,223,0.4)', color: 'var(--color-accent)' }}>AI-Powered</span>
             <span className="px-3 py-1 rounded-full text-xs uppercase tracking-wider" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.9)' }}>60-Second Generation</span>
           </div>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-normal leading-[1.05] mb-6" style={{ fontFamily: 'var(--font-display)' }}>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-normal leading-[1.05] mb-6" style={{ fontFamily: 'var(--font-display)', textShadow: '0 2px 20px rgba(0,0,0,0.6), 0 4px 40px rgba(0,0,0,0.3)' }}>
             The platform that launches<br />conferences in seconds
           </h1>
-          <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
+          <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6, textShadow: '0 1px 10px rgba(0,0,0,0.5)' }}>
             Generate. Promote. Fill seats. AI builds your event — then a street team of bots gets it in front of the right people.
           </p>
           <div className="flex justify-center gap-4 flex-wrap mb-12">

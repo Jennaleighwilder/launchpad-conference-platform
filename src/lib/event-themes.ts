@@ -37,7 +37,7 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(255,255,255,0.03)',
     cardBorder: 'rgba(255,255,255,0.06)',
     buttonRadius: '0.5rem',
-    heroOverlay: 'linear-gradient(to bottom, rgba(5,5,8,0.2) 0%, rgba(5,5,8,0.35) 50%, rgba(5,5,8,0.75) 100%)',
+    heroOverlay: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)',
     heroImages: HERO_POOL_FOR_THEMES,
   },
   {
@@ -53,7 +53,7 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(212,165,116,0.06)',
     cardBorder: 'rgba(212,165,116,0.2)',
     buttonRadius: '0.25rem',
-    heroOverlay: 'linear-gradient(to bottom, rgba(12,10,9,0.25) 0%, rgba(12,10,9,0.5) 50%, rgba(12,10,9,0.85) 100%)',
+    heroOverlay: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)',
     heroImages: HERO_POOL_FOR_THEMES,
   },
   {
@@ -69,7 +69,7 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(255,0,110,0.08)',
     cardBorder: 'rgba(255,0,110,0.4)',
     buttonRadius: '0',
-    heroOverlay: 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.85) 100%)',
+    heroOverlay: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)',
     heroImages: HERO_POOL_FOR_THEMES,
   },
   {
@@ -85,7 +85,7 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(45,90,39,0.06)',
     cardBorder: 'rgba(45,90,39,0.15)',
     buttonRadius: '9999px',
-    heroOverlay: 'linear-gradient(to bottom, rgba(250,250,248,0.15) 0%, rgba(250,250,248,0.4) 50%, rgba(250,250,248,0.9) 100%)',
+    heroOverlay: 'linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.3) 25%, rgba(0,0,0,0.7) 60%, rgba(250,250,248,0.95) 85%, #FAFAF8 100%)',
     heroImages: HERO_POOL_FOR_THEMES,
   },
   {
@@ -102,7 +102,7 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(139,92,246,0.08)',
     cardBorder: 'rgba(139,92,246,0.25)',
     buttonRadius: '0.5rem',
-    heroOverlay: 'linear-gradient(to bottom, rgba(8,6,28,0.2) 0%, rgba(8,6,28,0.45) 50%, rgba(8,6,28,0.85) 100%)',
+    heroOverlay: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)',
     heroImages: HERO_POOL_FOR_THEMES,
   },
   {
@@ -118,7 +118,7 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(249,115,22,0.1)',
     cardBorder: 'rgba(249,115,22,0.3)',
     buttonRadius: '9999px',
-    heroOverlay: 'linear-gradient(to bottom, rgba(26,10,0,0.2) 0%, rgba(26,10,0,0.45) 50%, rgba(26,10,0,0.85) 100%)',
+    heroOverlay: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)',
     heroImages: HERO_POOL_FOR_THEMES,
   },
   {
@@ -134,7 +134,7 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(15,118,110,0.04)',
     cardBorder: 'rgba(15,118,110,0.15)',
     buttonRadius: '0.5rem',
-    heroOverlay: 'linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.98) 100%)',
+    heroOverlay: 'linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.3) 25%, rgba(0,0,0,0.7) 60%, rgba(255,255,255,0.98) 85%, #FFFFFF 100%)',
     heroImages: HERO_POOL_FOR_THEMES,
   },
   {
@@ -150,7 +150,7 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(34,197,94,0.06)',
     cardBorder: 'rgba(34,197,94,0.3)',
     buttonRadius: '0.25rem',
-    heroOverlay: 'linear-gradient(to bottom, rgba(15,23,42,0.2) 0%, rgba(15,23,42,0.45) 50%, rgba(15,23,42,0.85) 100%)',
+    heroOverlay: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)',
     heroImages: HERO_POOL_FOR_THEMES,
   },
   {
@@ -166,7 +166,7 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(217,119,6,0.08)',
     cardBorder: 'rgba(217,119,6,0.2)',
     buttonRadius: '9999px',
-    heroOverlay: 'linear-gradient(to bottom, rgba(26,22,18,0.2) 0%, rgba(26,22,18,0.45) 50%, rgba(26,22,18,0.85) 100%)',
+    heroOverlay: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)',
     heroImages: HERO_POOL_FOR_THEMES,
   },
   {
@@ -182,7 +182,7 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(255,255,255,0.03)',
     cardBorder: 'rgba(255,255,255,0.1)',
     buttonRadius: '0',
-    heroOverlay: 'linear-gradient(to bottom, rgba(17,17,17,0.2) 0%, rgba(17,17,17,0.45) 50%, rgba(17,17,17,0.85) 100%)',
+    heroOverlay: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)',
     heroImages: HERO_POOL_FOR_THEMES,
   },
   {
@@ -198,7 +198,7 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(99,102,241,0.06)',
     cardBorder: 'rgba(99,102,241,0.2)',
     buttonRadius: '0.75rem',
-    heroOverlay: 'linear-gradient(to bottom, rgba(9,9,11,0.2) 0%, rgba(9,9,11,0.45) 50%, rgba(9,9,11,0.85) 100%)',
+    heroOverlay: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)',
     heroImages: HERO_POOL_FOR_THEMES,
   },
   {
@@ -214,7 +214,7 @@ export const EVENT_THEMES: EventTheme[] = [
     cardBg: 'rgba(212,175,55,0.06)',
     cardBorder: 'rgba(212,175,55,0.25)',
     buttonRadius: '0.25rem',
-    heroOverlay: 'linear-gradient(to bottom, rgba(12,25,41,0.2) 0%, rgba(12,25,41,0.45) 50%, rgba(12,25,41,0.85) 100%)',
+    heroOverlay: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)',
     heroImages: HERO_POOL_FOR_THEMES,
   },
 ];
