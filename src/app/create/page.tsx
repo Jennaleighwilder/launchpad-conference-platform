@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -36,6 +36,13 @@ const VIBE_OPTIONS = [
   { value: 'festival', label: 'Festival', desc: 'Creative / experiential' },
 ];
 
+/** Default event date: 6 months from now (realistic for countdowns) */
+function getDefaultEventDate(): string {
+  const d = new Date();
+  d.setMonth(d.getMonth() + 6);
+  return d.toISOString().slice(0, 10);
+}
+
 export default function CreatePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -45,10 +52,11 @@ export default function CreatePage() {
   const [agentStatus, setAgentStatus] = useState<Record<string, 'pending' | 'running' | 'done' | 'error'>>({});
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
+  const defaultDate = useMemo(() => getDefaultEventDate(), []);
   const [form, setForm] = useState({
     topic: '',
     city: '',
-    date: '',
+    date: defaultDate,
     days: 1 as 1 | 2 | 3,
     capacity: 500,
     budget: 'growth',
