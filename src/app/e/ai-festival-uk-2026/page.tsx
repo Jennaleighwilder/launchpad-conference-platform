@@ -164,7 +164,7 @@ export default function AIFestivalUK2026Page() {
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: accentColor, boxShadow: `0 0 8px ${accentColor}` }} />
             <span style={{ color: accentColor, fontSize: '0.75rem', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>30% Early Bird</span>
           </div>
-          <h1 className="mb-4 text-white" style={{ fontFamily: 'var(--font-tech)', fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.1, textShadow: '0 2px 20px rgba(0,0,0,0.5)' }}>AI Festival UK 2026</h1>
+          <h1 className="mb-4 text-white" style={{ fontFamily: 'var(--font-tech)', fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.1, textShadow: '0 2px 20px rgba(0,0,0,0.6), 0 4px 40px rgba(0,0,0,0.3)' }}>AI Festival UK 2026</h1>
           <p className="mb-6" style={{ color: accentColor, fontSize: '1.25rem', fontFamily: 'var(--font-mono)', textShadow: '0 1px 10px rgba(0,0,0,0.5)' }}>10 tracks · 2 days · Bury St Edmunds</p>
           <div className="flex flex-wrap gap-6 mb-6" style={{ color: 'rgba(255,255,255,0.95)', fontSize: '1rem', textShadow: '0 1px 10px rgba(0,0,0,0.5)' }}>
             <div className="flex items-center gap-2"><span>📍</span><span>STEM Centre, 73 Western Way, Bury St Edmunds</span></div>
