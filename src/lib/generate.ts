@@ -38,10 +38,14 @@ export async function generateEvent(input: CreateEventInput): Promise<Omit<Event
 }
 
 function buildPrompt(input: CreateEventInput): string {
+  const days = input.days === 2 || input.days === 3 ? input.days : 1;
+  const speakerCount = input.enhanced ? 12 : 8;
+  const scheduleSlots = days * 12;
   return `Generate a complete conference for:
 - Topic: ${input.topic}
 - City: ${input.city}
 - Date: ${input.date}
+- Duration: ${days} day${days > 1 ? 's' : ''}
 - Capacity: ${input.capacity} attendees
 - Budget tier: ${input.budget}
 - Vibe: ${input.vibe}
@@ -57,10 +61,10 @@ Return JSON with:
   "tracks": ["Track 1", "Track 2", "Track 3", "Track 4"],
   "speakers": [
     { "name": "Full Name", "role": "Title at Company", "bio": "One sentence bio" }
-  ] (generate exactly 8 diverse speakers),
+  ] (generate exactly ${speakerCount} diverse speakers),
   "schedule": [
-    { "time": "9:00 AM", "title": "Session Title", "speaker": "Speaker Name", "track": "Track Name" }
-  ] (generate 12 time slots from 9AM to 6PM),
+    { "time": "Day 1 · 9:00 AM", "title": "Session Title", "speaker": "Speaker Name", "track": "Track Name" }
+  ] (generate ${scheduleSlots} time slots across ${days} day${days > 1 ? 's' : ''}, use "Day N · HH:MM AM/PM" for time when multi-day),
   "pricing": {
     "early_bird": "price as string with currency symbol",
     "regular": "price as string with currency symbol",
@@ -106,10 +110,12 @@ function mapAIResponse(data: any, input: CreateEventInput, slug: string): Omit<E
 function fallbackGenerate(input: CreateEventInput, slug: string): Omit<EventData, 'id' | 'created_at' | 'status'> {
   const topicKey = detectTopicKey(input.topic);
   const tracks = TRACK_DB[topicKey] || TRACK_DB.general;
-  const speakers = pickSpeakers(topicKey, 8);
+  const speakerCount = input.enhanced ? 12 : 8;
+  const speakers = pickSpeakers(topicKey, speakerCount);
   const venue = getVenue(input.city, input.capacity);
   const pricing = getDefaultPricing(input.budget);
-  const schedule = buildSchedule(input.topic, speakers, tracks);
+  const days = input.days === 2 || input.days === 3 ? input.days : 1;
+  const schedule = days > 1 ? buildMultiDaySchedule(input.topic, speakers, tracks, days as 2 | 3) : buildSchedule(input.topic, speakers, tracks);
 
   const name = generateName(input.topic, input.city, input.vibe);
   const tagline = generateTagline(input.topic, input.vibe);
@@ -128,7 +134,9 @@ function fallbackGenerate(input: CreateEventInput, slug: string): Omit<EventData
     speakers,
     schedule,
     pricing,
-    description: `Join ${input.capacity} leaders in ${input.topic.toLowerCase()} for a ${input.vibe} experience in ${input.city}. Featuring world-class speakers, hands-on workshops, and unmatched networking.`,
+    description: input.enhanced
+      ? `Join ${input.capacity} leaders in ${input.topic.toLowerCase()} for a ${input.vibe} experience in ${input.city}. World-class speakers, hands-on workshops, case studies, and unmatched networking across ${days} day${days > 1 ? 's' : ''}.`
+      : `Join ${input.capacity} leaders in ${input.topic.toLowerCase()} for a ${input.vibe} experience in ${input.city}. Featuring world-class speakers, hands-on workshops, and unmatched networking.`,
     tagline,
     topic_key: topicKey,
     hero_image_url: getUniqueHeroForEvent(input.topic, input.city, slug),
@@ -305,6 +313,75 @@ function buildSchedule(topic: string, speakers: SpeakerData[], tracks: string[])
     speaker: speakers[i % speakers.length]?.name || 'TBA',
     track: tracks[i % tracks.length],
   }));
+}
+
+function buildMultiDaySchedule(topic: string, speakers: SpeakerData[], tracks: string[], days: 2 | 3): ScheduleItem[] {
+  const dayThemes: Record<number, { prefix: string; sessions: string[] }> = {
+    1: {
+      prefix: 'Day 1',
+      sessions: [
+        `Opening Keynote: The Future of ${topic}`,
+        `State of ${topic}: 2026 Landscape`,
+        'Coffee & Networking Break',
+        `Deep Dive: ${tracks[0]}`,
+        `Workshop: Building with ${topic}`,
+        'Lunch & Exhibition',
+        `Panel: ${tracks[1]} in Practice`,
+        `Fireside Chat: ${tracks[2]}`,
+        'Afternoon Break & Demos',
+        `Lightning Talks: ${tracks[3]}`,
+        `Closing Keynote: What's Next for ${topic}`,
+        'Networking Reception',
+      ],
+    },
+    2: {
+      prefix: 'Day 2',
+      sessions: [
+        `Case Studies: ${topic} in Action`,
+        `Investor Spotlight: Funding ${topic}`,
+        'Morning Break',
+        `Lab Session: ${tracks[0]}`,
+        `Roundtable: ${tracks[1]}`,
+        'Lunch & Exhibition',
+        `Workshop: ${tracks[2]} Deep Dive`,
+        `Panel: Scaling ${topic} Startups`,
+        'Afternoon Break',
+        `Masterclass: ${tracks[3]}`,
+        `Closing: Day 2 Wrap-up`,
+        'Evening Networking',
+      ],
+    },
+    3: {
+      prefix: 'Day 3',
+      sessions: [
+        `Hackathon Awards & Demos`,
+        `Masterclass: Advanced ${topic}`,
+        'Morning Break',
+        `Pitch Competition: ${topic} Startups`,
+        `Workshop: ${tracks[0]}`,
+        'Lunch',
+        `Fireside: ${tracks[1]} Leaders`,
+        `Panel: ${tracks[2]} Trends`,
+        'Break',
+        `Closing Keynote: ${topic} 2027`,
+        'Final Networking & Farewell',
+      ],
+    },
+  };
+  const times = ['9:00 AM', '9:45 AM', '10:30 AM', '11:00 AM', '11:45 AM', '12:30 PM', '1:30 PM', '2:15 PM', '3:00 PM', '3:30 PM', '4:30 PM', '5:30 PM'];
+  const out: ScheduleItem[] = [];
+  for (let d = 1; d <= days; d++) {
+    const theme = dayThemes[d] || dayThemes[1];
+    theme.sessions.forEach((title, i) => {
+      out.push({
+        time: `${theme.prefix} · ${times[i % times.length]}`,
+        title,
+        speaker: speakers[(d - 1) * 4 + (i % speakers.length)]?.name || speakers[i % speakers.length]?.name || 'TBA',
+        track: tracks[i % tracks.length],
+      });
+    });
+  }
+  return out;
 }
 
 /** Generate relevant hero (AI → stock → Picsum). Used when persisting to Supabase. */

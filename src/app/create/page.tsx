@@ -13,11 +13,11 @@ const STANDARD_STEPS = [
 ];
 
 const SWARM_AGENTS = [
-  { id: 'branding', emoji: '✍️', label: 'Branding Agent', desc: 'Name, tagline, description' },
-  { id: 'speakers', emoji: '🎤', label: 'Speaker Agent', desc: 'Curating diverse speakers' },
-  { id: 'venue', emoji: '🏛️', label: 'Venue Agent', desc: 'City-matched venue selection' },
-  { id: 'schedule', emoji: '📋', label: 'Schedule Agent', desc: 'Full-day program builder' },
-  { id: 'pricing', emoji: '💰', label: 'Pricing Agent', desc: 'Market-appropriate tiers' },
+  { id: 'branding', emoji: '🎨', label: 'Branding', desc: 'Name, tagline, description' },
+  { id: 'speakers', emoji: '🎤', label: 'Speakers', desc: 'Curating diverse speakers' },
+  { id: 'venue', emoji: '📍', label: 'Venue', desc: 'City-matched venue selection' },
+  { id: 'schedule', emoji: '📅', label: 'Schedule', desc: 'Full program builder' },
+  { id: 'pricing', emoji: '💰', label: 'Pricing', desc: 'Market-appropriate tiers' },
 ];
 
 const CAPACITY_OPTIONS = [50, 100, 250, 500, 1000, 2500, 5000];
@@ -49,6 +49,7 @@ export default function CreatePage() {
     topic: '',
     city: '',
     date: '',
+    days: 1 as 1 | 2 | 3,
     capacity: 500,
     budget: 'growth',
     vibe: 'professional',
@@ -104,7 +105,7 @@ export default function CreatePage() {
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, capacity: form.capacity }),
+        body: JSON.stringify({ ...form, capacity: form.capacity, days: form.days }),
       });
 
       const data = await res.json();
@@ -286,6 +287,23 @@ export default function CreatePage() {
           </div>
 
           <div>
+            <label className="label">Duration</label>
+            <div className="flex gap-2 mt-2">
+              {([1, 2, 3] as const).map((d) => (
+                <button key={d} type="button" onClick={() => update('days', d)}
+                  className="flex-1 px-4 py-3 rounded-xl text-sm font-medium transition-all"
+                  style={{
+                    background: form.days === d ? 'rgba(79,255,223,0.12)' : 'rgba(255,255,255,0.03)',
+                    border: `1px solid ${form.days === d ? 'rgba(79,255,223,0.4)' : 'rgba(255,255,255,0.06)'}`,
+                    color: form.days === d ? 'var(--color-accent)' : 'var(--color-text)',
+                  }}>
+                  {d} Day{d > 1 ? 's' : ''}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
             <label className="label">Capacity</label>
             <div className="flex flex-wrap gap-2 mt-2">
               {CAPACITY_OPTIONS.map((cap) => (
@@ -355,7 +373,7 @@ export default function CreatePage() {
               value={form.speakers_hint} onChange={(e) => update('speakers_hint', e.target.value)} />
           </div>
 
-          {/* Swarm Toggle */}
+          {/* Swarm vs Basic */}
           <div className="p-4 rounded-xl transition-all duration-300"
             style={{
               background: useSwarm ? 'rgba(79,255,223,0.06)' : 'rgba(255,255,255,0.03)',
@@ -366,8 +384,12 @@ export default function CreatePage() {
                 <span className="text-xl">🐝</span>
                 <div>
                   <div className="text-sm font-semibold">Swarm Mode</div>
-                  <div className="text-xs" style={{ color: 'var(--color-text-muted)' }}>
-                    5 AI agents work in parallel for richer results (requires OpenAI key)
+                  <div className="text-xs mt-1" style={{ color: 'var(--color-text-muted)' }}>
+                    {useSwarm ? (
+                      <>5 agents: {SWARM_AGENTS.map(a => `${a.emoji} ${a.label}`).join(' · ')}</>
+                    ) : (
+                      <>Basic: single-pass generation. Toggle for 5 parallel agents.</>
+                    )}
                   </div>
                 </div>
               </div>
