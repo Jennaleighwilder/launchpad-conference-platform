@@ -106,11 +106,27 @@ export async function POST(request: NextRequest) {
         const { data: usedRows } = await supabase.from('hero_assets').select('provider_asset_id').not('provider_asset_id', 'is', null);
         const usedIds = new Set((usedRows || []).map((r) => r.provider_asset_id as string).filter(Boolean));
 
-        // Generate relevant hero (AI → Unsplash → Picsum)
-        const hero = await generateHeroForEvent(
-          { name: fullEvent.name, topic: fullEvent.topic, city: fullEvent.city, slug: fullEvent.slug, vibe: fullEvent.vibe },
-          usedIds
-        );
+        // Generate relevant hero (AI → Unsplash → Picsum) with 15s timeout to avoid long hangs
+        const { getUniqueHeroForEvent } = await import('@/lib/hero-images');
+        let hero: { image_url: string; provider: string; provider_asset_id?: string | null };
+        try {
+          hero = await Promise.race([
+            generateHeroForEvent(
+              { name: fullEvent.name, topic: fullEvent.topic, city: fullEvent.city, slug: fullEvent.slug, vibe: fullEvent.vibe },
+              usedIds
+            ),
+            new Promise<never>((_, reject) =>
+              setTimeout(() => reject(new Error('Hero generation timeout')), 15000)
+            ),
+          ]);
+        } catch (heroErr) {
+          console.warn('Hero generation failed, using fallback:', heroErr);
+          hero = {
+            image_url: getUniqueHeroForEvent(fullEvent.topic, fullEvent.city, fullEvent.slug),
+            provider: 'fallback',
+            provider_asset_id: null,
+          };
+        }
 
         const { data, error } = await supabase
           .from('events')
