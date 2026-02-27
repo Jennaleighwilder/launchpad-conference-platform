@@ -13,21 +13,21 @@ export function AccessibilityToggle() {
     <>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="fixed bottom-6 right-6 z-[9998] w-12 h-12 rounded-full flex items-center justify-center text-lg shadow-lg transition-all hover:scale-110"
+        className="fixed bottom-24 right-6 z-[9999] w-12 h-12 rounded-full flex items-center justify-center text-lg shadow-lg transition-all hover:scale-110"
         style={{
           background: 'var(--color-accent)',
           color: 'var(--color-bg)',
           border: '2px solid rgba(255,255,255,0.3)',
         }}
-        title="Accessibility options"
-        aria-label="Open accessibility options"
+        title="Accessibility & language — Dyslexia, ADHD, High Contrast, Reduced Motion, Text size, Language"
+        aria-label="Open accessibility and language options"
       >
         ♿
       </button>
 
       {open && (
         <div
-          className="fixed bottom-20 right-6 z-[9999] w-80 rounded-xl p-4 shadow-2xl"
+          className="fixed bottom-32 right-6 z-[9999] w-80 rounded-xl p-4 shadow-2xl"
           style={{
             background: 'rgba(15,15,20,0.98)',
             border: '1px solid rgba(79,255,223,0.3)',
@@ -35,7 +35,7 @@ export function AccessibilityToggle() {
           }}
         >
           <div className="flex items-center justify-between mb-4">
-            <span className="font-semibold" style={{ fontFamily: 'var(--font-mono)' }}>Accessibility</span>
+            <span className="font-semibold" style={{ fontFamily: 'var(--font-mono)' }}>Accessibility & Language</span>
             <button onClick={() => setOpen(false)} className="text-sm" style={{ color: 'var(--color-text-muted)' }}>✕</button>
           </div>
           <div className="space-y-3 text-sm">
