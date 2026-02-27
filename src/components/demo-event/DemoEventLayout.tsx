@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FALLBACK_HERO_POOL, getHeroImages } from '@/lib/hero-images';
+import { getUniqueHeroVideoForEvent } from '@/lib/hero-videos';
 
 /** Resolve hero images from event — handles hero_image_url, hero_assets (array/object), theme, fallback */
 export function resolveHeroImages(
@@ -31,16 +32,21 @@ export function resolveHeroImages(
   return FALLBACK_HERO_POOL;
 }
 
-/** Resolve hero video from event — handles hero_video_url, hero_assets (array/object) */
+/** Resolve hero video from event — handles hero_video_url, hero_assets, or pool fallback */
 export function resolveHeroVideo(
   event: Record<string, unknown>,
-  customVideoUrl?: string
+  customVideoUrl?: string,
+  options?: { slug?: string; topic?: string; city?: string }
 ): string | null {
   if (customVideoUrl) return customVideoUrl;
   if (event.hero_video_url) return event.hero_video_url as string;
   const ha = event.hero_assets;
   if (Array.isArray(ha) && ha[0]) return (ha[0] as Record<string, unknown>).video_url as string | null;
   if (ha && typeof ha === 'object') return (ha as Record<string, unknown>).video_url as string | null;
+  // Fallback: use video pool for events without custom video (e.g. pre-video-pool events)
+  if (options?.slug && options?.topic && options?.city) {
+    return getUniqueHeroVideoForEvent(options.topic, options.city, options.slug);
+  }
   return null;
 }
 

@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import type { EventData, CreateEventInput, SpeakerData, ScheduleItem, VenueData, PricingData } from './types';
 import { getUniqueHeroForEvent } from './hero-images';
+import { getUniqueHeroVideoForEvent } from './hero-videos';
 import { generateRelevantHero } from './hero-generation';
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
@@ -140,6 +141,7 @@ function fallbackGenerate(input: CreateEventInput, slug: string): Omit<EventData
     tagline,
     topic_key: topicKey,
     hero_image_url: getUniqueHeroForEvent(input.topic, input.city, slug),
+    hero_video_url: getUniqueHeroVideoForEvent(input.topic, input.city, slug),
     hero_media_type: 'image',
   };
 }

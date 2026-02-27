@@ -13,7 +13,8 @@ All work must be additive, minimal-diff, and deployed to the existing Vercel pro
 
 # Cursor Operating Instructions (DO NOT DEVIATE)
 
-**See also:** `ARCHITECTURE.md` — system law for how Launchpad is built (data-first, server-owned logic, Stripe, webhooks, etc.)
+**See also:** `ARCHITECTURE.md` — system law for how Launchpad is built (data-first, server-owned logic, Stripe, webhooks, etc.)  
+**See also:** `PROJECT_BRIEF.md` — known issues and fixes for AI Festival UK 2026 and other pages
 
 You are assisting on an EXISTING deployed production project.
 

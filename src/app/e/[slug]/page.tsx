@@ -321,7 +321,7 @@ export default function EventPage() {
     slug,
     topic: event.topic,
   });
-  const heroVideoUrl = resolveHeroVideo(ev, customHeroVideoUrl);
+  const heroVideoUrl = resolveHeroVideo(ev, customHeroVideoUrl, { slug: ev.slug, topic: ev.topic, city: ev.city });
   const useVideoHero = !customHeroImages.length && !!heroVideoUrl;
   const displayDescription = (t?.description || customDescription || event.description || '');
   const videoEmbedId = (() => {
