@@ -97,6 +97,7 @@ export function GameOfLife({
       cancelAnimationFrame(rafId);
       if (playing) clearInterval(interval);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- initRandom is stable
   }, [width, height, cellSize, color, speed, playing]);
 
   return (

@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
 import { FALLBACK_HERO_POOL, getHeroImages } from '@/lib/hero-images';
 import { getUniqueHeroVideoForEvent } from '@/lib/hero-videos';
 
@@ -101,7 +99,7 @@ export function KenBurnsSlideshow({ images }: { images: string[] }) {
                 style={{ transform: 'scale(1)' }}
               />
             ) : (
-              <img
+        <img
                 src={src}
                 alt=""
                 className="absolute inset-0 w-full h-full object-cover"
@@ -191,11 +189,11 @@ export function TicketBarChart({ soldPct, accentColor, colors }: { soldPct: Reco
 }
 
 export function RegistrationLineChart({ accentColor, initialBase = 1200 }: { accentColor: string; initialBase?: number }) {
-  const [points, setPoints] = useState<number[]>([]);
+  const [points, setPoints] = useState<number[]>(() =>
+    Array.from({ length: 14 }, (_, i) => initialBase + i * 45)
+  );
   const countRef = useRef(initialBase);
   useEffect(() => {
-    const base = Array.from({ length: 14 }, (_, i) => initialBase + i * 45 + Math.floor(Math.random() * 20));
-    setPoints(base);
     const id = setInterval(() => {
       countRef.current = Math.min(countRef.current + Math.floor(Math.random() * 4) + 1, 2500);
       setPoints((p) => (p.length >= 20 ? [...p.slice(1), countRef.current] : [...p, countRef.current]));

@@ -10,7 +10,7 @@ import { NextRequest } from 'next/server';
  * a separate generation queue. The actual swarm runs
  * synchronously in the generate endpoint.
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   const encoder = new TextEncoder();
 
   const stream = new ReadableStream({

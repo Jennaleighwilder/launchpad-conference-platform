@@ -54,6 +54,7 @@ export async function POST(request: NextRequest) {
 
     const eventDate = sanitizeEventDate(body.date);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- swarm/fallback return shape varies
     let eventData: any;
     const days = (body.days === 2 || body.days === 3 ? body.days : 1) as 1 | 2 | 3;
 

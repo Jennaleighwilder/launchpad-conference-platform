@@ -33,7 +33,7 @@ export function Constellation({ color = '#34D399' }: { color?: string }) {
       ctx.fillStyle = 'rgba(10,10,10,0.04)';
       ctx.fillRect(0, 0, W, H);
 
-      stars.forEach((s, i) => {
+      stars.forEach((s) => {
         s.x += s.vx;
         s.y += s.vy;
         if (s.x < 0 || s.x > W) s.vx *= -1;

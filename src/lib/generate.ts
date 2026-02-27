@@ -75,12 +75,13 @@ Return JSON with:
 }`;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- AI response shape varies
 function mapAIResponse(data: any, input: CreateEventInput, slug: string): Omit<EventData, 'id' | 'created_at' | 'status'> {
-  const speakers: SpeakerData[] = (data.speakers || []).map((s: any, i: number) => ({
-    name: s.name,
-    role: s.role,
-    initials: getInitials(s.name),
-    bio: s.bio,
+  const speakers: SpeakerData[] = (data.speakers || []).map((s: Record<string, unknown>, i: number) => ({
+    name: String(s.name ?? ''),
+    role: String(s.role ?? ''),
+    initials: getInitials(String(s.name ?? '')),
+    bio: String(s.bio ?? ''),
     photo_url: getSpeakerPhoto(i),
   }));
 

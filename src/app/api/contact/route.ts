@@ -32,8 +32,8 @@ export async function POST(req: Request) {
 
     console.log('[contact]', { name, email, company, message: message.slice(0, 100) });
     return NextResponse.json({ success: true });
-  } catch (error: any) {
-    console.error('[contact]', error);
+  } catch (error: unknown) {
+    console.error('[contact]', error instanceof Error ? error.message : error);
     return NextResponse.json({ error: 'Failed to send' }, { status: 500 });
   }
 }

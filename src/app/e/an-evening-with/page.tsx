@@ -19,7 +19,7 @@ import { PromoteModal } from '@/components/PromoteModal';
 import { DemoCustomizeModal } from '@/components/DemoCustomizeModal';
 import { FALLBACK_HERO_POOL } from '@/lib/hero-images';
 
-const TRACK_COLORS = ['#D4AF37', '#E8C547', '#C9A227'];
+const _TRACK_COLORS = ['#D4AF37', '#E8C547', '#C9A227'];
 const SOLD_PCT = { early_bird: 62, regular: 38, vip: 8 };
 const accentColor = '#D4AF37';
 // Picsum for static demos — 100% reliable on Vercel (Unsplash can rate-limit)

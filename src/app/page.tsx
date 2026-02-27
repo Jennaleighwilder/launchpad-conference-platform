@@ -95,6 +95,7 @@ function EarlyBirdCountdownCard() {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- reserved for future use
 function CountdownWidget({ eventsTarget = 7 }: { eventsTarget?: number }) {
   const [diff, setDiff] = useState({ d: 28, h: 3, m: 2, s: 17 });
   const [eventsCount, setEventsCount] = useState(0);

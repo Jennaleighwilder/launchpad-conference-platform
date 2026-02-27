@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { EventData, SpeakerData, ScheduleItem, PricingData, VenueData } from '@/lib/types';
 import { KenBurnsSlideshow, CountdownTimer, resolveHeroImages, resolveHeroVideo } from '@/components/demo-event/DemoEventLayout';
-import { getEventTheme, type EventTheme } from '@/lib/event-themes';
+import { getEventTheme } from '@/lib/event-themes';
 import { PromoteModal } from '@/components/PromoteModal';
 import { useAccessibility } from '@/contexts/AccessibilityContext';
 import type { AccessibilityPrefs } from '@/contexts/AccessibilityContext';
@@ -316,7 +316,7 @@ export default function EventPage() {
       .finally(() => setCheckoutLoading(null));
   };
 
-  const ticketsRemaining = (tier: keyof typeof SOLD_PCT) => {
+  const _ticketsRemaining = (tier: keyof typeof SOLD_PCT) => {
     const pct = SOLD_PCT[tier] ?? 0;
     const cap = event?.capacity ?? 500;
     const sold = Math.round((cap / 3) * (pct / 100));
@@ -957,7 +957,7 @@ export default function EventPage() {
           <div className="flex flex-wrap justify-center gap-3">
             <button
               onClick={() => {
-                const url = typeof window !== 'undefined' ? window.location.origin : '';
+                const _url = typeof window !== 'undefined' ? window.location.origin : '';
                 const ics = [
                   'BEGIN:VCALENDAR',
                   'VERSION:2.0',
@@ -1512,7 +1512,7 @@ function getRestaurantsForCity(city: string): { name: string; cuisine: string; d
   ];
 }
 
-function getTopicColor(topicKey: string | null): string {
+function _getTopicColor(topicKey: string | null): string {
   const colors: Record<string, string> = {
     ai: '#4FFFDF', web3: '#A78BFA', climate: '#34D399',
     health: '#F472B6', fintech: '#FBBF24', general: '#4FFFDF',

@@ -96,7 +96,7 @@ export default function CommunityPage() {
             <div className="p-6 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
               <h3 className="font-semibold mb-4">Top Contributors</h3>
               <div className="space-y-3">
-                {TOP_CONTRIBUTORS.map((c, i) => (
+                {TOP_CONTRIBUTORS.map((c) => (
                   <div key={c.name} className="flex items-center justify-between">
                     <div>
                       <div className="font-medium">{c.name}</div>

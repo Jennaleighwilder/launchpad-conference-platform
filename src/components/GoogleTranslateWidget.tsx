@@ -49,7 +49,7 @@ export function GoogleTranslateWidget() {
   const [currentLang, setCurrentLang] = useState('en');
 
   useEffect(() => {
-    setCurrentLang(getCurrentLang());
+    queueMicrotask(() => setCurrentLang(getCurrentLang()));
   }, []);
 
   const onChange = (value: string) => {

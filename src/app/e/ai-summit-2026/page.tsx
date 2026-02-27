@@ -206,7 +206,7 @@ export default function AISummit2026Page() {
             <h2 className="text-sm font-medium uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Speakers</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {SPEAKERS.map((speaker, i) => {
+            {SPEAKERS.map((speaker) => {
               const trackColor = TRACK_COLORS[TRACKS.indexOf(speaker.track) % TRACK_COLORS.length] || accentColor;
               const expanded = expandedSpeaker === speaker.id;
               return (
@@ -292,7 +292,7 @@ export default function AISummit2026Page() {
             </div>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
-            {YOUTUBE_VIDEOS.map((v, i) => (
+            {YOUTUBE_VIDEOS.map((v) => (
               <div key={v.id} className="card overflow-hidden group">
                 <div className="relative aspect-video rounded-lg overflow-hidden mb-4">
                   <iframe

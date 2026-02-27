@@ -43,7 +43,7 @@ export interface SwarmStatus {
   agents: { name: string; status: 'pending' | 'running' | 'done' | 'error'; ms?: number }[];
 }
 
-const AGENT_NAMES = ['speakers', 'venue', 'schedule', 'pricing', 'branding'] as const;
+const _AGENT_NAMES = ['speakers', 'venue', 'schedule', 'pricing', 'branding'] as const;
 
 export async function runSwarm(input: SwarmInput): Promise<SwarmResult> {
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -56,9 +56,9 @@ export async function runSwarm(input: SwarmInput): Promise<SwarmResult> {
       const result = await fn();
       timings[name] = Date.now() - start;
       return result;
-    } catch (err: any) {
+    } catch (err: unknown) {
       timings[name] = Date.now() - start;
-      errors.push(`${name}: ${err.message || 'failed'}`);
+      errors.push(`${name}: ${err instanceof Error ? err.message : 'failed'}`);
       return fallback;
     }
   }
@@ -108,11 +108,11 @@ Ensure gender/ethnic diversity. Include mix of industry leaders, academics, and 
 
   const data = JSON.parse(res.choices[0].message.content || '{}');
   const speakers = Array.isArray(data) ? data : data.speakers || [];
-  return speakers.map((s: any, i: number) => ({
-    name: s.name,
-    role: s.role,
-    initials: s.name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2),
-    bio: s.bio,
+  return speakers.map((s: Record<string, unknown>, i: number) => ({
+    name: String(s.name ?? ''),
+    role: String(s.role ?? ''),
+    initials: String(s.name ?? '').split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2),
+    bio: String(s.bio ?? ''),
     photo_url: getSpeakerPhoto(i),
   }));
 }

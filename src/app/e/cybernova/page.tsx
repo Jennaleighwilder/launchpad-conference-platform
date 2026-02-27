@@ -134,7 +134,7 @@ export default function CybernovaPage() {
             </button>
           </div>
           <p className="max-w-3xl mb-8" style={{ color: 'var(--color-text-muted)', fontSize: '1.125rem', lineHeight: 1.7 }}>
-            Europe's premier security conference. Two days of talks from 10 researchers. 48-hour Capture The Flag. Lockpick village. Zero Trust, offensive security, incident response.
+            Europe&apos;s premier security conference. Two days of talks from 10 researchers. 48-hour Capture The Flag. Lockpick village. Zero Trust, offensive security, incident response.
           </p>
           <div className="flex flex-wrap gap-2">
             {TRACKS.map((track, i) => (
@@ -144,7 +144,7 @@ export default function CybernovaPage() {
         </div>
       </section>
 
-      <PromoteModal open={showPromo} onClose={() => setShowPromo(false)} event={{ name: 'CyberNova', topic: 'Cybersecurity', city: 'Berlin', date: '2026-06-18', description: "Europe's premier security conference. Two days of talks from 10 researchers. 48-hour CTF.", tagline: '2 days + 48hr CTF · 10 security researchers', speakers: SPEAKERS.map((s) => ({ name: s.name, role: s.role })), tracks: TRACKS, pricing: { early_bird: PRICING.early_bird, regular: PRICING.regular, vip: PRICING.vip, currency: 'EUR' }, venue: { name: VENUE.name, address: VENUE.address }, slug: 'cybernova' }} accentColor={accentColor} />
+      <PromoteModal open={showPromo} onClose={() => setShowPromo(false)} event={{ name: 'CyberNova', topic: 'Cybersecurity', city: 'Berlin', date: '2026-06-18', description: "Europe&apos;s premier security conference. Two days of talks from 10 researchers. 48-hour CTF.", tagline: '2 days + 48hr CTF · 10 security researchers', speakers: SPEAKERS.map((s) => ({ name: s.name, role: s.role })), tracks: TRACKS, pricing: { early_bird: PRICING.early_bird, regular: PRICING.regular, vip: PRICING.vip, currency: 'EUR' }, venue: { name: VENUE.name, address: VENUE.address }, slug: 'cybernova' }} accentColor={accentColor} />
       <DemoCustomizeModal open={showCustomize} onClose={() => setShowCustomize(false)} accentColor={accentColor} />
 
       <section className="px-6 py-12" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(10,10,10,0.9) 100%)', borderTop: `1px solid ${accentColor}26`, borderBottom: `1px solid ${accentRed}26` }}>

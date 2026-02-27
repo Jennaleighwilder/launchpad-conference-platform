@@ -49,7 +49,7 @@ export function PromotionEngine() {
           </p>
         </Reveal>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {BOTS.map((bot, i) => (
+          {BOTS.map((bot) => (
             <Reveal key={bot.name}>
               <div
                 className="rounded-xl p-6 h-full transition-all duration-300 hover:scale-[1.02]"

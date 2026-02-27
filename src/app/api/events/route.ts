@@ -23,7 +23,7 @@ export async function GET() {
         if (!error && data) {
           return NextResponse.json({ events: data });
         }
-      } catch (dbErr) {
+      } catch (_dbErr) {
         console.warn('Supabase unavailable, checking memory store');
       }
     }
