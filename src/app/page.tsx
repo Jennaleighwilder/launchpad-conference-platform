@@ -51,14 +51,16 @@ const HERO_IMAGES = [
   'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1920&h=1080&fit=crop',
 ];
 
-/** Early bird countdown — free until March 28, 2026 */
+/** Early bird countdown — evergreen, always ~30 days from now */
 function EarlyBirdCountdownCard() {
-  const [diff, setDiff] = useState({ d: 0, h: 0, m: 0, s: 0 });
+  const [diff, setDiff] = useState({ d: 30, h: 0, m: 0, s: 0 });
   useEffect(() => {
-    const end = new Date('2026-03-28T23:59:59');
     const tick = () => {
+      const targetDate = new Date();
+      targetDate.setDate(targetDate.getDate() + 30);
+      targetDate.setHours(23, 59, 59, 999);
       const now = new Date();
-      let ms = end.getTime() - now.getTime();
+      let ms = targetDate.getTime() - now.getTime();
       if (ms < 0) ms = 0;
       setDiff({
         d: Math.floor(ms / 86400000),
@@ -81,7 +83,7 @@ function EarlyBirdCountdownCard() {
         This is an early bird version of the platform for free. After the countdown ends, the pricing model applies.
       </p>
       <div className="flex items-baseline gap-4">
-        <span className="text-xs uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Free until March 28 —</span>
+        <span className="text-xs uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Free for 30 more days —</span>
         <div className="flex gap-3 font-mono text-2xl font-bold" style={{ color: 'var(--color-accent)' }}>
           <span>{diff.d}d</span>
           <span>{diff.h}h</span>

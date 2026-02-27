@@ -15,6 +15,8 @@ import {
   ticketsRemaining,
   ScanlineOverlay,
 } from '@/components/demo-event/DemoEventLayout';
+import { PromoteModal } from '@/components/PromoteModal';
+import { DemoCustomizeModal } from '@/components/DemoCustomizeModal';
 import { FALLBACK_HERO_POOL } from '@/lib/hero-images';
 
 const TRACK_COLORS = ['#34D399', '#6EE7B7', '#5EEAD4', '#2DD4BF', '#14B8A6'];
@@ -75,6 +77,8 @@ const PRICING = { early_bird: '€149', regular: '€249', vip: '€499' };
 
 export default function StartupZakenPage() {
   const [expandedSpeaker, setExpandedSpeaker] = useState<string | null>(null);
+  const [showPromo, setShowPromo] = useState(false);
+  const [showCustomize, setShowCustomize] = useState(false);
 
   return (
     <main className="min-h-screen relative" style={{ background: 'transparent' }}>
@@ -111,9 +115,17 @@ export default function StartupZakenPage() {
             <div className="flex items-center gap-2"><span>📅</span><span>August 14, 2026</span></div>
             <div className="flex items-center gap-2"><span>👥</span><span><LiveRegistrationCounter count={1247} max={1500} accentColor={accentColor} /> registered</span></div>
           </div>
-          <div className="mb-8">
+          <div className="mb-6">
             <p className="text-xs uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-muted)' }}>Event starts in</p>
             <CountdownTimer endDate="2026-08-14T09:00:00" accentColor={accentColor} />
+          </div>
+          <div className="flex flex-wrap gap-2 mb-8">
+            <button onClick={() => setShowPromo(true)} className="px-4 py-2 text-sm font-medium rounded-lg inline-flex items-center gap-2" style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.2)', color: '#FBBF24' }}>
+              📣 Promote This Event
+            </button>
+            <button onClick={() => setShowCustomize(true)} className="px-4 py-2 text-sm font-medium rounded-lg inline-flex items-center gap-2" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: 'var(--color-text)' }}>
+              ✏️ Customize Event
+            </button>
           </div>
           <p className="max-w-3xl mb-8" style={{ color: 'var(--color-text-muted)', fontSize: '1.125rem', lineHeight: 1.7 }}>
             Where founders meet capital. One day with 8 founders and VCs. Pitch competition with €50K in prizes. Growth, fundraising, and the Amsterdam startup ecosystem.
@@ -125,6 +137,9 @@ export default function StartupZakenPage() {
           </div>
         </div>
       </section>
+
+      <PromoteModal open={showPromo} onClose={() => setShowPromo(false)} event={{ name: 'Startup Zaken', topic: 'Startups', city: 'Amsterdam', date: '2026-08-14', description: 'Where founders meet capital. One day with 8 founders and VCs. Pitch competition with €50K in prizes.', tagline: '8 founders & VCs · 1 day + pitch comp', speakers: SPEAKERS.map((s) => ({ name: s.name, role: s.role })), tracks: TRACKS, pricing: { early_bird: PRICING.early_bird, regular: PRICING.regular, vip: PRICING.vip, currency: 'EUR' }, venue: { name: VENUE.name, address: VENUE.address }, slug: 'startup-zaken' }} accentColor={accentColor} />
+      <DemoCustomizeModal open={showCustomize} onClose={() => setShowCustomize(false)} accentColor={accentColor} />
 
       <section className="px-6 py-12" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(10,10,10,0.9) 100%)', borderTop: `1px solid ${accentColor}26`, borderBottom: `1px solid ${accentColor}26` }}>
         <div className="max-w-5xl mx-auto">

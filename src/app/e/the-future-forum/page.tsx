@@ -15,6 +15,8 @@ import {
   ticketsRemaining,
   ScanlineOverlay,
 } from '@/components/demo-event/DemoEventLayout';
+import { PromoteModal } from '@/components/PromoteModal';
+import { DemoCustomizeModal } from '@/components/DemoCustomizeModal';
 import { FALLBACK_HERO_POOL } from '@/lib/hero-images';
 
 const TRACK_COLORS = ['#EC4899', '#F472B6', '#FB7185', '#F9A8D4', '#FBCFE8'];
@@ -77,6 +79,8 @@ const PRICING = { early_bird: '¥12,000', regular: '¥18,000', vip: '¥45,000' }
 export default function TheFutureForumPage() {
   const [scheduleDay, setScheduleDay] = useState<'Day 1' | 'Day 2'>('Day 1');
   const [expandedSpeaker, setExpandedSpeaker] = useState<string | null>(null);
+  const [showPromo, setShowPromo] = useState(false);
+  const [showCustomize, setShowCustomize] = useState(false);
   const scheduleFiltered = SCHEDULE.filter((s) => s.day === scheduleDay);
 
   return (
@@ -118,6 +122,14 @@ export default function TheFutureForumPage() {
             <p className="text-xs uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-muted)' }}>Event starts in</p>
             <CountdownTimer endDate="2026-05-12T09:00:00" accentColor={accentColor} />
           </div>
+          <div className="flex flex-wrap gap-2 mb-8">
+            <button onClick={() => setShowPromo(true)} className="px-4 py-2 text-sm font-medium rounded-lg inline-flex items-center gap-2" style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.2)', color: '#FBBF24' }}>
+              📣 Promote This Event
+            </button>
+            <button onClick={() => setShowCustomize(true)} className="px-4 py-2 text-sm font-medium rounded-lg inline-flex items-center gap-2" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: 'var(--color-text)' }}>
+              ✏️ Customize Event
+            </button>
+          </div>
           <p className="max-w-3xl mb-8" style={{ color: 'var(--color-text-muted)', fontSize: '1.125rem', lineHeight: 1.7 }}>
             Where Gen Z leads. Two days with 8 leaders under 35 — climate activists, DAO builders, remote-work pioneers — shaping the future from Tokyo.
           </p>
@@ -128,6 +140,9 @@ export default function TheFutureForumPage() {
           </div>
         </div>
       </section>
+
+      <PromoteModal open={showPromo} onClose={() => setShowPromo(false)} event={{ name: 'The Future Forum', topic: 'Gen Z Leadership', city: 'Tokyo', date: '2026-05-12', description: 'Where Gen Z leads. Two days with 8 leaders under 35 — climate activists, DAO builders, remote-work pioneers — shaping the future from Tokyo.', tagline: '8 leaders under 35 · Tokyo', speakers: SPEAKERS.map((s) => ({ name: s.name, role: s.role })), tracks: TRACKS, pricing: { early_bird: PRICING.early_bird, regular: PRICING.regular, vip: PRICING.vip, currency: 'JPY' }, venue: { name: VENUE.name, address: VENUE.address }, slug: 'the-future-forum' }} accentColor={accentColor} />
+      <DemoCustomizeModal open={showCustomize} onClose={() => setShowCustomize(false)} accentColor={accentColor} />
 
       <section className="px-6 py-12" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(10,10,10,0.9) 100%)', borderTop: `1px solid ${accentColor}26`, borderBottom: `1px solid ${accentColor}26` }}>
         <div className="max-w-5xl mx-auto">

@@ -15,6 +15,8 @@ import {
   ticketsRemaining,
   ScanlineOverlay,
 } from '@/components/demo-event/DemoEventLayout';
+import { PromoteModal } from '@/components/PromoteModal';
+import { DemoCustomizeModal } from '@/components/DemoCustomizeModal';
 import { FALLBACK_HERO_POOL } from '@/lib/hero-images';
 
 const TRACK_COLORS = ['#1E3A8A', '#DC2626', '#3B82F6', '#EF4444', '#60A5FA'];
@@ -80,6 +82,8 @@ const PRICING = { early_bird: '€349', regular: '€499', vip: '€899' };
 export default function CybernovaPage() {
   const [scheduleDay, setScheduleDay] = useState<'Day 1' | 'Day 2'>('Day 1');
   const [expandedSpeaker, setExpandedSpeaker] = useState<string | null>(null);
+  const [showPromo, setShowPromo] = useState(false);
+  const [showCustomize, setShowCustomize] = useState(false);
   const scheduleFiltered = SCHEDULE.filter((s) => s.day === scheduleDay);
 
   return (
@@ -117,9 +121,17 @@ export default function CybernovaPage() {
             <div className="flex items-center gap-2"><span>📅</span><span>June 18-19, 2026</span></div>
             <div className="flex items-center gap-2"><span>👥</span><span><LiveRegistrationCounter count={892} max={1200} accentColor={accentColor} /> registered</span></div>
           </div>
-          <div className="mb-8">
+          <div className="mb-6">
             <p className="text-xs uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-muted)' }}>Event starts in</p>
             <CountdownTimer endDate="2026-06-18T09:00:00" accentColor={accentColor} />
+          </div>
+          <div className="flex flex-wrap gap-2 mb-8">
+            <button onClick={() => setShowPromo(true)} className="px-4 py-2 text-sm font-medium rounded-lg inline-flex items-center gap-2" style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.2)', color: '#FBBF24' }}>
+              📣 Promote This Event
+            </button>
+            <button onClick={() => setShowCustomize(true)} className="px-4 py-2 text-sm font-medium rounded-lg inline-flex items-center gap-2" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: 'var(--color-text)' }}>
+              ✏️ Customize Event
+            </button>
           </div>
           <p className="max-w-3xl mb-8" style={{ color: 'var(--color-text-muted)', fontSize: '1.125rem', lineHeight: 1.7 }}>
             Europe's premier security conference. Two days of talks from 10 researchers. 48-hour Capture The Flag. Lockpick village. Zero Trust, offensive security, incident response.
@@ -131,6 +143,9 @@ export default function CybernovaPage() {
           </div>
         </div>
       </section>
+
+      <PromoteModal open={showPromo} onClose={() => setShowPromo(false)} event={{ name: 'CyberNova', topic: 'Cybersecurity', city: 'Berlin', date: '2026-06-18', description: "Europe's premier security conference. Two days of talks from 10 researchers. 48-hour CTF.", tagline: '2 days + 48hr CTF · 10 security researchers', speakers: SPEAKERS.map((s) => ({ name: s.name, role: s.role })), tracks: TRACKS, pricing: { early_bird: PRICING.early_bird, regular: PRICING.regular, vip: PRICING.vip, currency: 'EUR' }, venue: { name: VENUE.name, address: VENUE.address }, slug: 'cybernova' }} accentColor={accentColor} />
+      <DemoCustomizeModal open={showCustomize} onClose={() => setShowCustomize(false)} accentColor={accentColor} />
 
       <section className="px-6 py-12" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(10,10,10,0.9) 100%)', borderTop: `1px solid ${accentColor}26`, borderBottom: `1px solid ${accentRed}26` }}>
         <div className="max-w-5xl mx-auto">

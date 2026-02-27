@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { getSpeakerPhoto } from '@/lib/speaker-photos';
 import { PrisonerDilemmaKaleidoscope } from '@/components/event-viz';
 import { KenBurnsSlideshow } from '@/components/demo-event/DemoEventLayout';
+import { PromoteModal } from '@/components/PromoteModal';
+import { DemoCustomizeModal } from '@/components/DemoCustomizeModal';
 import { FALLBACK_HERO_POOL } from '@/lib/hero-images';
 
 const TRACK_COLORS = ['#4FFFDF', '#A78BFA', '#34D399', '#F472B6', '#FBBF24', '#60A5FA'];
@@ -305,6 +307,8 @@ function LiveConnectionsPulse() {
 export default function DemoConferencePage() {
   const [scheduleDay, setScheduleDay] = useState<'Day 1' | 'Day 2'>('Day 1');
   const [expandedSpeaker, setExpandedSpeaker] = useState<string | null>(null);
+  const [showPromo, setShowPromo] = useState(false);
+  const [showCustomize, setShowCustomize] = useState(false);
 
   const scheduleFiltered = SCHEDULE.filter((s) => s.day === scheduleDay);
 
@@ -388,6 +392,15 @@ export default function DemoConferencePage() {
             <CountdownTimer />
           </div>
 
+          <div className="flex flex-wrap gap-2 mb-8">
+            <button onClick={() => setShowPromo(true)} className="px-4 py-2 text-sm font-medium rounded-lg inline-flex items-center gap-2" style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.2)', color: '#FBBF24' }}>
+              📣 Promote This Event
+            </button>
+            <button onClick={() => setShowCustomize(true)} className="px-4 py-2 text-sm font-medium rounded-lg inline-flex items-center gap-2" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: 'var(--color-text)' }}>
+              ✏️ Customize Event
+            </button>
+          </div>
+
           <p className="max-w-3xl mb-8" style={{ color: 'var(--color-text-muted)', fontSize: '1.125rem', lineHeight: 1.7 }}>
             Where AI meets ambition. A two-day summit bringing together innovators, founders, and enterprise leaders to shape the future of artificial intelligence.
           </p>
@@ -406,6 +419,9 @@ export default function DemoConferencePage() {
           </div>
         </div>
       </section>
+
+      <PromoteModal open={showPromo} onClose={() => setShowPromo(false)} event={{ name: 'SuperNova AI Summit 2026', topic: 'AI', city: 'Amsterdam', date: '2026-03-25', description: 'Where AI meets ambition. A two-day summit bringing together innovators, founders, and enterprise leaders to shape the future of artificial intelligence.', tagline: 'Where AI meets ambition', speakers: SPEAKERS.map((s) => ({ name: s.name, role: s.role })), tracks: TRACKS, pricing: { early_bird: PRICING.early_bird, regular: PRICING.regular, vip: PRICING.vip, currency: 'EUR' }, venue: { name: VENUE.name, address: VENUE.address }, slug: 'demo-conference' }} accentColor={accentColor} />
+      <DemoCustomizeModal open={showCustomize} onClose={() => setShowCustomize(false)} accentColor={accentColor} />
 
       {/* EXHIBIT: Live Data — science museum style */}
       <section className="px-6 py-12" style={{

@@ -10,6 +10,8 @@ import {
   CountdownTimer,
   ScanlineOverlay,
 } from '@/components/demo-event/DemoEventLayout';
+import { PromoteModal } from '@/components/PromoteModal';
+import { DemoCustomizeModal } from '@/components/DemoCustomizeModal';
 import { NetworkGraph } from '@/components/event-viz/NetworkGraph';
 
 const accentColor = '#22C55E';
@@ -156,6 +158,8 @@ export default function AIFestivalUK2026Page() {
   const [scheduleDay, setScheduleDay] = useState<'Day 1' | 'Day 2'>('Day 1');
   const [expandedSpeaker, setExpandedSpeaker] = useState<string | null>(null);
   const [localTab, setLocalTab] = useState<LocalTab>('hotels');
+  const [showPromo, setShowPromo] = useState(false);
+  const [showCustomize, setShowCustomize] = useState(false);
   const scheduleFiltered = SCHEDULE.filter((s) => s.day === scheduleDay);
 
   useEffect(() => {
@@ -233,13 +237,41 @@ export default function AIFestivalUK2026Page() {
           <p className="max-w-3xl mb-8" style={{ color: 'rgba(255,255,255,0.95)', fontSize: '1.125rem', lineHeight: 1.7, textShadow: '0 1px 10px rgba(0,0,0,0.5)' }}>
             The UK&apos;s premier AI festival. Two days at West Suffolk College&apos;s STEM Centre (£2M XR Lab). Energy, Quantum, Robotics, Cyber, Healthcare, Creative, XR, Agriculture, and PitchFest.
           </p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mb-6">
             {TRACKS.map((track, i) => (
               <span key={track} className="px-3 py-1.5 rounded-full text-sm font-medium" style={{ background: `${TRACK_COLORS[i % TRACK_COLORS.length]}20`, border: `1px solid ${TRACK_COLORS[i % TRACK_COLORS.length]}50`, color: TRACK_COLORS[i % TRACK_COLORS.length] }}>{track}</span>
             ))}
           </div>
+          <div className="flex flex-wrap gap-2">
+            <button onClick={() => setShowPromo(true)} className="px-4 py-2 text-sm font-medium rounded-lg inline-flex items-center gap-2 transition-colors" style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.2)', color: '#FBBF24' }}>
+              📣 Promote This Event
+            </button>
+            <button onClick={() => setShowCustomize(true)} className="px-4 py-2 text-sm font-medium rounded-lg inline-flex items-center gap-2 transition-colors" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: 'var(--color-text)' }}>
+              ✏️ Customize Event
+            </button>
+          </div>
         </div>
       </section>
+
+      <PromoteModal
+        open={showPromo}
+        onClose={() => setShowPromo(false)}
+        event={{
+          name: 'AI Festival UK 2026',
+          topic: 'AI & Machine Learning',
+          city: 'Bury St Edmunds',
+          date: '2026-05-27',
+          description: "The UK's premier AI festival. Two days at West Suffolk College's STEM Centre (£2M XR Lab).",
+          tagline: '10 tracks · 2 days · Bury St Edmunds',
+          speakers: SPEAKERS.map((s) => ({ name: s.name, role: s.role })),
+          tracks: TRACKS,
+          pricing: { early_bird: '£49', regular: '£89', vip: '£89', currency: 'GBP' },
+          venue: { name: VENUE.name, address: VENUE.address },
+          slug: 'ai-festival-uk-2026',
+        }}
+        accentColor={accentColor}
+      />
+      <DemoCustomizeModal open={showCustomize} onClose={() => setShowCustomize(false)} accentColor={accentColor} />
 
       <WaveDivider colors={[accentColor]} />
 
