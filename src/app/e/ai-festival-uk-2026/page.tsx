@@ -69,18 +69,6 @@ const SCHEDULE = [
   { time: '16:00', title: 'Festival Close', speaker: '-', track: 'All', day: 'Day 2' },
 ];
 
-const PROMO_VIDEOS = [
-  { src: '/videos/9b68ed1f-ef9b-437c-b0bc-642f911e47a3_hd.mp4', title: 'AI Festival Promo 1' },
-  { src: '/videos/8d0ea574-bdda-47c4-8ce8-e9318d70e7b8_hd.mp4', title: 'AI Festival Promo 2' },
-  { src: '/videos/19a52e15-e11c-41a2-89ae-6a7949390ff3_hd.mp4', title: 'AI Festival Promo 3' },
-  { src: '/videos/38bf5980-84f6-41a7-b7a0-843826866b12_hd.mp4', title: 'AI Festival Promo 4' },
-  { src: '/videos/238b20ff-eae0-44a1-9ec7-edb208aee28a_hd.mp4', title: 'AI Festival Promo 5' },
-  { src: '/videos/a190cbaa-1e3f-4be5-8582-54908502fd04_hd.mp4', title: 'AI Festival Promo 6' },
-  { src: '/videos/b95c83b8-f526-44e8-bb61-df4568c392dd_hd.mp4', title: 'AI Festival Promo 7' },
-  { src: '/videos/ba94a4eb-7348-4b66-9acf-3a784b39eeed_hd.mp4', title: 'AI Festival Promo 8' },
-  { src: '/videos/Bayou_Scene_Video_Generation.mp4', title: 'Bayou Scene' },
-];
-
 const HOTELS = [
   { name: 'The Angel Hotel', distance: '8 min walk', price: '£120', stars: 4, img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=The+Angel+Hotel+Bury+St+Edmunds' },
   { name: 'Premier Inn Town Centre', distance: '12 min walk', price: '£75', stars: 3, img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Premier+Inn+Bury+St+Edmunds+Town+Centre' },
@@ -169,7 +157,7 @@ export default function AIFestivalUK2026Page() {
         <div className="absolute inset-0 z-0">
           <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" src="/videos/9b68ed1f-ef9b-437c-b0bc-642f911e47a3_hd.mp4" />
         </div>
-        <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.35) 50%, rgba(10,10,10,0.8) 100%)' }} />
+        <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(180deg, rgba(4,4,14,0.4) 0%, rgba(4,4,14,0.85) 65%, #04040E 100%)' }} />
         <div className="absolute inset-0 z-[1] opacity-30 pointer-events-none" style={{ background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}26 0%, transparent 70%)` }} />
         <div className="relative z-10 max-w-5xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6" style={{ background: `${accentColor}15`, border: `1px solid ${accentColor}40` }}>
@@ -277,37 +265,6 @@ export default function AIFestivalUK2026Page() {
                 );
               })}
             </div>
-          </div>
-        </div>
-      </section>
-
-      <WaveDivider colors={[accentColor]} />
-
-      <section className="px-6 py-16" style={{ background: 'linear-gradient(180deg, rgba(34,197,94,0.03) 0%, transparent 100%)', borderTop: `1px solid ${accentColor}26`, borderBottom: `1px solid ${accentColor}26` }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-2 h-8 rounded-full" style={{ background: accentColor, boxShadow: `0 0 20px ${accentColor}` }} />
-            <div>
-              <div className="text-[10px] uppercase tracking-[0.2em]" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>Watch</div>
-              <h2 className="text-lg font-semibold" style={{ fontFamily: 'var(--font-display)' }}>Promo videos</h2>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-            {PROMO_VIDEOS.map((v) => (
-              <div key={v.src} className="card overflow-hidden group">
-                <div className="relative aspect-video rounded-lg overflow-hidden mb-4">
-                  <video
-                    src={v.src}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                  />
-                </div>
-                <h3 className="font-semibold text-sm">{v.title}</h3>
-              </div>
-            ))}
           </div>
         </div>
       </section>
