@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getSpeakerPhoto } from '@/lib/speaker-photos';
@@ -10,6 +10,7 @@ import {
   CountdownTimer,
   ScanlineOverlay,
 } from '@/components/demo-event/DemoEventLayout';
+import { NetworkGraph } from '@/components/event-viz/NetworkGraph';
 
 const accentColor = '#22C55E';
 const TRACK_COLORS = ['#22C55E', '#3B82F6', '#8B5CF6', '#EF4444', '#F59E0B', '#EC4899', '#06B6D4', '#84CC16', '#F97316'];
@@ -131,6 +132,26 @@ const VENUE_GALLERY = [
 
 type LocalTab = 'hotels' | 'dining' | 'coffee' | 'explore';
 
+function ScrollReveal({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => e.isIntersecting && setVisible(true),
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return (
+    <div ref={ref} className={`transition-all duration-700 ease-out ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} ${className}`}>
+      {children}
+    </div>
+  );
+}
+
 export default function AIFestivalUK2026Page() {
   const [scheduleDay, setScheduleDay] = useState<'Day 1' | 'Day 2'>('Day 1');
   const [expandedSpeaker, setExpandedSpeaker] = useState<string | null>(null);
@@ -159,6 +180,9 @@ export default function AIFestivalUK2026Page() {
         </div>
         <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)' }} />
         <div className="absolute inset-0 z-[1] opacity-20 pointer-events-none" style={{ background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}30 0%, transparent 70%)` }} />
+        <div className="absolute inset-0 z-[1] pointer-events-none opacity-50">
+          <NetworkGraph nodeCount={40} colors={[accentColor, '#4ADE80', '#86EFAC']} />
+        </div>
         <div className="relative z-10 max-w-5xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6" style={{ background: `${accentColor}15`, border: `1px solid ${accentColor}40` }}>
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: accentColor, boxShadow: `0 0 8px ${accentColor}` }} />
@@ -190,6 +214,7 @@ export default function AIFestivalUK2026Page() {
 
       <section className="px-6 py-20" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto">
+          <ScrollReveal>
           <div className="flex items-center gap-3 mb-10">
             <div className="w-1.5 h-6 rounded-full" style={{ background: accentColor }} />
             <span className="text-[10px] uppercase tracking-[0.15em]" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>Speakers</span>
@@ -200,9 +225,9 @@ export default function AIFestivalUK2026Page() {
               const trackColor = TRACK_COLORS[TRACKS.indexOf(speaker.track) % TRACK_COLORS.length] || accentColor;
               const expanded = expandedSpeaker === speaker.id;
               return (
-                <div key={speaker.id} className="rounded-xl p-5 group" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div key={speaker.id} className="rounded-xl p-5 group transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
                   <div className="relative w-full aspect-square rounded-lg mb-4 overflow-hidden">
-                    <Image src={speaker.img} alt={speaker.name} fill className="object-cover transition-transform group-hover:scale-105" sizes="20vw" unoptimized />
+                    <Image src={speaker.img} alt={speaker.name} fill className="object-cover transition-transform duration-300 group-hover:scale-110" sizes="20vw" unoptimized />
                   </div>
                   <h3 className="font-semibold mb-1 text-base">{speaker.name}</h3>
                   <p className="text-sm mb-2" style={{ color: 'var(--color-text-muted)', lineHeight: 1.4 }}>{speaker.role}</p>
@@ -221,6 +246,7 @@ export default function AIFestivalUK2026Page() {
               );
             })}
           </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -228,6 +254,7 @@ export default function AIFestivalUK2026Page() {
 
       <section className="px-6 py-20">
         <div className="max-w-5xl mx-auto">
+          <ScrollReveal>
           <div className="flex items-center justify-between mb-10">
             <div className="flex items-center gap-3">
               <div className="w-1.5 h-6 rounded-full" style={{ background: accentColor }} />
@@ -266,6 +293,7 @@ export default function AIFestivalUK2026Page() {
               })}
             </div>
           </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -273,6 +301,7 @@ export default function AIFestivalUK2026Page() {
 
       <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto">
+          <ScrollReveal>
           <h2 className="text-base font-medium uppercase tracking-wider mb-8" style={{ color: 'var(--color-text-muted)' }}>Sponsors</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-4">
             {SPONSORS.map((s) => (
@@ -282,6 +311,7 @@ export default function AIFestivalUK2026Page() {
               </div>
             ))}
           </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -289,6 +319,7 @@ export default function AIFestivalUK2026Page() {
 
       <section className="px-6 py-20">
         <div className="max-w-5xl mx-auto">
+          <ScrollReveal>
           <h2 className="text-base font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Venue</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
             {VENUE_GALLERY.map((img, i) => (
@@ -317,6 +348,7 @@ export default function AIFestivalUK2026Page() {
           <div className="rounded-xl overflow-hidden border" style={{ borderColor: 'rgba(255,255,255,0.08)', height: 280 }}>
             <iframe title="Venue map" src="https://www.google.com/maps?q=STEM+Centre+73+Western+Way+Bury+St+Edmunds&z=15&output=embed" width="100%" height="100%" style={{ border: 0, filter: 'invert(0.9) hue-rotate(180deg)' }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
           </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -324,8 +356,9 @@ export default function AIFestivalUK2026Page() {
 
       <section id="local-guide" className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Stay & Explore</h2>
-          <p className="text-base mb-8" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>Real local picks near West Suffolk College. Hotels, dining, coffee, and things to do in Bury St Edmunds.</p>
+          <ScrollReveal>
+          <h2 className="text-sm font-medium uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-muted)' }}>Beyond the Festival</h2>
+          <p className="text-base mb-6" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>Hotels · Dining · Coffee · Explore — real local picks near West Suffolk College in Bury St Edmunds.</p>
           <div className="flex flex-wrap gap-2 mb-8">
             {(['hotels', 'dining', 'coffee', 'explore'] as const).map((tab) => (
               <button key={tab} onClick={() => setLocalTab(tab)} className="px-4 py-2 rounded-lg text-sm font-medium capitalize transition-colors" style={{ background: localTab === tab ? accentColor : 'rgba(255,255,255,0.05)', color: localTab === tab ? 'var(--color-bg)' : 'var(--color-text-muted)', border: localTab === tab ? 'none' : '1px solid rgba(255,255,255,0.08)' }}>{tab}</button>
@@ -381,6 +414,7 @@ export default function AIFestivalUK2026Page() {
               ))}
             </div>
           )}
+          </ScrollReveal>
         </div>
       </section>
 
@@ -388,6 +422,7 @@ export default function AIFestivalUK2026Page() {
 
       <section className="px-6 py-16">
         <div className="max-w-5xl mx-auto">
+          <ScrollReveal>
           <h2 className="text-sm font-medium uppercase tracking-wider mb-8" style={{ color: 'var(--color-text-muted)' }}>Tickets</h2>
           <div className="grid md:grid-cols-3 gap-6">
             {[
@@ -403,6 +438,15 @@ export default function AIFestivalUK2026Page() {
               </div>
             ))}
           </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      <section className="px-6 py-16" style={{ background: `linear-gradient(135deg, ${accentColor}15 0%, ${accentColor}08 50%, transparent 100%)`, borderTop: `1px solid ${accentColor}30`, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Join 1,200+ innovators at AI Festival UK 2026</h2>
+          <p className="mb-6 mx-auto max-w-[480px]" style={{ color: 'var(--color-text-muted)' }}>Two days of AI, quantum, robotics, cyber, healthcare, and PitchFest. Early bird pricing ends soon.</p>
+          <Link href="/checkout/ai-festival-uk-2026?tier=full&price=%C2%A389" className="btn-primary inline-flex items-center gap-2 px-8 py-4 text-base">Get Tickets →</Link>
         </div>
       </section>
 
