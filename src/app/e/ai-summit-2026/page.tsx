@@ -206,7 +206,7 @@ export default function AISummit2026Page() {
             <h2 className="text-sm font-medium uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Speakers</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {SPEAKERS.map((speaker) => {
+            {SPEAKERS.map((speaker, i) => {
               const trackColor = TRACK_COLORS[TRACKS.indexOf(speaker.track) % TRACK_COLORS.length] || accentColor;
               const expanded = expandedSpeaker === speaker.id;
               return (

@@ -198,7 +198,7 @@ export function PromoteModal({
                           <span className="text-xs" style={{ color: color }}>{c.relevance}</span>
                         </div>
                         <p className="text-sm mb-2" style={{ color: theme.textMuted }}>{c.draft_post}</p>
-                        <button onClick={() => copyText(c.draft_post, `c-${i}`)} className="px-2 py-1 text-xs rounded" style={{ background: `${color}20`, color: color }}>
+                        <button onClick={() => copyText(c.draft_post ?? '', `c-${i}`)} className="px-2 py-1 text-xs rounded" style={{ background: `${color}20`, color: color }}>
                           {copiedId === `c-${i}` ? 'Copied!' : '📋 Copy'}
                         </button>
                       </div>
@@ -229,7 +229,7 @@ export function PromoteModal({
                           <span className="text-xs" style={{ color: color }}>{p.partnership_type}</span>
                         </div>
                         <p className="text-sm mb-2" style={{ color: theme.textMuted }}>{p.outreach_email_draft}</p>
-                        <button onClick={() => copyText(p.outreach_email_draft, `p-${i}`)} className="px-2 py-1 text-xs rounded" style={{ background: `${color}20`, color: color }}>
+                        <button onClick={() => copyText(p.outreach_email_draft ?? '', `p-${i}`)} className="px-2 py-1 text-xs rounded" style={{ background: `${color}20`, color: color }}>
                           {copiedId === `p-${i}` ? 'Copied!' : '📋 Copy'}
                         </button>
                       </div>
