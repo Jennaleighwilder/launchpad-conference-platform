@@ -176,9 +176,9 @@ export default function EventPage() {
               sessionStorage.removeItem(`event-${slug}`);
               if (/^[0-9a-f-]{36}$/i.test(parsed.id)) {
                 fetch(`/api/events/${parsed.id}/blocks`)
-                  .then((r) => r.json())
-                  .then((d) => setBlocks(d.blocks || []))
-                  .catch(() => {});
+                  .then((r) => (r.ok ? r.json() : { blocks: [] }))
+                  .then((d) => setBlocks(d?.blocks || []))
+                  .catch(() => setBlocks([]));
               }
               try {
                 const key = `event-customize-${slug}`;
@@ -208,9 +208,9 @@ export default function EventPage() {
           setEvent(data.event);
           if (/^[0-9a-f-]{36}$/i.test(data.event.id)) {
             fetch(`/api/events/${data.event.id}/blocks`)
-              .then((r) => r.json())
-              .then((d) => setBlocks(d.blocks || []))
-              .catch(() => {});
+              .then((r) => (r.ok ? r.json() : { blocks: [] }))
+              .then((d) => setBlocks(d?.blocks || []))
+              .catch(() => setBlocks([]));
           }
           // Load saved customizations from localStorage
           try {
@@ -242,6 +242,53 @@ export default function EventPage() {
     }
     if (slug) fetchEvent();
   }, [slug]);
+
+  // Schema.org + document.title — MUST run before any conditional returns (hooks rule)
+  useEffect(() => {
+    if (!event) return;
+    const venue = (event.venue && typeof event.venue === 'object'
+      ? { name: (event.venue as VenueData).name ?? event.city ?? 'Venue', address: (event.venue as VenueData).address ?? String(event.city ?? ''), capacity_note: (event.venue as VenueData).capacity_note }
+      : { name: event.city ?? 'Venue', address: String(event.city ?? ''), capacity_note: undefined }
+    ) as VenueData;
+    const speakers = (event.speakers || []) as SpeakerData[];
+    const pricing = (event.pricing && typeof event.pricing === 'object' ? event.pricing : { early_bird: '$199', regular: '$349', vip: '$799', currency: 'USD' }) as PricingData;
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: event.name,
+      description: event.description || event.tagline || '',
+      startDate: event.date,
+      endDate: event.date,
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: 'https://schema.org/MixedEventAttendanceMode',
+      location: {
+        '@type': 'Place',
+        name: venue?.name || '',
+        address: { '@type': 'PostalAddress', addressLocality: event.city ?? '' },
+      },
+      organizer: { '@type': 'Organization', name: 'Launchpad', url: 'https://launchpad-conference-platform.vercel.app' },
+      offers: pricing ? {
+        '@type': 'AggregateOffer',
+        lowPrice: String(pricing.early_bird || '').replace(/[^0-9.]/g, '') || '0',
+        highPrice: String(pricing.vip || '').replace(/[^0-9.]/g, '') || '0',
+        priceCurrency: pricing.currency || 'USD',
+        availability: 'https://schema.org/InStock',
+      } : undefined,
+      performer: speakers.slice(0, 5).map((s) => ({ '@type': 'Person', name: s.name })),
+    };
+    let el = document.getElementById('event-schema');
+    if (!el) {
+      el = document.createElement('script');
+      el.id = 'event-schema';
+      el.setAttribute('type', 'application/ld+json');
+      document.head.appendChild(el);
+    }
+    el.textContent = JSON.stringify(schema);
+    document.title = `${event.name} — ${event.city ?? ''} | Launchpad`;
+    return () => {
+      el?.remove();
+    };
+  }, [event]);
 
   const handleBuyTicket = (tier: string, price: string) => {
     if (!event) return;
@@ -304,26 +351,32 @@ export default function EventPage() {
     );
   }
 
-  const venue = event.venue as VenueData;
+  const venue = (event.venue && typeof event.venue === 'object'
+    ? { name: (event.venue as VenueData).name ?? event.city ?? 'Venue', address: (event.venue as VenueData).address ?? String(event.city ?? ''), capacity_note: (event.venue as VenueData).capacity_note }
+    : { name: event.city ?? 'Venue', address: String(event.city ?? ''), capacity_note: undefined }
+  ) as VenueData;
   const speakers = (event.speakers || []) as SpeakerData[];
   const schedule = (event.schedule || []) as ScheduleItem[];
-  const pricing = event.pricing as PricingData;
+  const pricing = (event.pricing && typeof event.pricing === 'object' ? event.pricing : { early_bird: '$199', regular: '$349', vip: '$799', currency: 'USD' }) as PricingData;
   const tracks = (event.tracks || []) as string[];
-  const theme = getEventTheme(event.topic, event.vibe, event.slug);
+  const theme = getEventTheme(event.topic ?? event.topic_key, event.vibe, event.slug);
   const accentColor = customAccent || theme.accent;
+  const safeCity = event.city ?? '';
+  const safeDate = event.date ?? '';
   const baseName = customName || event.name;
   const baseTagline = customTagline !== undefined ? customTagline : event.tagline;
   const t = customLang && customLang !== 'en' ? customTranslations[customLang] : null;
   const displayName = t?.name || baseName;
   const displayTagline = t?.tagline ?? baseTagline;
   const ev = event as unknown as Record<string, unknown>;
+  const topicForHero = event.topic ?? event.topic_key ?? 'general';
   const heroImages = resolveHeroImages(ev, {
     customImages: customHeroImages,
     themeImages: theme.heroImages,
     slug,
-    topic: event.topic,
+    topic: topicForHero,
   });
-  const heroVideoUrl = resolveHeroVideo(ev, customHeroVideoUrl, { slug: event.slug, topic: event.topic, city: event.city });
+  const heroVideoUrl = resolveHeroVideo(ev, customHeroVideoUrl, { slug: event.slug, topic: topicForHero, city: event.city });
   const useVideoHero = !customHeroImages.length && !!heroVideoUrl;
   const displayDescription = (t?.description || customDescription || event.description || '');
   const videoEmbedId = (() => {
@@ -346,46 +399,6 @@ export default function EventPage() {
 
   const heroBreadcrumb = `${venue.name}, ${event.city} · ${formattedDate}`;
   const countdownEnd = `${displayDate}T09:00:00-04:00`;
-
-  useEffect(() => {
-    if (!event) return;
-    const schema = {
-      '@context': 'https://schema.org',
-      '@type': 'Event',
-      name: event.name,
-      description: event.description || event.tagline || '',
-      startDate: event.date,
-      endDate: event.date,
-      eventStatus: 'https://schema.org/EventScheduled',
-      eventAttendanceMode: 'https://schema.org/MixedEventAttendanceMode',
-      location: {
-        '@type': 'Place',
-        name: venue?.name || '',
-        address: { '@type': 'PostalAddress', addressLocality: event.city },
-      },
-      organizer: { '@type': 'Organization', name: 'Launchpad', url: 'https://launchpad-conference-platform.vercel.app' },
-      offers: pricing ? {
-        '@type': 'AggregateOffer',
-        lowPrice: String(pricing.early_bird || '').replace(/[^0-9.]/g, '') || '0',
-        highPrice: String(pricing.vip || '').replace(/[^0-9.]/g, '') || '0',
-        priceCurrency: pricing.currency || 'USD',
-        availability: 'https://schema.org/InStock',
-      } : undefined,
-      performer: speakers.slice(0, 5).map((s) => ({ '@type': 'Person', name: s.name })),
-    };
-    let el = document.getElementById('event-schema');
-    if (!el) {
-      el = document.createElement('script');
-      el.id = 'event-schema';
-      el.setAttribute('type', 'application/ld+json');
-      document.head.appendChild(el);
-    }
-    el.textContent = JSON.stringify(schema);
-    document.title = `${event.name} — ${event.city} | Launchpad`;
-    return () => {
-      el?.remove();
-    };
-  }, [event, venue, speakers, pricing]);
 
   const themeVars = {
     '--color-bg': theme.bg,
@@ -590,7 +603,7 @@ export default function EventPage() {
                         <Image src={speaker.photo_url} alt={speaker.name} fill className="object-cover transition-transform group-hover:scale-105" unoptimized />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-2xl font-bold" style={{ background: `${accentColor}20`, color: accentColor }}>
-                          {speaker.initials}
+                          {speaker.initials ?? (speaker.name ? speaker.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2) : '?')}
                         </div>
                       )}
                     </div>
@@ -664,7 +677,7 @@ export default function EventPage() {
         <div className="max-w-5xl mx-auto">
           <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Venue</h2>
           <div className="rounded-xl overflow-hidden mb-4" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
-            <Image src={heroImages[0]} alt={venue.name} width={800} height={400} className="w-full h-48 object-cover" unoptimized />
+            <Image src={heroImages[0] ?? heroImages[heroImages.length - 1] ?? 'https://picsum.photos/seed/event/800/400'} alt={venue?.name ?? 'Venue'} width={800} height={400} className="w-full h-48 object-cover" unoptimized />
           </div>
           <div className="card mb-6">
             <h3 className="text-xl font-semibold mb-2">{venue.name}</h3>
@@ -695,10 +708,10 @@ export default function EventPage() {
         <div className="max-w-5xl mx-auto">
           <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Stay & Dine</h2>
           <div className="grid md:grid-cols-3 gap-6 mb-8">
-            {(getHotelsForCity(event.city)).map((h, i) => (
+            {(getHotelsForCity(safeCity)).map((h, i) => (
               <a
                 key={h.name}
-                href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(event.city)}&checkin=${event.date}&checkout=${event.date}`}
+                href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(safeCity)}&checkin=${event.date}&checkout=${event.date}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="card overflow-hidden hover:border-[var(--color-accent)] transition-colors block"
@@ -713,7 +726,7 @@ export default function EventPage() {
             ))}
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-            {(getRestaurantsForCity(event.city)).map((r) => (
+            {(getRestaurantsForCity(safeCity)).map((r) => (
               <div key={r.name} className="card">
                 <h3 className="font-semibold mb-1">{r.name}</h3>
                 <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>{r.cuisine} · {r.distance} · {r.price}</p>
@@ -723,7 +736,7 @@ export default function EventPage() {
           <h2 className="text-sm font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Getting There</h2>
           <div className="grid sm:grid-cols-3 gap-4">
             <a
-              href={`https://www.google.com/travel/flights?q=Flights%20to%20${encodeURIComponent(event.city)}%20on%20${event.date}`}
+              href={`https://www.google.com/travel/flights?q=Flights%20to%20${encodeURIComponent(safeCity)}%20on%20${safeDate}`}
               target="_blank"
               rel="noopener noreferrer"
               className="card flex items-center gap-4 hover:border-[var(--color-accent)] transition-colors group"
@@ -731,11 +744,11 @@ export default function EventPage() {
               <span className="text-2xl">✈️</span>
               <div className="text-left">
                 <div className="font-semibold group-hover:text-[var(--color-accent)] transition-colors">Flights</div>
-                <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Google Flights → {event.city}</div>
+                <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Google Flights → {safeCity || 'destination'}</div>
               </div>
             </a>
             <a
-              href={`https://www.thetrainline.com/trains/to/${encodeURIComponent(event.city.toLowerCase().replace(/\s/g, '-'))}`}
+              href={`https://www.thetrainline.com/trains/to/${encodeURIComponent(safeCity.toLowerCase().replace(/\s/g, '-') || 'london')}`}
               target="_blank"
               rel="noopener noreferrer"
               className="card flex items-center gap-4 hover:border-[var(--color-accent)] transition-colors group"
@@ -743,7 +756,7 @@ export default function EventPage() {
               <span className="text-2xl">🚂</span>
               <div className="text-left">
                 <div className="font-semibold group-hover:text-[var(--color-accent)] transition-colors">Trains</div>
-                <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Trainline → {event.city}</div>
+                <div className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Trainline → {safeCity || 'destination'}</div>
               </div>
             </a>
             <a

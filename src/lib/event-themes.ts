@@ -231,9 +231,13 @@ function simpleHash(str: string): number {
 /**
  * Select a theme based on topic, vibe, and slug.
  * Deterministic: same inputs always produce same theme.
+ * Defensive: handles undefined/null to avoid client-side crashes.
  */
-export function getEventTheme(topic: string, vibe: string, slug: string): EventTheme {
-  const seed = `${topic.toLowerCase()}|${vibe.toLowerCase()}|${slug}`;
+export function getEventTheme(topic?: string | null, vibe?: string | null, slug?: string | null): EventTheme {
+  const t = (topic ?? '').toString().toLowerCase();
+  const v = (vibe ?? '').toString().toLowerCase();
+  const s = (slug ?? '').toString();
+  const seed = `${t}|${v}|${s}`;
   const idx = simpleHash(seed) % EVENT_THEMES.length;
   return EVENT_THEMES[idx];
 }
