@@ -208,15 +208,16 @@ export default function HomePage() {
             style={{ background: 'var(--color-accent)', color: 'var(--color-bg)' }}>L</div>
           <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem' }}>Launchpad</span>
         </div>
-        <div className="flex items-center gap-6">
-          <a href="#how-it-works" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }} onClick={(e) => { e.preventDefault(); document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }); }}>How It Works</a>
-          <Link href="/features" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Features</Link>
-          <Link href="/speakers" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Speakers</Link>
-          <Link href="/demo" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Demos</Link>
-          <Link href="/sponsor" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Sponsor</Link>
-          <Link href="/affiliate" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Affiliate</Link>
-          <Link href="/careers" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Careers</Link>
-          <Link href="/pricing" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Pricing</Link>
+        <div className="flex items-center gap-4 md:gap-6 flex-wrap">
+          <Link href="/sponsor" className="px-4 py-2 rounded-lg text-sm font-semibold transition-all border" style={{ borderColor: 'rgba(79,255,223,0.4)', color: 'var(--color-accent)', background: 'rgba(79,255,223,0.08)' }}>Sponsor</Link>
+          <Link href="/speakers/apply" className="px-4 py-2 rounded-lg text-sm font-semibold transition-all border" style={{ borderColor: 'rgba(79,255,223,0.4)', color: 'var(--color-accent)', background: 'rgba(79,255,223,0.08)' }}>Apply to Speak</Link>
+          <a href="#how-it-works" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden sm:inline" style={{ color: 'var(--color-text-muted)' }} onClick={(e) => { e.preventDefault(); document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }); }}>How It Works</a>
+          <Link href="/features" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden sm:inline" style={{ color: 'var(--color-text-muted)' }}>Features</Link>
+          <Link href="/speakers" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden sm:inline" style={{ color: 'var(--color-text-muted)' }}>Speakers</Link>
+          <Link href="/demo" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden sm:inline" style={{ color: 'var(--color-text-muted)' }}>Demos</Link>
+          <Link href="/affiliate" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden sm:inline" style={{ color: 'var(--color-text-muted)' }}>Affiliate</Link>
+          <Link href="/careers" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden lg:inline" style={{ color: 'var(--color-text-muted)' }}>Careers</Link>
+          <Link href="/pricing" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden sm:inline" style={{ color: 'var(--color-text-muted)' }}>Pricing</Link>
           <Link href="/create" className="btn-primary" style={{ padding: '0.5rem 1.5rem', fontSize: '0.875rem' }}>Create Event →</Link>
         </div>
       </nav>
@@ -470,19 +471,16 @@ export default function HomePage() {
             <h3 className="text-2xl font-semibold mb-6" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-accent)', textShadow: '0 0 20px rgba(79,255,223,0.5)' }}>Promo videos</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
               {[
-                { src: '/videos/8d0ea574-bdda-47c4-8ce8-e9318d70e7b8_hd.mp4', title: 'Promo 1' },
-                { src: '/videos/19a52e15-e11c-41a2-89ae-6a7949390ff3_hd.mp4', title: 'Promo 2' },
-                { src: '/videos/38bf5980-84f6-41a7-b7a0-843826866b12_hd.mp4', title: 'Promo 3' },
-                { src: '/videos/Bayou_Scene_Video_Generation.mp4', title: 'Bayou Scene' },
-              ].map((v) => (
-                <div key={v.src} className="rounded-xl overflow-hidden group" style={{ border: '1px solid rgba(79,255,223,0.2)', boxShadow: '0 0 20px rgba(79,255,223,0.1)' }}>
+                '/videos/8d0ea574-bdda-47c4-8ce8-e9318d70e7b8_hd.mp4',
+                '/videos/19a52e15-e11c-41a2-89ae-6a7949390ff3_hd.mp4',
+                '/videos/38bf5980-84f6-41a7-b7a0-843826866b12_hd.mp4',
+                '/videos/Bayou_Scene_Video_Generation.mp4',
+              ].map((src) => (
+                <div key={src} className="rounded-xl overflow-hidden group" style={{ border: '1px solid rgba(79,255,223,0.2)', boxShadow: '0 0 20px rgba(79,255,223,0.1)' }}>
                   <div className="aspect-video relative">
                     <video className="absolute inset-0 w-full h-full object-cover" autoPlay muted loop playsInline preload="auto">
-                      <source src={v.src} type="video/mp4" />
+                      <source src={src} type="video/mp4" />
                     </video>
-                  </div>
-                  <div className="p-2" style={{ background: 'rgba(0,0,0,0.4)' }}>
-                    <div className="text-xs font-medium">{v.title}</div>
                   </div>
                 </div>
               ))}
