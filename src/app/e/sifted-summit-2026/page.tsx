@@ -241,9 +241,9 @@ export default function SiftedSummit2026() {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 18 }}>
           {[
-            { name: 'Founder / Operator', desc: 'For Series A+ founders and operators. Full access to all stages, networking, app, and side events.', price: '£255', orig: '£399', badge: 'EARLY BIRD', color: '#22C55E' },
-            { name: 'Investor', desc: 'For VCs, LPs, angels and all investor types. Full access plus curated founder meetups.', price: '£399', orig: '£599', badge: 'EARLY BIRD', color: '#8B5CF6' },
-            { name: 'Corporate / Service', desc: 'For service providers, law firms, banks, consultancies, PR, and tech companies.', price: '£599', orig: '£849', badge: 'EARLY BIRD', color: AC },
+            { name: 'Founder / Operator', tier: 'founder-operator', desc: 'For Series A+ founders and operators. Full access to all stages, networking, app, and side events.', price: '£255', orig: '£399', badge: 'EARLY BIRD', color: '#22C55E' },
+            { name: 'Investor', tier: 'investor', desc: 'For VCs, LPs, angels and all investor types. Full access plus curated founder meetups.', price: '£399', orig: '£599', badge: 'EARLY BIRD', color: '#8B5CF6' },
+            { name: 'Corporate / Service', tier: 'corporate-service', desc: 'For service providers, law firms, banks, consultancies, PR, and tech companies.', price: '£599', orig: '£849', badge: 'EARLY BIRD', color: AC },
           ].map(tier => (
             <div key={tier.name} style={{ ...glass, padding: '1.5rem', position: 'relative', borderTop: `3px solid ${tier.color}` }}>
               <span style={{ position: 'absolute', top: 12, right: 12, fontSize: '0.55rem', padding: '2px 8px', borderRadius: 4, background: `${tier.color}18`, color: tier.color, fontWeight: 700 }}>{tier.badge}</span>
@@ -254,7 +254,7 @@ export default function SiftedSummit2026() {
                 <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.25)', textDecoration: 'line-through' }}>{tier.orig}</span>
                 <span style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)' }}>+ VAT</span>
               </div>
-              <button style={{ width: '100%', padding: '0.65rem', borderRadius: 10, background: tier.color, color: '#fff', fontWeight: 700, border: 'none', cursor: 'pointer', fontSize: '0.8rem', marginTop: 8 }}>Register Now →</button>
+              <Link href={`/checkout/sifted-summit-2026?tier=${tier.tier}&price=${encodeURIComponent(tier.price)}`} style={{ display: 'block', width: '100%', padding: '0.65rem', borderRadius: 10, background: tier.color, color: '#fff', fontWeight: 700, border: 'none', cursor: 'pointer', fontSize: '0.8rem', marginTop: 8, textAlign: 'center', textDecoration: 'none' }}>Register Now →</Link>
             </div>
           ))}
         </div>
