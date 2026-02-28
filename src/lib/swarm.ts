@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import type { SpeakerData, ScheduleItem, VenueData, PricingData } from './types';
+import { getSpeakerPhoto } from './speaker-photos';
 
 /**
  * SWARM GENERATION
