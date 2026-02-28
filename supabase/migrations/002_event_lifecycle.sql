@@ -5,6 +5,10 @@
 ALTER TABLE events ADD COLUMN IF NOT EXISTS start_date TIMESTAMPTZ;
 ALTER TABLE events ADD COLUMN IF NOT EXISTS end_date TIMESTAMPTZ;
 
+-- 1b. Add hero columns (required by 004_hero_assets)
+ALTER TABLE events ADD COLUMN IF NOT EXISTS hero_image_url TEXT;
+ALTER TABLE events ADD COLUMN IF NOT EXISTS hero_video_url TEXT;
+
 -- 2. Add ai_description, social_announcement_text for planning → announcing
 ALTER TABLE events ADD COLUMN IF NOT EXISTS ai_description TEXT;
 ALTER TABLE events ADD COLUMN IF NOT EXISTS social_announcement_text TEXT;
