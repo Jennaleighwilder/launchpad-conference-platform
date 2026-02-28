@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Launchpad — Run Supabase Migrations</title>
+  <style>
+    body { font-family: system-ui; max-width: 600px; margin: 60px auto; padding: 20px; background: #0a0a0a; color: #fff; }
+    h1 { font-size: 1.5rem; margin-bottom: 8px; }
+    p { color: #888; margin-bottom: 24px; line-height: 1.6; }
+    .btn { display: inline-block; padding: 14px 28px; background: #22c55e; color: #000; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; text-decoration: none; }
+    .btn:hover { background: #16a34a; }
+    .step { background: #1a1a1a; padding: 16px; border-radius: 8px; margin: 16px 0; }
+    .step strong { color: #22c55e; }
+    code { background: #333; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <h1>Run Launchpad Migrations</h1>
+  <p>This will copy all migration SQL to your clipboard and open Supabase. When the SQL Editor loads, press <code>Cmd+V</code> (Mac) or <code>Ctrl+V</code> (Windows) to paste, then click <strong>Run</strong>.</p>
+
+  <button class="btn" id="go">Copy SQL & Open Supabase</button>
+
+  <div class="step">
+    <strong>Step 1:</strong> Click the button above (SQL is copied, Supabase opens)
+  </div>
+  <div class="step">
+    <strong>Step 2:</strong> In the Supabase SQL Editor, paste (<code>Cmd+V</code>) and click <strong>Run</strong>
+  </div>
+  <div class="step">
+    <strong>Step 3:</strong> Go to <strong>Authentication → Providers → Google</strong> → Enable with your Client ID and Client Secret from Google Cloud Console
+  </div>
+  <div class="step">
+    <strong>Step 4:</strong> Go to <strong>Authentication → URL Configuration</strong> → Add redirect URLs:<br>
+    <code>https://launchpad-conference-platform.vercel.app</code><br>
+    <code>https://launchpad-conference-platform.vercel.app/**</code><br>
+    <code>http://localhost:3000</code><br>
+    <code>http://localhost:3000/**</code>
+  </div>
+
+  <script>
+    const SQL = `-- LAUNCHPAD MIGRATIONS - Run in Supabase SQL Editor
+create table if not exists events (id uuid primary key default gen_random_uuid(), slug text unique not null, name text, topic text, city text, date text, capacity int default 500, budget text, vibe text, venue jsonb, tracks jsonb default '[]', speakers jsonb default '[]', schedule jsonb default '[]', pricing jsonb, description text, tagline text, topic_key text, status text default 'live', created_at timestamp default now());
+create table if not exists affiliates (id uuid primary key default gen_random_uuid(), code text unique not null, clicks int default 0, conversions int default 0, created_at timestamp default now());
+create or replace function increment_conversion(refcode text) returns void language plpgsql as $$ begin insert into affiliates (id, code, clicks, conversions) values (gen_random_uuid(), refcode, 0, 1) on conflict (code) do update set conversions = affiliates.conversions + 1; end; $$;
+ALTER TABLE events ADD COLUMN IF NOT EXISTS start_date TIMESTAMPTZ;
+ALTER TABLE events ADD COLUMN IF NOT EXISTS end_date TIMESTAMPTZ;
+ALTER TABLE events ADD COLUMN IF NOT EXISTS hero_image_url TEXT;
+ALTER TABLE events ADD COLUMN IF NOT EXISTS hero_video_url TEXT;
+ALTER TABLE events ADD COLUMN IF NOT EXISTS hero_style TEXT;
+ALTER TABLE events ADD COLUMN IF NOT EXISTS ai_description TEXT;
+ALTER TABLE events ADD COLUMN IF NOT EXISTS social_announcement_text TEXT;
+CREATE TABLE IF NOT EXISTS speaker_invitations (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, event_id UUID NOT NULL REFERENCES events(id) ON DELETE CASCADE, email TEXT NOT NULL, name TEXT NOT NULL, talk_title TEXT, token TEXT UNIQUE NOT NULL, confirmed_at TIMESTAMPTZ, created_at TIMESTAMPTZ DEFAULT NOW());
+CREATE INDEX IF NOT EXISTS idx_speaker_invitations_event ON speaker_invitations(event_id);
+CREATE INDEX IF NOT EXISTS idx_speaker_invitations_token ON speaker_invitations(token);
+ALTER TABLE events ADD COLUMN IF NOT EXISTS speakers_confirmed_count INTEGER NOT NULL DEFAULT 0;
+DO $$ BEGIN ALTER TABLE events DROP CONSTRAINT IF EXISTS events_status_check; EXCEPTION WHEN undefined_object THEN NULL; END $$;
+ALTER TABLE events ADD CONSTRAINT events_status_check CHECK (status IN ('draft', 'planning', 'announcing', 'ticket_sales', 'live', 'completed', 'sold_out', 'past'));
+ALTER TABLE events ALTER COLUMN status SET DEFAULT 'draft';
+CREATE TABLE IF NOT EXISTS lifecycle_log (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, event_id UUID NOT NULL REFERENCES events(id) ON DELETE CASCADE, from_status TEXT NOT NULL, to_status TEXT NOT NULL, action_key TEXT NOT NULL, created_at TIMESTAMPTZ DEFAULT NOW(), UNIQUE(event_id, action_key));
+CREATE INDEX IF NOT EXISTS idx_lifecycle_log_event ON lifecycle_log(event_id);
+DROP POLICY IF EXISTS "Public can view live events" ON events;
+DROP POLICY IF EXISTS "Public can view published events" ON events;
+CREATE POLICY "Public can view events" ON events FOR SELECT USING (true);
+create table if not exists attendees (id uuid primary key default gen_random_uuid(), event_id uuid not null references events(id) on delete cascade, email text not null, name text, ticket_type text not null default 'regular', stripe_session_id text, stripe_payment_intent_id text, payment_status text not null default 'pending', checkin_status text not null default 'not_checked_in', checked_in_at timestamptz, created_at timestamptz not null default now());
+create index if not exists attendees_event_id_idx on attendees(event_id);
+create index if not exists attendees_email_idx on attendees(email);
+create unique index if not exists attendees_unique_event_email on attendees(event_id, email);
+create table if not exists hero_assets (id uuid primary key default gen_random_uuid(), event_id uuid unique not null references events(id) on delete cascade, image_url text, video_url text, provider text not null default 'fallback', provider_asset_id text, created_at timestamptz default now());
+create unique index if not exists hero_assets_provider_asset_id_unique on hero_assets(provider_asset_id) where provider_asset_id is not null;
+create index if not exists hero_assets_event_id_idx on hero_assets(event_id);
+create table if not exists event_blocks (id uuid primary key default gen_random_uuid(), event_id uuid not null references events(id) on delete cascade, sort_order int not null default 0, type text not null check (type in ('text', 'image', 'video', 'gallery', 'cta')), data jsonb not null default '{}', created_at timestamptz default now());
+create index if not exists event_blocks_event_sort_idx on event_blocks(event_id, sort_order);
+alter table events add column if not exists hero_asset_id uuid references hero_assets(id) on delete set null;
+insert into hero_assets (event_id, image_url, video_url, provider) select e.id, e.hero_image_url, e.hero_video_url, 'fallback' from events e where (e.hero_image_url is not null or e.hero_video_url is not null) and not exists (select 1 from hero_assets ha where ha.event_id = e.id);
+update events e set hero_asset_id = ha.id from hero_assets ha where ha.event_id = e.id and e.hero_asset_id is null;
+alter table hero_assets enable row level security;
+alter table event_blocks enable row level security;
+create policy "Service role full access hero_assets" on hero_assets for all using (true) with check (true);
+create policy "Service role full access event_blocks" on event_blocks for all using (true) with check (true);
+insert into hero_assets (event_id, image_url, provider) select e.id, 'https://picsum.photos/seed/' || replace(e.slug, '-', '') || '/1920/1080', 'fallback' from events e where e.id not in (select event_id from hero_assets);
+update events e set hero_asset_id = ha.id from hero_assets ha where ha.event_id = e.id and e.hero_asset_id is null;
+ALTER TABLE events ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS idx_events_user_id ON events(user_id);`;
+
+    document.getElementById('go').onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(SQL);
+        window.open('https://supabase.com/dashboard/project/zqtnmznyyzjstmtqcscv/sql/new', '_blank');
+        alert('SQL copied! Supabase opened. Paste (Cmd+V) in the SQL Editor and click Run.');
+      } catch (e) {
+        alert('Could not copy. Open scripts/ALL_MIGRATIONS.sql and paste manually.');
+      }
+    };
+  </script>
+</body>
+</html>

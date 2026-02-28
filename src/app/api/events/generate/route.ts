@@ -130,8 +130,14 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    const venue = {
+      ...eventData.venue,
+      ...(body.venue_name?.trim() && { name: body.venue_name.trim() }),
+      ...(body.venue_address?.trim() && { address: body.venue_address.trim() }),
+    };
     const fullEvent: EventData & { user_id?: string } = {
       ...eventData,
+      venue,
       id: crypto.randomUUID(),
       status: 'draft',
       created_at: new Date().toISOString(),
@@ -200,6 +206,7 @@ export async function POST(request: NextRequest) {
           hero_image_url: heroImageUrl,
           hero_video_url: null,
           hero_media_type: 'image',
+          hero_style: fullEvent.hero_style || 'auto',
           status: 'draft',
         };
         if (user?.id) insertPayload.user_id = user.id;
@@ -241,7 +248,11 @@ export async function POST(request: NextRequest) {
               console.warn('Affiliate conversion tracking failed:', e);
             }
           }
-          const eventWithStyle = { ...data, hero_style: fullEvent.hero_style };
+          const eventWithStyle = {
+            ...data,
+            hero_style: fullEvent.hero_style,
+            hero_image_url: (data as Record<string, unknown>).hero_image_url ?? heroImageUrl,
+          };
           return NextResponse.json({ success: true, event: eventWithStyle, persisted: true });
         }
       } catch (dbErr) {

@@ -209,8 +209,8 @@ export async function GET(
               .eq('id', ev.hero_asset_id)
               .single();
             if (hero) {
-              ev.hero_image_url = hero.image_url;
-              ev.hero_video_url = hero.video_url;
+              if (hero.image_url) ev.hero_image_url = hero.image_url;
+              if (hero.video_url) ev.hero_video_url = hero.video_url;
             }
           }
           ensureHeroUrl(ev);
