@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { generateEvent } from '@/lib/generate';
 import { runSwarm } from '@/lib/swarm';
 import { getServerUser } from '@/lib/auth';
-import type { CreateEventInput, EventData } from '@/lib/types';
+import type { CreateEventInput, EventData, SpeakerData, ScheduleItem } from '@/lib/types';
 
 // In-memory store for events (works without Supabase)
 const memoryStore = new Map<string, EventData>();
@@ -135,9 +135,44 @@ export async function POST(request: NextRequest) {
       ...(body.venue_name?.trim() && { name: body.venue_name.trim() }),
       ...(body.venue_address?.trim() && { address: body.venue_address.trim() }),
     };
+
+    // Override with custom speakers when provided
+    let speakers = eventData.speakers;
+    let schedule = eventData.schedule;
+    if (body.speakers && body.speakers.length > 0) {
+      const validSpeakers = body.speakers.filter((s) => s.name?.trim());
+      if (validSpeakers.length > 0) {
+        speakers = validSpeakers.map((s) => ({
+          name: s.name.trim(),
+          role: (s.role || '').trim() || 'Speaker',
+          initials: s.name.trim().split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2) || 'S',
+          bio: s.bio?.trim() || undefined,
+          photo_url: s.photo_url?.trim() || undefined,
+          url: s.url?.trim() || undefined,
+        })) as SpeakerData[];
+        const scheduleItems: ScheduleItem[] = [];
+        validSpeakers.forEach((s) => {
+          (s.slots || []).forEach((slot) => {
+            if (slot.time?.trim() && slot.title?.trim()) {
+              scheduleItems.push({
+                time: `Day ${slot.day} · ${slot.time.trim()}`,
+                title: slot.title.trim(),
+                speaker: s.name.trim(),
+              });
+            }
+          });
+        });
+        if (scheduleItems.length > 0) {
+          schedule = scheduleItems.sort((a, b) => a.time.localeCompare(b.time));
+        }
+      }
+    }
+
     const fullEvent: EventData & { user_id?: string } = {
       ...eventData,
       venue,
+      speakers,
+      schedule,
       id: crypto.randomUUID(),
       status: 'draft',
       created_at: new Date().toISOString(),
