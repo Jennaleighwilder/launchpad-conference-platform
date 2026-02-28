@@ -242,6 +242,8 @@ export default function AIFestivalUK2026Page() {
           <a href="#programme" className="text-sm hover:text-[#00F5D4] transition-colors hidden sm:block font-mono" style={{ color: 'rgba(255,255,255,0.8)' }}>Programme</a>
           <a href="#tickets" className="text-sm hover:text-[#00F5D4] transition-colors hidden sm:block font-mono" style={{ color: 'rgba(255,255,255,0.8)' }}>Tickets</a>
           <a href="#local-guide" className="text-sm hover:text-[#00F5D4] transition-colors hidden sm:block font-mono" style={{ color: 'rgba(255,255,255,0.8)' }}>Local Guide</a>
+          <Link href="/speakers/apply" className="text-sm hover:text-[#00F5D4] transition-colors hidden sm:block font-mono" style={{ color: 'rgba(255,255,255,0.8)' }}>Apply to Speak</Link>
+          <Link href="/sponsor" className="text-sm hover:text-[#00F5D4] transition-colors hidden sm:block font-mono" style={{ color: 'rgba(255,255,255,0.8)' }}>Sponsor</Link>
           <Link href="/checkout/ai-festival-uk-2026?tier=full&price=%C2%A389" className="text-sm font-medium px-5 py-2.5 rounded-lg" style={{ background: 'linear-gradient(135deg, #00F5D4, #00D4AA)', color: '#0A0A0A', boxShadow: `0 0 20px ${accentColor}30` }}>Get Tickets</Link>
         </div>
       </nav>

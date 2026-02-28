@@ -256,8 +256,6 @@ export default function HomePage() {
           <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem' }}>Launchpad</span>
         </div>
         <div className="flex items-center gap-4 md:gap-6 flex-wrap">
-          <Link href="/sponsor" className="px-4 py-2 rounded-lg text-sm font-semibold transition-all border" style={{ borderColor: 'rgba(79,255,223,0.4)', color: 'var(--color-accent)', background: 'rgba(79,255,223,0.08)' }}>Sponsor</Link>
-          <Link href="/speakers/apply" className="px-4 py-2 rounded-lg text-sm font-semibold transition-all border" style={{ borderColor: 'rgba(79,255,223,0.4)', color: 'var(--color-accent)', background: 'rgba(79,255,223,0.08)' }}>Apply to Speak</Link>
           <a href="#how-it-works" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden sm:inline" style={{ color: 'var(--color-text-muted)' }} onClick={(e) => { e.preventDefault(); document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }); }}>How It Works</a>
           <Link href="/features" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden sm:inline" style={{ color: 'var(--color-text-muted)' }}>Features</Link>
           <Link href="/speakers" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden sm:inline" style={{ color: 'var(--color-text-muted)' }}>Speakers</Link>
