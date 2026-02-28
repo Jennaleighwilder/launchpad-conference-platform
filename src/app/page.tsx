@@ -679,7 +679,6 @@ export default function HomePage() {
             <h2 className="text-4xl font-normal" style={{ fontFamily: 'var(--font-display)' }}>They make it all possible</h2>
             <div>
               <p className="mb-4" style={{ color: 'var(--color-text-muted)', lineHeight: 1.7 }}>Launchpad wouldn&apos;t be possible without the visionaries who stand behind us. From leading investors to forward-thinking companies.</p>
-              <Link href="/sponsor" className="text-sm" style={{ color: 'var(--color-accent)' }}>Become a partner →</Link>
             </div>
           </div>
           <div className="space-y-12">
@@ -798,7 +797,6 @@ export default function HomePage() {
                 <Link href="/templates" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Templates</Link>
                 <Link href="/e/demo-conference" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Demo Events</Link>
                 <Link href="/speakers" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Speakers</Link>
-                <Link href="/sponsor" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Sponsor</Link>
                 <Link href="/affiliate" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Affiliate</Link>
                 <Link href="/careers" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Careers</Link>
                 <Link href="/pricing" className="block text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Pricing</Link>
