@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { RequireAuth } from '@/components/RequireAuth';
 import { useAuth } from '@/components/AuthProvider';
+import type { SpeakerInput, SpeakerSlotInput } from '@/lib/types';
 
 const STANDARD_STEPS = [
   'Researching speakers...',
@@ -82,6 +83,7 @@ export default function CreatePage() {
     venue_name: '',
     venue_address: '',
   });
+  const [customSpeakers, setCustomSpeakers] = useState<SpeakerInput[]>([]);
 
   const update = (field: string, value: string | number) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -140,6 +142,7 @@ export default function CreatePage() {
           days: form.days,
           venue_name: form.venue_name?.trim() || undefined,
           venue_address: form.venue_address?.trim() || undefined,
+          speakers: customSpeakers.length > 0 ? customSpeakers : undefined,
         }),
       });
 
@@ -457,6 +460,75 @@ export default function CreatePage() {
             <label className="label">Preferred Speakers (optional)</label>
             <input type="text" className="input-field" placeholder="Names, companies, or types of speakers you'd like..."
               value={form.speakers_hint} onChange={(e) => update('speakers_hint', e.target.value)} />
+          </div>
+
+          {/* Add your speakers — bios, photos, links, days/times */}
+          <div className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <label className="label flex items-center justify-between">
+              <span>Add your speakers (optional)</span>
+              <button
+                type="button"
+                onClick={() => setCustomSpeakers((s) => [...s, { name: '', role: '', bio: '', photo_url: '', url: '', slots: [] }])}
+                className="text-sm font-medium px-3 py-1.5 rounded-lg transition-all"
+                style={{ background: 'rgba(79,255,223,0.15)', color: 'var(--color-accent)' }}
+              >
+                + Add speaker
+              </button>
+            </label>
+            <p className="text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>
+              Add names, bios, photos, personal links, and when they&apos;re speaking (day, time, session title).
+            </p>
+            {customSpeakers.map((sp, idx) => (
+              <div key={idx} className="mb-6 p-4 rounded-lg" style={{ background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-sm font-medium" style={{ color: 'var(--color-accent)' }}>Speaker {idx + 1}</span>
+                  <button type="button" onClick={() => setCustomSpeakers((s) => s.filter((_, i) => i !== idx))}
+                    className="text-xs px-2 py-1 rounded" style={{ color: 'var(--color-warm)' }}>Remove</button>
+                </div>
+                <div className="grid gap-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <input type="text" className="input-field" placeholder="Name"
+                      value={sp.name} onChange={(e) => setCustomSpeakers((s) => s.map((x, i) => i === idx ? { ...x, name: e.target.value } : x))} />
+                    <input type="text" className="input-field" placeholder="Role / Title"
+                      value={sp.role} onChange={(e) => setCustomSpeakers((s) => s.map((x, i) => i === idx ? { ...x, role: e.target.value } : x))} />
+                  </div>
+                  <input type="url" className="input-field" placeholder="Photo URL"
+                    value={sp.photo_url || ''} onChange={(e) => setCustomSpeakers((s) => s.map((x, i) => i === idx ? { ...x, photo_url: e.target.value } : x))} />
+                  <input type="url" className="input-field" placeholder="Personal link (LinkedIn, website, etc.)"
+                    value={sp.url || ''} onChange={(e) => setCustomSpeakers((s) => s.map((x, i) => i === idx ? { ...x, url: e.target.value } : x))} />
+                  <textarea className="input-field min-h-[80px]" placeholder="Bio"
+                    value={sp.bio || ''} onChange={(e) => setCustomSpeakers((s) => s.map((x, i) => i === idx ? { ...x, bio: e.target.value } : x))} />
+                  <div>
+                    <div className="text-xs font-medium mb-2" style={{ color: 'var(--color-text-muted)' }}>Speaking slots (day, time, session title)</div>
+                    {(sp.slots || []).map((slot, si) => (
+                      <div key={si} className="flex gap-2 mb-2">
+                        <select className="input-field flex-shrink-0 w-20" value={slot.day}
+                          onChange={(e) => setCustomSpeakers((s) => s.map((x, i) => i === idx ? {
+                            ...x, slots: (x.slots || []).map((sl, j) => j === si ? { ...sl, day: Number(e.target.value) } : sl),
+                          } : x))}>
+                          {[1, 2, 3].slice(0, form.days).map((d) => <option key={d} value={d}>Day {d}</option>)}
+                        </select>
+                        <input type="text" className="input-field flex-shrink-0 w-24" placeholder="9:00 AM"
+                          value={slot.time} onChange={(e) => setCustomSpeakers((s) => s.map((x, i) => i === idx ? {
+                            ...x, slots: (x.slots || []).map((sl, j) => j === si ? { ...sl, time: e.target.value } : sl),
+                          } : x))} />
+                        <input type="text" className="input-field flex-1" placeholder="Session title"
+                          value={slot.title} onChange={(e) => setCustomSpeakers((s) => s.map((x, i) => i === idx ? {
+                            ...x, slots: (x.slots || []).map((sl, j) => j === si ? { ...sl, title: e.target.value } : sl),
+                          } : x))} />
+                        <button type="button" onClick={() => setCustomSpeakers((s) => s.map((x, i) => i === idx ? {
+                          ...x, slots: (x.slots || []).filter((_, j) => j !== si),
+                        } : x))} className="text-xs px-2" style={{ color: 'var(--color-warm)' }}>×</button>
+                      </div>
+                    ))}
+                    <button type="button" onClick={() => setCustomSpeakers((s) => s.map((x, i) => i === idx ? {
+                      ...x, slots: [...(x.slots || []), { day: 1, time: '', title: '' }],
+                    } : x))}
+                      className="text-xs px-2 py-1 rounded" style={{ color: 'var(--color-accent)' }}>+ Add slot</button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
 
           {/* Swarm vs Basic */}

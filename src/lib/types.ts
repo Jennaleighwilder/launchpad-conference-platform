@@ -59,6 +59,23 @@ export interface PricingData {
   currency: string;
 }
 
+/** Speaker slot for custom speaker input during event creation */
+export interface SpeakerSlotInput {
+  day: number;
+  time: string;
+  title: string;
+}
+
+/** Custom speaker input during event creation */
+export interface SpeakerInput {
+  name: string;
+  role: string;
+  bio?: string;
+  photo_url?: string;
+  url?: string;
+  slots?: SpeakerSlotInput[];
+}
+
 export interface CreateEventInput {
   topic: string;
   city: string;
@@ -75,4 +92,6 @@ export interface CreateEventInput {
   venue_name?: string;
   /** Optional: override AI-generated venue address */
   venue_address?: string;
+  /** Optional: custom speakers with bios, photos, links, and speaking slots */
+  speakers?: SpeakerInput[];
 }
