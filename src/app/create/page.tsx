@@ -174,7 +174,7 @@ export default function CreatePage() {
   // ── SWARM LOADING ────────────────────────────────────────────────
   if (loading && useSwarm) {
     return (
-      <RequireAuth>
+      <RequireAuth optional>
       <main className="min-h-screen flex items-center justify-center transition-opacity duration-300" style={{ background: 'var(--color-bg)' }}>
         <div className="text-center max-w-md mx-auto px-6 animate-[fadeUp_0.4s_ease-out]">
           <div className="mb-8">
@@ -229,7 +229,7 @@ export default function CreatePage() {
   // ── STANDARD LOADING ─────────────────────────────────────────────
   if (loading) {
     return (
-      <RequireAuth>
+      <RequireAuth optional>
       <main className="min-h-screen flex items-center justify-center transition-opacity duration-300" style={{ background: 'var(--color-bg)' }}>
         <div className="text-center animate-[fadeUp_0.4s_ease-out]">
           <div className="mb-8">
@@ -270,7 +270,7 @@ export default function CreatePage() {
 
   // ── FORM ─────────────────────────────────────────────────────────
   return (
-    <RequireAuth>
+    <RequireAuth optional>
     <main className="min-h-screen" style={{ background: 'var(--color-bg)' }}>
       <nav className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
