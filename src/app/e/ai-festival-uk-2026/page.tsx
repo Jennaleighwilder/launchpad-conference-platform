@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getSpeakerPhoto } from '@/lib/speaker-photos';
-import { getUniqueHeroVideoForEvent } from '@/lib/hero-videos';
 import {
   WaveDivider,
   LiveRegistrationCounter,
@@ -14,7 +13,14 @@ import { PromoteModal } from '@/components/PromoteModal';
 import { DemoCustomizeModal } from '@/components/DemoCustomizeModal';
 
 const accentColor = '#00F5D4';
-const HERO_VIDEO = getUniqueHeroVideoForEvent('AI Festival', 'Bury St Edmunds', 'ai-festival-uk-2026');
+
+const HERO_VIDEOS = [
+  '/videos/grok-video-ef05866b-8ea6-4232-89c5-43471886553c.mp4',
+  '/videos/grok-video-1490b874-5345-4a60-9908-38306f3bc978.mp4',
+  '/videos/grok-video-a95690a9-ce22-4e35-bb6c-ee0d8da102d3.mp4',
+  '/videos/grok-video-0c58f695-4961-4e11-a5d5-5665647e51d5.mp4',
+  '/videos/grok-video-614807b9-410c-4e2a-8dd1-7d9a676b7868.mp4',
+];
 const TRACK_COLORS = ['#22C55E', '#3B82F6', '#8B5CF6', '#EF4444', '#F59E0B', '#EC4899', '#06B6D4', '#84CC16', '#F97316'];
 
 const TRACKS = [
@@ -160,7 +166,12 @@ export default function AIFestivalUK2026Page() {
   const [localTab, setLocalTab] = useState<LocalTab>('hotels');
   const [showPromo, setShowPromo] = useState(false);
   const [showCustomize, setShowCustomize] = useState(false);
+  const [videoIndex, setVideoIndex] = useState(0);
   const scheduleFiltered = SCHEDULE.filter((s) => s.day === scheduleDay);
+
+  const handleVideoEnded = () => {
+    setVideoIndex((i) => (i + 1) % HERO_VIDEOS.length);
+  };
 
   useEffect(() => {
     const schema = {
@@ -209,16 +220,17 @@ export default function AIFestivalUK2026Page() {
         </div>
       </nav>
 
-      {/* World Fair 2090 — immersive hero with video */}
+      {/* World Fair 2090 — immersive hero with rotating video loop (5 clips cycle) */}
       <section className="relative px-6 pt-36 pb-28 min-h-[85vh] flex flex-col justify-center overflow-hidden isolate">
         <div className="absolute inset-0 z-0">
           <video
-            src={HERO_VIDEO}
+            key={videoIndex}
+            src={HERO_VIDEOS[videoIndex]}
             autoPlay
             muted
-            loop
             playsInline
             preload="auto"
+            onEnded={handleVideoEnded}
             className="absolute inset-0 w-full h-full object-cover"
             poster="/images/hero-ai-festival-space.png"
           />
