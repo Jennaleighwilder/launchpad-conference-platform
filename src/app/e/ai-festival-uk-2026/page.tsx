@@ -199,14 +199,15 @@ export default function AIFestivalUK2026Page() {
           <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem' }}>Launchpad</span>
         </Link>
         <div className="flex items-center gap-6">
-          <Link href="/" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Home</Link>
-          <a href="#local-guide" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden sm:block" style={{ color: 'var(--color-text-muted)' }}>Hotels</a>
-          <a href="#local-guide" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden sm:block" style={{ color: 'var(--color-text-muted)' }}>Dining</a>
-          <Link href="/create" className="btn-primary" style={{ padding: '0.5rem 1.5rem', fontSize: '0.875rem' }}>Create Event →</Link>
+          <a href="#speakers" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden sm:block" style={{ color: 'var(--color-text-muted)' }}>Speakers</a>
+          <a href="#programme" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden sm:block" style={{ color: 'var(--color-text-muted)' }}>Programme</a>
+          <a href="#tickets" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden sm:block" style={{ color: 'var(--color-text-muted)' }}>Tickets</a>
+          <a href="#local-guide" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden sm:block" style={{ color: 'var(--color-text-muted)' }}>Local Guide</a>
+          <Link href="/checkout/ai-festival-uk-2026?tier=full&price=%C2%A389" className="text-sm font-medium px-4 py-2 rounded-lg" style={{ background: accentColor, color: '#0A0A0A' }}>Get Tickets</Link>
         </div>
       </nav>
 
-      <section className="relative px-6 pt-32 pb-24 min-h-[70vh] flex flex-col justify-end overflow-hidden isolate">
+      <section className="relative px-6 pt-36 pb-28 min-h-[85vh] flex flex-col justify-center overflow-hidden isolate">
         <div className="absolute inset-0 z-0">
           <video
             src="/videos/hero-ai-festival-space.mp4"
@@ -218,39 +219,41 @@ export default function AIFestivalUK2026Page() {
             poster="/images/hero-ai-festival-space.png"
           />
         </div>
-        <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)' }} />
-        <div className="absolute inset-0 z-[1] opacity-20 pointer-events-none" style={{ background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}30 0%, transparent 70%)` }} />
-        <div className="relative z-10 max-w-5xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6" style={{ background: `${accentColor}15`, border: `1px solid ${accentColor}40` }}>
-            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: accentColor, boxShadow: `0 0 8px ${accentColor}` }} />
-            <span style={{ color: accentColor, fontSize: '0.75rem', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>30% Early Bird</span>
+        <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.25) 30%, rgba(0,0,0,0.7) 70%, rgba(4,4,14,0.98) 100%)' }} />
+        <div className="absolute inset-0 z-[1] opacity-15 pointer-events-none" style={{ background: `radial-gradient(ellipse 60% 40% at 50% 40%, ${accentColor}25 0%, transparent 60%)` }} />
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
+          <p className="text-xs uppercase tracking-[0.2em] mb-6" style={{ color: 'rgba(255,255,255,0.7)', letterSpacing: '0.2em' }}>West Suffolk College · Bury St Edmunds</p>
+          <h1 className="mb-6 text-white" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', lineHeight: 1.05, fontWeight: 400, letterSpacing: '-0.02em', textShadow: '0 2px 30px rgba(0,0,0,0.5)' }}>AI Festival UK 2026</h1>
+          <p className="max-w-2xl mx-auto mb-10 text-lg md:text-xl" style={{ color: 'rgba(255,255,255,0.9)', lineHeight: 1.6 }}>
+            The UK&apos;s premier AI festival. Two days of keynotes, PitchFest, and 10 tracks — from Quantum & Cyber to Healthcare, XR, and AgriTech — at West Suffolk College&apos;s £2M XR Lab.
+          </p>
+          <div className="flex flex-wrap justify-center gap-8 mb-10" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.9375rem' }}>
+            <span>27–28 May 2026</span>
+            <span style={{ color: 'rgba(255,255,255,0.5)' }}>·</span>
+            <span>West Suffolk College STEM Centre</span>
+            <span style={{ color: 'rgba(255,255,255,0.5)' }}>·</span>
+            <span><LiveRegistrationCounter count={1247} max={2000} accentColor={accentColor} /> registered</span>
           </div>
-          <h1 className="mb-4 text-white" style={{ fontFamily: 'var(--font-tech)', fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.1, textShadow: '0 2px 20px rgba(0,0,0,0.6), 0 4px 40px rgba(0,0,0,0.3)' }}>AI Festival UK 2026</h1>
-          <p className="mb-6" style={{ color: accentColor, fontSize: '1.25rem', fontFamily: 'var(--font-mono)', textShadow: '0 1px 10px rgba(0,0,0,0.5)' }}>10 tracks · 2 days · Bury St Edmunds</p>
-          <div className="flex flex-wrap gap-6 mb-6" style={{ color: 'rgba(255,255,255,0.95)', fontSize: '1rem', textShadow: '0 1px 10px rgba(0,0,0,0.5)' }}>
-            <div className="flex items-center gap-2"><span>📍</span><span>STEM Centre, 73 Western Way, Bury St Edmunds</span></div>
-            <div className="flex items-center gap-2"><span>📅</span><span>May 27–28, 2026</span></div>
-            <div className="flex items-center gap-2"><span>👥</span><span><LiveRegistrationCounter count={1247} max={2000} accentColor={accentColor} /> registered</span></div>
-          </div>
-          <div className="mb-8">
-            <p className="text-xs uppercase tracking-wider mb-2" style={{ color: 'rgba(255,255,255,0.9)', textShadow: '0 1px 10px rgba(0,0,0,0.5)' }}>Festival starts in</p>
+          <div className="mb-10">
             <CountdownTimer endDate="2026-05-27T09:00:00" accentColor={accentColor} />
           </div>
-          <p className="max-w-3xl mb-8" style={{ color: 'rgba(255,255,255,0.95)', fontSize: '1.125rem', lineHeight: 1.7, textShadow: '0 1px 10px rgba(0,0,0,0.5)' }}>
-            The UK&apos;s premier AI festival. Two days at West Suffolk College&apos;s STEM Centre (£2M XR Lab). Energy, Quantum, Robotics, Cyber, Healthcare, Creative, XR, Agriculture, and PitchFest.
-          </p>
-          <div className="flex flex-wrap gap-2 mb-6">
-            {TRACKS.map((track, i) => (
-              <span key={track} className="px-3 py-1.5 rounded-full text-sm font-medium" style={{ background: `${TRACK_COLORS[i % TRACK_COLORS.length]}20`, border: `1px solid ${TRACK_COLORS[i % TRACK_COLORS.length]}50`, color: TRACK_COLORS[i % TRACK_COLORS.length] }}>{track}</span>
-            ))}
+          <div className="flex flex-wrap justify-center gap-3">
+            <Link href="/checkout/ai-festival-uk-2026?tier=full&price=%C2%A389" className="px-8 py-4 text-base font-medium rounded-lg transition-all hover:opacity-95" style={{ background: accentColor, color: '#0A0A0A' }}>Get Tickets — £89</Link>
+            <button onClick={() => setShowPromo(true)} className="px-6 py-4 text-sm font-medium rounded-lg transition-colors" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}>Promote</button>
+            <button onClick={() => setShowCustomize(true)} className="px-6 py-4 text-sm font-medium rounded-lg transition-colors" style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.9)' }}>Customize</button>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <button onClick={() => setShowPromo(true)} className="px-4 py-2 text-sm font-medium rounded-lg inline-flex items-center gap-2 transition-colors" style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.2)', color: '#FBBF24' }}>
-              📣 Promote This Event
-            </button>
-            <button onClick={() => setShowCustomize(true)} className="px-4 py-2 text-sm font-medium rounded-lg inline-flex items-center gap-2 transition-colors" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: 'var(--color-text)' }}>
-              ✏️ Customize Event
-            </button>
+          <p className="mt-6 text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>30% early bird · Full festival from £89</p>
+        </div>
+      </section>
+
+      {/* Tracks — moved out of hero for cleaner layout */}
+      <section className="px-6 py-12" style={{ background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="max-w-5xl mx-auto">
+          <p className="text-center text-xs uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>10 tracks</p>
+          <div className="flex flex-wrap justify-center gap-2">
+            {TRACKS.map((track, i) => (
+              <span key={track} className="px-3 py-1.5 rounded-full text-sm" style={{ background: `${TRACK_COLORS[i % TRACK_COLORS.length]}12`, border: `1px solid ${TRACK_COLORS[i % TRACK_COLORS.length]}30`, color: TRACK_COLORS[i % TRACK_COLORS.length] }}>{track}</span>
+            ))}
           </div>
         </div>
       </section>
@@ -277,34 +280,32 @@ export default function AIFestivalUK2026Page() {
 
       <WaveDivider colors={[accentColor]} />
 
-      <section className="px-6 py-20" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="max-w-5xl mx-auto">
+      <section id="speakers" className="px-6 py-24" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="max-w-6xl mx-auto">
           <ScrollReveal>
-          <div className="flex items-center gap-3 mb-10">
-            <div className="w-1.5 h-6 rounded-full" style={{ background: accentColor }} />
-            <span className="text-[10px] uppercase tracking-[0.15em]" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>Speakers</span>
-            <h2 className="text-base font-medium uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>10 experts across 9 tracks</h2>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-normal mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Speakers</h2>
+            <p className="text-base max-w-xl mx-auto" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>Industry leaders from BT, AWS, NHS, BBC R&D, Barclays Eagle Labs, and more</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
             {SPEAKERS.map((speaker) => {
               const trackColor = TRACK_COLORS[TRACKS.indexOf(speaker.track) % TRACK_COLORS.length] || accentColor;
               const expanded = expandedSpeaker === speaker.id;
               return (
-                <div key={speaker.id} className="rounded-xl p-5 group transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <div className="relative w-full aspect-square rounded-lg mb-4 overflow-hidden">
-                    <Image src={speaker.img} alt={speaker.name} fill className="object-cover transition-transform duration-300 group-hover:scale-110" sizes="20vw" unoptimized />
+                <div key={speaker.id} className="group" style={{ background: 'transparent' }}>
+                  <div className="relative w-full aspect-[4/5] rounded-xl mb-5 overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
+                    <Image src={speaker.img} alt={speaker.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" unoptimized />
+                    <div className="absolute bottom-0 left-0 right-0 p-4 pt-16" style={{ background: 'linear-gradient(transparent, rgba(0,0,0,0.85))' }}>
+                      <span className="text-xs px-2 py-0.5 rounded" style={{ background: `${trackColor}30`, color: trackColor }}>{speaker.track}</span>
+                    </div>
                   </div>
-                  <h3 className="font-semibold mb-1 text-base">{speaker.name}</h3>
+                  <h3 className="font-semibold mb-1 text-lg" style={{ fontFamily: 'var(--font-display)' }}>{speaker.name}</h3>
                   <p className="text-sm mb-2" style={{ color: 'var(--color-text-muted)', lineHeight: 1.4 }}>{speaker.role}</p>
-                  <p className="text-sm font-medium mb-2" style={{ color: accentColor, lineHeight: 1.4 }}>{speaker.talk}</p>
-                  <span className="text-xs px-2 py-1 rounded-md" style={{ background: `${trackColor}15`, color: trackColor }}>{speaker.track}</span>
-                  <button onClick={() => setExpandedSpeaker(expanded ? null : speaker.id)} className="mt-3 text-xs block hover:underline" style={{ color: accentColor }}>{expanded ? '− Less' : '+ Bio'}</button>
+                  <p className="text-sm font-medium mb-3" style={{ color: accentColor, lineHeight: 1.4 }}>{speaker.talk}</p>
+                  <button onClick={() => setExpandedSpeaker(expanded ? null : speaker.id)} className="text-sm hover:underline" style={{ color: accentColor }}>{expanded ? '− Less' : '+ Bio'}</button>
                   {expanded && (
-                    <div className="mt-3 pt-3 flex gap-3 items-start" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                      <div className="relative w-14 h-14 rounded-full overflow-hidden shrink-0">
-                        <Image src={speaker.img} alt={speaker.name} fill className="object-cover" unoptimized />
-                      </div>
-                      <p className="text-xs flex-1" style={{ color: 'var(--color-text-muted)', lineHeight: 1.5 }}>{speaker.bio}</p>
+                    <div className="mt-4 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                      <p className="text-sm" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>{speaker.bio}</p>
                     </div>
                   )}
                 </div>
@@ -317,14 +318,14 @@ export default function AIFestivalUK2026Page() {
 
       <WaveDivider colors={[accentColor]} />
 
-      <section className="px-6 py-20">
-        <div className="max-w-5xl mx-auto">
+      <section className="px-6 py-24">
+        <div className="max-w-6xl mx-auto">
           <ScrollReveal>
-          <div className="flex items-center justify-between mb-10">
-            <div className="flex items-center gap-3">
-              <div className="w-1.5 h-6 rounded-full" style={{ background: accentColor }} />
-              <h2 className="text-base font-medium uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Schedule</h2>
-            </div>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-normal mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Programme</h2>
+            <p className="text-base max-w-xl mx-auto" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>Two days of keynotes, panels, PitchFest, and XR Lab demos</p>
+          </div>
+          <div className="flex justify-center mb-12">
             <div className="flex gap-2">
               {(['Day 1', 'Day 2'] as const).map((d) => (
                 <button key={d} onClick={() => setScheduleDay(d)} className="px-4 py-2 rounded-lg text-sm font-medium transition-colors" style={{ background: scheduleDay === d ? accentColor : 'rgba(255,255,255,0.05)', color: scheduleDay === d ? 'var(--color-bg)' : 'var(--color-text-muted)', border: scheduleDay === d ? 'none' : '1px solid rgba(255,255,255,0.08)' }}>{d}</button>
@@ -364,15 +365,18 @@ export default function AIFestivalUK2026Page() {
 
       <WaveDivider colors={[accentColor]} />
 
-      <section className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="max-w-5xl mx-auto">
+      <section className="px-6 py-24" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="max-w-6xl mx-auto">
           <ScrollReveal>
-          <h2 className="text-base font-medium uppercase tracking-wider mb-8" style={{ color: 'var(--color-text-muted)' }}>Sponsors</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-normal mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Partners & Sponsors</h2>
+            <p className="text-base max-w-xl mx-auto" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>Supported by leading organisations across tech, academia, and innovation</p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-6">
             {SPONSORS.map((s) => (
-              <div key={s.name} className="px-4 py-3 rounded-lg text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <span className="font-medium text-sm block">{s.name}</span>
-                <span className="text-[10px] uppercase tracking-wider" style={{ color: accentColor }}>{s.tier}</span>
+              <div key={s.name} className="px-5 py-4 rounded-xl text-center flex flex-col justify-center min-h-[80px]" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <span className="font-medium text-sm block" style={{ color: 'var(--color-text)' }}>{s.name}</span>
+                <span className="text-[10px] uppercase tracking-wider mt-1" style={{ color: 'var(--color-text-muted)' }}>{s.tier}</span>
               </div>
             ))}
           </div>
@@ -382,11 +386,14 @@ export default function AIFestivalUK2026Page() {
 
       <WaveDivider colors={[accentColor]} />
 
-      <section className="px-6 py-20">
-        <div className="max-w-5xl mx-auto">
+      <section className="px-6 py-24" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="max-w-6xl mx-auto">
           <ScrollReveal>
-          <h2 className="text-base font-medium uppercase tracking-wider mb-6" style={{ color: 'var(--color-text-muted)' }}>Venue</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-normal mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Venue</h2>
+            <p className="text-base max-w-xl mx-auto" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>West Suffolk College STEM Centre — £2M XR Lab, immersive tech, and spatial computing</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {VENUE_GALLERY.map((img, i) => (
               <div key={i} className="rounded-lg overflow-hidden relative aspect-[4/3]" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
                 <Image src={img} alt={`${VENUE.name} ${i + 1}`} fill className="object-cover" sizes="(max-width: 768px) 50vw, 25vw" unoptimized />
@@ -419,11 +426,13 @@ export default function AIFestivalUK2026Page() {
 
       <WaveDivider colors={[accentColor]} />
 
-      <section id="local-guide" className="px-6 py-16" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="max-w-5xl mx-auto">
+      <section id="local-guide" className="px-6 py-24" style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="max-w-6xl mx-auto">
           <ScrollReveal>
-          <h2 className="text-sm font-medium uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-muted)' }}>Beyond the Festival</h2>
-          <p className="text-base mb-6" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>Hotels · Dining · Coffee · Explore — real local picks near West Suffolk College in Bury St Edmunds.</p>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-normal mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Beyond the Festival</h2>
+            <p className="text-base max-w-xl mx-auto" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>Hotels, dining, coffee, and things to do near West Suffolk College in Bury St Edmunds</p>
+          </div>
           <div className="flex flex-wrap gap-2 mb-8">
             {(['hotels', 'dining', 'coffee', 'explore'] as const).map((tab) => (
               <button key={tab} onClick={() => setLocalTab(tab)} className="px-4 py-2 rounded-lg text-sm font-medium capitalize transition-colors" style={{ background: localTab === tab ? accentColor : 'rgba(255,255,255,0.05)', color: localTab === tab ? 'var(--color-bg)' : 'var(--color-text-muted)', border: localTab === tab ? 'none' : '1px solid rgba(255,255,255,0.08)' }}>{tab}</button>
@@ -485,10 +494,13 @@ export default function AIFestivalUK2026Page() {
 
       <WaveDivider colors={[accentColor]} />
 
-      <section className="px-6 py-16">
-        <div className="max-w-5xl mx-auto">
+      <section id="tickets" className="px-6 py-24">
+        <div className="max-w-6xl mx-auto">
           <ScrollReveal>
-          <h2 className="text-sm font-medium uppercase tracking-wider mb-8" style={{ color: 'var(--color-text-muted)' }}>Tickets</h2>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-normal mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Tickets</h2>
+            <p className="text-base max-w-xl mx-auto" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>Early bird pricing — full festival access from £89</p>
+          </div>
           <div className="grid md:grid-cols-3 gap-6">
             {[
               { tier: 'day1' as const, label: 'Day 1', price: '£49', desc: 'May 27 · All tracks' },
@@ -507,11 +519,11 @@ export default function AIFestivalUK2026Page() {
         </div>
       </section>
 
-      <section className="px-6 py-16" style={{ background: `linear-gradient(135deg, ${accentColor}15 0%, ${accentColor}08 50%, transparent 100%)`, borderTop: `1px solid ${accentColor}30`, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Join 1,200+ innovators at AI Festival UK 2026</h2>
-          <p className="mb-6 mx-auto max-w-[480px]" style={{ color: 'var(--color-text-muted)' }}>Two days of AI, quantum, robotics, cyber, healthcare, and PitchFest. Early bird pricing ends soon.</p>
-          <Link href="/checkout/ai-festival-uk-2026?tier=full&price=%C2%A389" className="btn-primary inline-flex items-center gap-2 px-8 py-4 text-base">Get Tickets →</Link>
+      <section className="px-6 py-24" style={{ background: `linear-gradient(135deg, ${accentColor}12 0%, ${accentColor}06 50%, transparent 100%)`, borderTop: `1px solid ${accentColor}25`, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-normal mb-6" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)', lineHeight: 1.2 }}>Join 1,200+ innovators at AI Festival UK 2026</h2>
+          <p className="mb-8 text-lg" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>Two days of AI, quantum, robotics, cyber, healthcare, and PitchFest. Early bird pricing ends soon.</p>
+          <Link href="/checkout/ai-festival-uk-2026?tier=full&price=%C2%A389" className="inline-block px-10 py-4 text-base font-medium rounded-lg transition-opacity hover:opacity-95" style={{ background: accentColor, color: '#0A0A0A' }}>Get Tickets — £89</Link>
         </div>
       </section>
 
