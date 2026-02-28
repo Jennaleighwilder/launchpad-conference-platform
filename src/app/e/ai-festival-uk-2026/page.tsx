@@ -8,7 +8,6 @@ import {
   WaveDivider,
   LiveRegistrationCounter,
   CountdownTimer,
-  ScanlineOverlay,
 } from '@/components/demo-event/DemoEventLayout';
 import { PromoteModal } from '@/components/PromoteModal';
 import { DemoCustomizeModal } from '@/components/DemoCustomizeModal';
@@ -194,7 +193,6 @@ export default function AIFestivalUK2026Page() {
 
   return (
     <main className="min-h-screen relative" style={{ background: 'transparent' }}>
-      <ScanlineOverlay color="34,197,94" />
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4" style={{ background: 'rgba(10,10,10,0.9)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <Link href="/" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold" style={{ background: accentColor, color: 'var(--color-bg)' }}>L</div>
@@ -210,7 +208,15 @@ export default function AIFestivalUK2026Page() {
 
       <section className="relative px-6 pt-32 pb-24 min-h-[70vh] flex flex-col justify-end overflow-hidden isolate">
         <div className="absolute inset-0 z-0">
-          <Image src="/images/hero-ai-festival-space.png" alt="" fill className="object-cover" priority sizes="100vw" unoptimized />
+          <video
+            src="/videos/hero-ai-festival-space.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            poster="/images/hero-ai-festival-space.png"
+          />
         </div>
         <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)' }} />
         <div className="absolute inset-0 z-[1] opacity-20 pointer-events-none" style={{ background: `radial-gradient(ellipse 80% 50% at 50% 50%, ${accentColor}30 0%, transparent 70%)` }} />

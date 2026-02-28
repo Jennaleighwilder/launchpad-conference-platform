@@ -25,11 +25,24 @@ function formatDate(dateStr: string): string {
   }
 }
 
+const cardStyle = {
+  background: 'rgba(255,255,255,0.03)',
+  border: '1px solid rgba(255,255,255,0.08)',
+  borderRadius: 16,
+};
+
 export default function DashboardPage() {
   const { session, user, signOut } = useAuth();
   const [events, setEvents] = useState<EventSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [stripeStatus, setStripeStatus] = useState<{
+    connected?: boolean;
+    charges_enabled?: boolean;
+    payouts_enabled?: boolean;
+    accountId?: string;
+  } | null>(null);
+  const [stripeLoading, setStripeLoading] = useState(false);
 
   useEffect(() => {
     async function fetchEvents() {
@@ -107,6 +120,61 @@ export default function DashboardPage() {
             {error}
           </div>
         )}
+
+        {/* Stripe Connect Section */}
+        <div style={{ ...cardStyle, padding: '1.5rem', marginBottom: '1.5rem' }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem' }}>💳 Payment Collection</h3>
+
+          {!stripeStatus?.connected ? (
+            <div>
+              <p style={{ fontSize: '0.8rem', color: '#888', marginBottom: '1rem' }}>
+                Connect your Stripe account to collect ticket payments directly. Launchpad takes a 5% platform fee.
+              </p>
+              <button
+                type="button"
+                onClick={async () => {
+                  setStripeLoading(true);
+                  const res = await fetch('/api/stripe/connect', {
+                    method: 'POST',
+                    headers: { Authorization: `Bearer ${session?.access_token}` },
+                  });
+                  const data = await res.json();
+                  if (data.onboardingUrl) {
+                    window.location.href = data.onboardingUrl;
+                  }
+                  setStripeLoading(false);
+                }}
+                disabled={stripeLoading}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: 10,
+                  background: '#4FFFDF',
+                  color: '#050505',
+                  fontWeight: 700,
+                  fontSize: '0.85rem',
+                  border: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                {stripeLoading ? 'Setting up...' : 'Connect Stripe Account →'}
+              </button>
+            </div>
+          ) : (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: '0.5rem' }}>
+                <span style={{ color: '#4FFFDF', fontSize: '1.2rem' }}>✓</span>
+                <span style={{ fontWeight: 600, color: '#fff' }}>Stripe Connected</span>
+              </div>
+              <div style={{ fontSize: '0.75rem', color: '#888' }}>
+                <p>Charges: {stripeStatus.charges_enabled ? '✅ Enabled' : '⏳ Pending'}</p>
+                <p>Payouts: {stripeStatus.payouts_enabled ? '✅ Enabled' : '⏳ Pending'}</p>
+              </div>
+              <p style={{ fontSize: '0.7rem', color: '#666', marginTop: '0.5rem' }}>
+                Ticket revenue goes directly to your bank account. Launchpad retains a 5% platform fee.
+              </p>
+            </div>
+          )}
+        </div>
 
         {!loading && !error && events.length === 0 && (
           <div className="card text-center py-16">
