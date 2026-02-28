@@ -7,18 +7,19 @@ import { supabaseAuth } from '@/lib/auth';
 
 const BETA_TESTER_MODE = process.env.NEXT_PUBLIC_BETA_TESTER_MODE === 'true';
 
-/** Redirects to /login if auth is configured but user is not logged in (unless beta tester mode) */
-export function RequireAuth({ children }: { children: React.ReactNode }) {
+/** Redirects to /login if auth is configured but user is not logged in (unless beta tester mode or optional) */
+export function RequireAuth({ children, optional }: { children: React.ReactNode; optional?: boolean }) {
   const { user, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (loading) return;
     if (BETA_TESTER_MODE) return;
+    if (optional) return;
     if (supabaseAuth && !user) {
       router.replace('/login');
     }
-  }, [user, loading, router]);
+  }, [user, loading, router, optional]);
 
   if (loading) {
     return (
@@ -28,7 +29,7 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!BETA_TESTER_MODE && supabaseAuth && !user) {
+  if (!BETA_TESTER_MODE && !optional && supabaseAuth && !user) {
     return null;
   }
 
