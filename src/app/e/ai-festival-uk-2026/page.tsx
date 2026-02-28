@@ -384,46 +384,40 @@ export default function AIFestivalUK2026Page() {
 
       <WaveDivider colors={[accentColor]} />
 
-      <section className="px-6 py-24">
-        <div className="max-w-6xl mx-auto">
+      {/* Programme — clear schedule layout: big time, bold title, simple rows */}
+      <section id="programme" className="px-6 py-24" style={{ background: 'rgba(0,0,0,0.25)' }}>
+        <div className="max-w-3xl mx-auto">
           <ScrollReveal>
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-normal mb-4" style={{ fontFamily: 'Orbitron, sans-serif', color: 'var(--color-text)', textShadow: `0 0 30px ${accentColor}20` }}>Programme</h2>
-            <p className="text-base max-w-xl mx-auto" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>Two days of keynotes, panels, PitchFest, and XR Lab demos</p>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-normal mb-4" style={{ fontFamily: 'Orbitron, sans-serif', color: '#fff', textShadow: `0 0 30px ${accentColor}20` }}>Programme</h2>
+            <p className="text-base" style={{ color: 'rgba(255,255,255,0.7)' }}>Two days of keynotes, panels, PitchFest, and XR Lab demos</p>
           </div>
-          <div className="flex justify-center mb-12">
-            <div className="flex gap-2">
-              {(['Day 1', 'Day 2'] as const).map((d) => (
-                <button key={d} onClick={() => setScheduleDay(d)} className="px-4 py-2 rounded-lg text-sm font-medium transition-colors" style={{ background: scheduleDay === d ? accentColor : 'rgba(255,255,255,0.05)', color: scheduleDay === d ? 'var(--color-bg)' : 'var(--color-text-muted)', border: scheduleDay === d ? 'none' : '1px solid rgba(255,255,255,0.08)' }}>{d}</button>
-              ))}
-            </div>
+          <div className="flex justify-center gap-2 mb-10">
+            {(['Day 1', 'Day 2'] as const).map((d) => (
+              <button key={d} onClick={() => setScheduleDay(d)} className="px-6 py-2.5 rounded-lg text-sm font-semibold transition-all" style={{ background: scheduleDay === d ? accentColor : 'transparent', color: scheduleDay === d ? '#0A0A0A' : 'rgba(255,255,255,0.8)', border: `2px solid ${scheduleDay === d ? accentColor : 'rgba(255,255,255,0.2)'}` }}>{d}</button>
+            ))}
           </div>
-          <div className="relative">
-            <div className="absolute left-4 top-0 bottom-0 w-px" style={{ background: 'rgba(255,255,255,0.1)' }} />
-            <div className="space-y-0">
-              {scheduleFiltered.map((item, i) => {
-                const trackIdx = TRACKS.indexOf(item.track);
-                const barColor = trackIdx >= 0 ? TRACK_COLORS[trackIdx % TRACK_COLORS.length] : accentColor;
-                return (
-                  <div key={i} className="relative flex items-start gap-6 py-5 pl-12">
-                    <div className="absolute left-0 w-20 text-right">
-                      <span className="text-sm font-medium" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>{item.time}</span>
-                    </div>
-                    <div className="flex-1 min-w-0 py-5 flex gap-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(8px)', border: '1px solid rgba(0,245,212,0.1)' }}>
-                      <div className="w-1 shrink-0 rounded-full self-stretch" style={{ background: item.track === 'All' ? 'rgba(255,255,255,0.2)' : barColor }} />
-                      <div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-medium text-base">{item.title}</span>
-                          {item.keynote && <span className="text-xs px-2 py-0.5 rounded" style={{ background: `${accentColor}20`, color: accentColor }}>Keynote</span>}
-                        </div>
-                        <div className="text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>{item.speaker}</div>
-                        {item.track !== 'All' && <span className="inline-block mt-2 text-xs px-2 py-0.5 rounded" style={{ background: `${barColor}20`, color: barColor }}>{item.track}</span>}
-                      </div>
-                    </div>
+          <div className="space-y-0" style={{ border: `1px solid rgba(255,255,255,0.08)`, borderRadius: 12, overflow: 'hidden' }}>
+            {scheduleFiltered.map((item, i) => {
+              const trackIdx = TRACKS.indexOf(item.track);
+              const barColor = trackIdx >= 0 ? TRACK_COLORS[trackIdx % TRACK_COLORS.length] : accentColor;
+              const isLast = i === scheduleFiltered.length - 1;
+              return (
+                <div key={i} className="flex gap-6 sm:gap-8 py-5 px-6 sm:px-8" style={{ borderBottom: isLast ? 'none' : '1px solid rgba(255,255,255,0.06)', background: item.keynote ? 'rgba(0,245,212,0.04)' : 'transparent' }}>
+                  <div className="shrink-0 w-16 sm:w-20 text-left">
+                    <span className="block text-xl sm:text-2xl font-bold tabular-nums" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>{item.time}</span>
                   </div>
-                );
-              })}
-            </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-semibold text-base sm:text-lg" style={{ color: '#fff' }}>{item.title}</span>
+                      {item.keynote && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded" style={{ background: `${accentColor}25`, color: accentColor, fontWeight: 600 }}>Keynote</span>}
+                    </div>
+                    <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.55)' }}>{item.speaker}</p>
+                    {item.track !== 'All' && <span className="inline-block mt-2 text-[11px] px-2 py-0.5 rounded" style={{ background: `${barColor}20`, color: barColor }}>{item.track}</span>}
+                  </div>
+                </div>
+              );
+            })}
           </div>
           </ScrollReveal>
         </div>
