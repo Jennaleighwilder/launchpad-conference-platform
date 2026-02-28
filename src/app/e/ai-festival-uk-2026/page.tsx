@@ -56,6 +56,16 @@ const SPEAKERS = [
   { id: 's8', name: 'Dr. Fiona Green', role: 'AgriTech Director', img: getSpeakerPhoto(7), talk: 'AI for Sustainable Farming', track: 'Agriculture & Food', bio: 'AgriTech innovation. Precision agriculture. Net-zero food systems.' },
   { id: 's9', name: 'Rachel Kim', role: 'Partner, Tech VC', img: getSpeakerPhoto(8), talk: 'PitchFest: What Investors Look For', track: 'PitchFest', bio: 'Early-stage investor. 50+ portfolio companies. AI and deep tech focus.' },
   { id: 's10', name: 'David Okonkwo', role: 'Founder, AgriAI', img: getSpeakerPhoto(9), talk: 'From Farm to Pitch', track: 'PitchFest', bio: 'AgriAI founder. Raised £2M. Scaling AI for agriculture.' },
+  { id: 's11', name: 'Dr. Helen Zhang', role: 'VP AI Research, DeepMind', img: getSpeakerPhoto(10), talk: 'Foundation Models & Society', track: 'AI & Quantum Computing', bio: 'Leading safety and societal impact research. Stanford PhD.' },
+  { id: 's12', name: 'Oliver Knight', role: 'CTO, CyberShield', img: getSpeakerPhoto(11), talk: 'AI in Threat Detection', track: 'Cyber Security', bio: 'Real-time threat intelligence. Ex-Military cyber.' },
+  { id: 's13', name: 'Dr. Maya Johnson', role: 'Head of Robotics, Ocado', img: getSpeakerPhoto(12), talk: 'Warehouse Automation at Scale', track: 'Robotics & Automation', bio: 'Ocado\'s robotic fulfilment. 1000+ bots in production.' },
+  { id: 's14', name: 'Sophie Turner', role: 'Sustainability Lead, National Grid', img: getSpeakerPhoto(13), talk: 'AI for Grid Optimisation', track: 'Energy Environment & Infrastructure', bio: 'Smart grid AI. Net-zero transition.' },
+  { id: 's15', name: 'Dr. Raj Mehta', role: 'Chief Data Officer, NHS Digital', img: getSpeakerPhoto(14), talk: 'Healthcare Data & AI Ethics', track: 'Healthcare', bio: 'NHS data strategy. Privacy-preserving ML.' },
+  { id: 's16', name: 'Elena Vasquez', role: 'Creative AI Lead, Adobe', img: getSpeakerPhoto(15), talk: 'Generative Design Tools', track: 'Creative & Media', bio: 'Firefly and creative AI. 20+ patents.' },
+  { id: 's17', name: 'Dr. Ben Foster', role: 'XR Research, Meta', img: getSpeakerPhoto(16), talk: 'Spatial Computing & AI', track: 'XR & AI', bio: 'AR/VR research. Neural interfaces.' },
+  { id: 's18', name: 'Claire Williams', role: 'AgriTech Investor', img: getSpeakerPhoto(17), talk: 'Investing in FoodTech AI', track: 'Agriculture & Food', bio: 'AgriTech VC. 30+ portfolio companies.' },
+  { id: 's19', name: 'Marcus Lee', role: 'Founder, QuantumStart', img: getSpeakerPhoto(18), talk: 'PitchFest: Building in Quantum', track: 'PitchFest', bio: 'Quantum startup founder. Y Combinator alum.' },
+  { id: 's20', name: 'Dr. Anna Kowalski', role: 'Director, EU AI Office', img: getSpeakerPhoto(19), talk: 'AI Regulation & Innovation', track: 'AI & Quantum Computing', bio: 'EU AI Act implementation. Policy and tech bridge.' },
 ];
 
 const SCHEDULE = [
@@ -328,32 +338,40 @@ export default function AIFestivalUK2026Page() {
 
       <WaveDivider colors={[accentColor]} />
 
-      <section id="speakers" className="px-6 py-24" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(4,4,14,0.95) 100%)', borderTop: '1px solid rgba(0,245,212,0.1)' }}>
-        <div className="max-w-6xl mx-auto">
+      {/* Speakers — World Fair 2090: LED-style grid, circular headshots, glowing pods */}
+      <section id="speakers" className="px-6 py-24 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(2,4,18,0.98) 100%)', borderTop: `1px solid ${accentColor}20` }}>
+        <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] pointer-events-none opacity-20" style={{ background: `radial-gradient(ellipse at center, ${accentColor}40 0%, transparent 70%)` }} />
+        <div className="max-w-7xl mx-auto relative">
           <ScrollReveal>
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-normal mb-4" style={{ fontFamily: 'Orbitron, sans-serif', color: 'var(--color-text)', textShadow: `0 0 30px ${accentColor}20` }}>Speakers</h2>
-            <p className="text-base max-w-xl mx-auto" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>Industry leaders from BT, AWS, NHS, BBC R&D, Barclays Eagle Labs, and more</p>
+          <div className="text-center mb-14">
+            <p className="text-[10px] uppercase tracking-[0.4em] mb-3 font-mono" style={{ color: accentColor }}>20 speakers</p>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal mb-4" style={{ fontFamily: 'Orbitron, sans-serif', color: '#fff', textShadow: `0 0 40px ${accentColor}30, 0 0 80px ${accentColor}15` }}>Speakers</h2>
+            <p className="text-base max-w-2xl mx-auto" style={{ color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>Industry leaders from BT, AWS, DeepMind, NHS, BBC R&D, Barclays Eagle Labs, Meta, Adobe, and more</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8">
             {SPEAKERS.map((speaker) => {
               const trackColor = TRACK_COLORS[TRACKS.indexOf(speaker.track) % TRACK_COLORS.length] || accentColor;
               const expanded = expandedSpeaker === speaker.id;
               return (
-                <div key={speaker.id} className="group" style={{ background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(10px)', border: '1px solid rgba(0,245,212,0.15)', borderRadius: 16, padding: 20, boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
-                  <div className="relative w-full aspect-[4/5] rounded-xl mb-5 overflow-hidden" style={{ border: '1px solid rgba(0,245,212,0.2)', boxShadow: `0 0 20px ${accentColor}10` }}>
-                    <Image src={speaker.img} alt={speaker.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" unoptimized />
-                    <div className="absolute bottom-0 left-0 right-0 p-4 pt-16" style={{ background: 'linear-gradient(transparent, rgba(0,0,0,0.85))' }}>
-                      <span className="text-xs px-2 py-0.5 rounded" style={{ background: `${trackColor}30`, color: trackColor }}>{speaker.track}</span>
+                <div
+                  key={speaker.id}
+                  className="group flex flex-col items-center text-center transition-all duration-300 hover:scale-[1.03]"
+                  style={{ background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(16px)', border: '1px solid rgba(0,245,212,0.12)', borderRadius: 20, padding: '24px 16px', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}
+                >
+                  <div className="relative mb-4">
+                    <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden ring-2 ring-offset-2 ring-offset-transparent transition-all duration-300 group-hover:ring-[3px]" style={{ boxShadow: `0 0 30px ${trackColor}40, inset 0 0 20px rgba(0,0,0,0.3)`, border: `2px solid ${trackColor}50` }}>
+                      <Image src={speaker.img} alt={speaker.name} fill className="object-cover" sizes="112px" unoptimized />
                     </div>
+                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-[10px] px-2 py-0.5 rounded-full font-medium" style={{ background: `${trackColor}30`, color: trackColor, border: `1px solid ${trackColor}50` }}>{speaker.track}</span>
                   </div>
-                  <h3 className="font-semibold mb-1 text-lg" style={{ fontFamily: 'var(--font-display)' }}>{speaker.name}</h3>
-                  <p className="text-sm mb-2" style={{ color: 'var(--color-text-muted)', lineHeight: 1.4 }}>{speaker.role}</p>
-                  <p className="text-sm font-medium mb-3" style={{ color: accentColor, lineHeight: 1.4 }}>{speaker.talk}</p>
-                  <button onClick={() => setExpandedSpeaker(expanded ? null : speaker.id)} className="text-sm hover:underline" style={{ color: accentColor }}>{expanded ? '− Less' : '+ Bio'}</button>
+                  <h3 className="font-semibold mb-0.5 text-sm sm:text-base" style={{ fontFamily: 'Orbitron, sans-serif', color: '#fff' }}>{speaker.name}</h3>
+                  <p className="text-xs mb-2 line-clamp-2" style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.3 }}>{speaker.role}</p>
+                  <p className="text-xs font-medium mb-3 line-clamp-2" style={{ color: accentColor, lineHeight: 1.3 }}>{speaker.talk}</p>
+                  <button onClick={() => setExpandedSpeaker(expanded ? null : speaker.id)} className="text-xs hover:underline font-mono" style={{ color: accentColor }}>{expanded ? '− Less' : '+ Bio'}</button>
                   {expanded && (
-                    <div className="mt-4 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-                      <p className="text-sm" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>{speaker.bio}</p>
+                    <div className="mt-3 pt-3 w-full text-left" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                      <p className="text-xs" style={{ color: 'rgba(255,255,255,0.7)', lineHeight: 1.5 }}>{speaker.bio}</p>
                     </div>
                   )}
                 </div>
