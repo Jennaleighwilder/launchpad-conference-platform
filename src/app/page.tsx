@@ -275,7 +275,7 @@ export default function HomePage() {
                 <Link href="/dashboard" className="text-sm font-medium transition-colors" style={{ color: 'var(--color-accent)' }}>Try without sign-in</Link>
               )}
               <Link href="/login" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Log In</Link>
-              <Link href="/signup" className="btn-primary" style={{ padding: '0.5rem 1.5rem', fontSize: '0.875rem' }}>Get Started Free →</Link>
+              <Link href={BETA_TESTER_MODE ? '/create' : '/signup'} className="btn-primary" style={{ padding: '0.5rem 1.5rem', fontSize: '0.875rem' }}>{BETA_TESTER_MODE ? 'Try without sign-in →' : 'Get Started Free →'}</Link>
             </>
           )}
         </div>
@@ -305,7 +305,7 @@ export default function HomePage() {
             Generate. Promote. Fill seats. AI builds your event — then a street team of bots gets it in front of the right people.
           </p>
           <div className="flex justify-center gap-4 flex-wrap mb-12">
-            <Link href={user ? '/create' : '/signup'} className="btn-primary" style={{ fontSize: '1.125rem' }}>{user ? 'Generate Your Event →' : 'Get Started Free →'}</Link>
+            <Link href={user ? '/create' : (BETA_TESTER_MODE ? '/create' : '/signup')} className="btn-primary" style={{ fontSize: '1.125rem' }}>{user ? 'Generate Your Event →' : (BETA_TESTER_MODE ? 'Try without sign-in →' : 'Get Started Free →')}</Link>
             <a href="#promotion" className="px-6 py-3 rounded-lg font-semibold border transition-all hover:border-[var(--color-accent)]"
               style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'var(--color-text)' }}
               onClick={(e) => { e.preventDefault(); document.getElementById('promotion')?.scrollIntoView({ behavior: 'smooth' }); }}>See Promotion Engine →</a>
