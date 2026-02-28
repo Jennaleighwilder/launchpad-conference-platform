@@ -1,6 +1,5 @@
 import OpenAI from 'openai';
 import type { SpeakerData, ScheduleItem, VenueData, PricingData } from './types';
-import { getSpeakerPhoto } from './speaker-photos';
 
 /**
  * SWARM GENERATION
@@ -43,7 +42,17 @@ export interface SwarmStatus {
   agents: { name: string; status: 'pending' | 'running' | 'done' | 'error'; ms?: number }[];
 }
 
-const _AGENT_NAMES = ['speakers', 'venue', 'schedule', 'pricing', 'branding'] as const;
+/** Placeholder speakers for user-generated events — organizers add real speakers via Customize */
+function createPlaceholderSpeakers(count: number): SpeakerData[] {
+  return Array.from({ length: count }, (_, i) => ({
+    name: `Speaker ${i + 1}`,
+    role: 'Add your speaker',
+    initials: `S${i + 1}`,
+    bio: '',
+  }));
+}
+
+const _AGENT_NAMES = ['venue', 'schedule', 'pricing', 'branding'] as const;
 
 export async function runSwarm(input: SwarmInput): Promise<SwarmResult> {
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -63,9 +72,10 @@ export async function runSwarm(input: SwarmInput): Promise<SwarmResult> {
     }
   }
 
-  // Run all 5 agents in parallel
-  const [speakers, venue, schedule, pricing, branding] = await Promise.all([
-    timed('speakers', () => speakerAgent(openai, input), []),
+  // Run 5 agents (speakers = placeholders only; organizers add real speakers via Customize)
+  const placeholderSpeakers = createPlaceholderSpeakers(8);
+  const [speakers, venue, scheduleRaw, pricing, branding] = await Promise.all([
+    timed('speakers', () => Promise.resolve(placeholderSpeakers), placeholderSpeakers),
     timed('venue', () => venueAgent(openai, input), { name: `${input.city} Convention Center`, address: `Downtown ${input.city}` }),
     timed('schedule', () => scheduleAgent(openai, input), []),
     timed('pricing', () => pricingAgent(openai, input), { early_bird: '$199', regular: '$349', vip: '$799', currency: 'USD' }),
@@ -76,6 +86,12 @@ export async function runSwarm(input: SwarmInput): Promise<SwarmResult> {
       topic_key: 'general',
     }),
   ]);
+
+  // Map schedule speaker names to placeholders (Speaker 1, Speaker 2, ...)
+  const schedule = (scheduleRaw || []).map((item, i) => ({
+    ...item,
+    speaker: placeholderSpeakers[i % placeholderSpeakers.length]?.name ?? `Speaker ${(i % 8) + 1}`,
+  }));
 
   // Extract tracks from schedule or generate defaults
   const tracks = extractTracks(schedule) || ['Main Stage', 'Workshop', 'Panel', 'Lightning Talks'];

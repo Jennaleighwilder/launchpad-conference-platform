@@ -5,13 +5,16 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { supabaseAuth } from '@/lib/auth';
 
-/** Redirects to /login if auth is configured but user is not logged in */
+const BETA_TESTER_MODE = process.env.NEXT_PUBLIC_BETA_TESTER_MODE === 'true';
+
+/** Redirects to /login if auth is configured but user is not logged in (unless beta tester mode) */
 export function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (loading) return;
+    if (BETA_TESTER_MODE) return;
     if (supabaseAuth && !user) {
       router.replace('/login');
     }
@@ -25,7 +28,7 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (supabaseAuth && !user) {
+  if (!BETA_TESTER_MODE && supabaseAuth && !user) {
     return null;
   }
 

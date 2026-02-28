@@ -41,6 +41,8 @@ export interface SpeakerData {
   initials: string;
   bio?: string;
   photo_url?: string;
+  /** Link to speaker's website or profile */
+  url?: string;
 }
 
 export interface ScheduleItem {
