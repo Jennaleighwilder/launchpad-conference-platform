@@ -78,6 +78,7 @@ export default function CreatePage() {
     budget: 'growth',
     vibe: 'professional',
     speakers_hint: '',
+    existing_url: '',
     hero_style: 'auto',
     hero_prompt: '',
     venue_name: '',
@@ -142,6 +143,7 @@ export default function CreatePage() {
           days: form.days,
           venue_name: form.venue_name?.trim() || undefined,
           venue_address: form.venue_address?.trim() || undefined,
+          existing_url: form.existing_url?.trim() || undefined,
           speakers: customSpeakers.length > 0 ? customSpeakers : undefined,
         }),
       });
@@ -460,6 +462,22 @@ export default function CreatePage() {
             <label className="label">Preferred Speakers (optional)</label>
             <input type="text" className="input-field" placeholder="Names, companies, or types of speakers you'd like..."
               value={form.speakers_hint} onChange={(e) => update('speakers_hint', e.target.value)} />
+          </div>
+
+          <div>
+            <label className="label">Existing Event URL (optional)</label>
+            <p className="text-xs mt-1 mb-2" style={{ color: 'var(--color-text-muted)' }}>
+              Already have a website? Paste the URL and click Import — AI will scrape speakers, schedule, venue, and pricing into your new Launchpad event.
+            </p>
+            <div className="flex gap-2">
+              <input type="url" className="input-field flex-1" placeholder="https://summit.sifted.eu or your event site"
+                value={form.existing_url} onChange={(e) => update('existing_url', e.target.value)} />
+              <button type="button" onClick={() => form.existing_url && alert('🔍 URL Scraper: In production, we scrape ' + form.existing_url + ' for event name, speakers, schedule, venue, pricing — all restructured into your Launchpad event.')}
+                className="px-4 rounded-lg text-sm font-medium transition-all"
+                style={{ background: form.existing_url ? 'var(--color-accent)' : 'rgba(255,255,255,0.03)', color: form.existing_url ? 'var(--color-bg)' : 'var(--color-text-muted)', border: '1px solid rgba(255,255,255,0.06)', cursor: form.existing_url ? 'pointer' : 'default' }}>
+                🔍 Import
+              </button>
+            </div>
           </div>
 
           {/* Add your speakers — bios, photos, links, days/times */}

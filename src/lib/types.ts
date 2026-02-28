@@ -92,6 +92,8 @@ export interface CreateEventInput {
   venue_name?: string;
   /** Optional: override AI-generated venue address */
   venue_address?: string;
+  /** Optional: URL to scrape — import speakers, schedule, venue, pricing from existing event site */
+  existing_url?: string;
   /** Optional: custom speakers with bios, photos, links, and speaking slots */
   speakers?: SpeakerInput[];
 }
