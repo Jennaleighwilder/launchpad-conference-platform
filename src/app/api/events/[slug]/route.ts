@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUniqueHeroForEvent } from '@/lib/hero-images';
+import { pickSpeakers } from '@/lib/generate';
 import { createServiceClient } from '@/lib/supabase';
 
 /** Ensure event always has hero_image_url — for pre-migration events or missing hero_assets. */
@@ -169,6 +170,17 @@ function buildDemoEvents(): Record<string, Record<string, unknown>> {
   for (const [slug, topic, city] of demos) {
     base[slug].hero_image_url = getUniqueHeroForEvent(topic, city, slug);
     base[slug].hero_media_type = 'image';
+    const topicKey = topic.toLowerCase().includes('ai') ? 'ai' : topic.toLowerCase().includes('cyber') ? 'web3' : topic.toLowerCase().includes('startup') ? 'general' : topic.toLowerCase().includes('youth') ? 'general' : topic.toLowerCase().includes('keynote') ? 'general' : 'general';
+    base[slug].speakers = pickSpeakers(topicKey, 8);
+    base[slug].schedule = [
+      { time: '9:00 AM', title: `Opening Keynote: The Future of ${topic}`, speaker: (base[slug].speakers as { name: string }[])[0]?.name ?? 'TBA', track: (base[slug].tracks as string[])[0] },
+      { time: '10:30 AM', title: 'Coffee & Networking', speaker: (base[slug].speakers as { name: string }[])[1]?.name ?? 'TBA', track: (base[slug].tracks as string[])[1] },
+      { time: '11:00 AM', title: `Deep Dive: ${(base[slug].tracks as string[])[0]}`, speaker: (base[slug].speakers as { name: string }[])[2]?.name ?? 'TBA', track: (base[slug].tracks as string[])[0] },
+      { time: '12:30 PM', title: 'Lunch & Exhibition', speaker: '—', track: '' },
+      { time: '1:30 PM', title: `Panel: ${(base[slug].tracks as string[])[1]}`, speaker: (base[slug].speakers as { name: string }[])[3]?.name ?? 'TBA', track: (base[slug].tracks as string[])[1] },
+      { time: '3:00 PM', title: 'Afternoon Break', speaker: '—', track: '' },
+      { time: '4:30 PM', title: `Closing Keynote`, speaker: (base[slug].speakers as { name: string }[])[4]?.name ?? 'TBA', track: (base[slug].tracks as string[])[0] },
+    ];
   }
   return base;
 }
@@ -276,6 +288,7 @@ export async function PATCH(
     if (body.name != null) eventUpdates.name = body.name;
     if (body.tagline != null) eventUpdates.tagline = body.tagline;
     if (body.description != null) eventUpdates.description = body.description;
+    if (Array.isArray(body.speakers)) eventUpdates.speakers = body.speakers;
 
     if (Object.keys(eventUpdates).length > 0) {
       await supabase.from('events').update(eventUpdates).eq('id', param);

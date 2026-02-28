@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { signIn, signInWithGoogle } from '@/lib/auth';
 import { useAuth } from '@/components/AuthProvider';
 
+const BETA_TESTER_MODE = process.env.NEXT_PUBLIC_BETA_TESTER_MODE === 'true';
+
 export default function LoginPage() {
   const router = useRouter();
   const { user, loading } = useAuth();
@@ -97,6 +99,28 @@ export default function LoginPage() {
             </svg>
             Sign in with Google
           </button>
+
+          {BETA_TESTER_MODE && (
+            <div className="mb-4">
+              <Link
+                href="/dashboard"
+                className="block w-full text-center py-3 px-4 rounded-lg transition-all hover:opacity-90"
+                style={{
+                  background: 'rgba(79,255,223,0.1)',
+                  border: '1px solid rgba(79,255,223,0.3)',
+                  color: 'var(--color-accent)',
+                }}
+              >
+                <span className="font-medium">Try without signing in</span>
+                <span className="block text-xs mt-1 opacity-90" style={{ color: 'var(--color-text-muted)' }}>
+                  Beta tester — no Google or account required
+                </span>
+              </Link>
+              <p className="text-xs mt-2 text-center" style={{ color: 'var(--color-text-muted)' }}>
+                Create events, explore the dashboard, and test the full app. No sign-up needed.
+              </p>
+            </div>
+          )}
 
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">

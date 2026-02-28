@@ -37,10 +37,21 @@ export async function generateEvent(input: CreateEventInput): Promise<Omit<Event
   }
 }
 
+/** Placeholder speakers for user-generated events — organizers add real speakers via Customize */
+function createPlaceholderSpeakers(count: number): SpeakerData[] {
+  return Array.from({ length: count }, (_, i) => ({
+    name: `Speaker ${i + 1}`,
+    role: 'Add your speaker',
+    initials: `S${i + 1}`,
+    bio: '',
+  }));
+}
+
 function buildPrompt(input: CreateEventInput): string {
   const days = input.days === 2 || input.days === 3 ? input.days : 1;
   const speakerCount = input.enhanced ? 12 : 8;
   const scheduleSlots = days * 12;
+  const speakerRefs = Array.from({ length: speakerCount }, (_, i) => `Speaker ${i + 1}`).join(', ');
   return `Generate a complete conference for:
 - Topic: ${input.topic}
 - City: ${input.city}
@@ -49,7 +60,6 @@ function buildPrompt(input: CreateEventInput): string {
 - Capacity: ${input.capacity} attendees
 - Budget tier: ${input.budget}
 - Vibe: ${input.vibe}
-${input.speakers_hint ? `- Speaker preferences: ${input.speakers_hint}` : ''}
 
 Return JSON with:
 {
@@ -59,12 +69,9 @@ Return JSON with:
   "topic_key": "one of: ai, web3, climate, health, fintech, or general",
   "venue": { "name": "Specific venue name in ${input.city}", "address": "Full address" },
   "tracks": ["Track 1", "Track 2", "Track 3", "Track 4"],
-  "speakers": [
-    { "name": "Full Name", "role": "Title at Company", "bio": "One sentence bio" }
-  ] (generate exactly ${speakerCount} diverse speakers),
   "schedule": [
-    { "time": "Day 1 · 9:00 AM", "title": "Session Title", "speaker": "Speaker Name", "track": "Track Name" }
-  ] (generate ${scheduleSlots} time slots across ${days} day${days > 1 ? 's' : ''}, use "Day N · HH:MM AM/PM" for time when multi-day),
+    { "time": "Day 1 · 9:00 AM", "title": "Session Title", "speaker": "Speaker 1", "track": "Track Name" }
+  ] (generate ${scheduleSlots} time slots across ${days} day${days > 1 ? 's' : ''}, use "Day N · HH:MM AM/PM" for time when multi-day. For "speaker" field use only these exact names: ${speakerRefs}),
   "pricing": {
     "early_bird": "price as string with currency symbol",
     "regular": "price as string with currency symbol",
@@ -76,13 +83,8 @@ Return JSON with:
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- AI response shape varies
 function mapAIResponse(data: any, input: CreateEventInput, slug: string): Omit<EventData, 'id' | 'created_at' | 'status'> {
-  const speakers: SpeakerData[] = (data.speakers || []).map((s: Record<string, unknown>, i: number) => ({
-    name: String(s.name ?? ''),
-    role: String(s.role ?? ''),
-    initials: getInitials(String(s.name ?? '')),
-    bio: String(s.bio ?? ''),
-    photo_url: getSpeakerPhoto(i),
-  }));
+  const speakerCount = input.enhanced ? 12 : 8;
+  const speakers = createPlaceholderSpeakers(speakerCount);
 
   return {
     slug,
@@ -117,7 +119,7 @@ function fallbackGenerate(input: CreateEventInput, slug: string): Omit<EventData
   const topicKey = detectTopicKey(input.topic);
   const tracks = TRACK_DB[topicKey] || TRACK_DB.general;
   const speakerCount = input.enhanced ? 12 : 8;
-  const speakers = pickSpeakers(topicKey, speakerCount);
+  const speakers = createPlaceholderSpeakers(speakerCount);
   const venue = getVenue(input.city, input.capacity);
   const pricing = getDefaultPricing(input.budget);
   const days = input.days === 2 || input.days === 3 ? input.days : 1;
@@ -289,7 +291,8 @@ SPEAKER_DB.climate = SPEAKER_DB.general;
 SPEAKER_DB.health = SPEAKER_DB.general;
 SPEAKER_DB.fintech = SPEAKER_DB.general;
 
-function pickSpeakers(topicKey: string, count: number): SpeakerData[] {
+/** Demo events only — returns sample speakers for showcase. Exported for API. */
+export function pickSpeakers(topicKey: string, count: number): SpeakerData[] {
   const pool = [...(SPEAKER_DB[topicKey] || SPEAKER_DB.general)];
   // Fisher-Yates shuffle
   for (let i = pool.length - 1; i > 0; i--) {

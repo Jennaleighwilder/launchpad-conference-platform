@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+
+const BETA_TESTER_MODE = process.env.NEXT_PUBLIC_BETA_TESTER_MODE === 'true';
 import Image from 'next/image';
 import { IndustryStats } from '@/components/IndustryStats';
 import { useAuth } from '@/components/AuthProvider';
@@ -271,6 +273,9 @@ export default function HomePage() {
             </>
           ) : (
             <>
+              {BETA_TESTER_MODE && (
+                <Link href="/dashboard" className="text-sm font-medium transition-colors" style={{ color: 'var(--color-accent)' }}>Try without sign-in</Link>
+              )}
               <Link href="/login" className="text-sm hover:text-[var(--color-accent)] transition-colors" style={{ color: 'var(--color-text-muted)' }}>Log In</Link>
               <Link href="/signup" className="btn-primary" style={{ padding: '0.5rem 1.5rem', fontSize: '0.875rem' }}>Get Started Free →</Link>
             </>

@@ -162,6 +162,7 @@ export default function EventPage() {
   });
   const [customLang, setCustomLang] = useState('en');
   const [customTranslations, setCustomTranslations] = useState<Record<string, { name: string; tagline: string; description: string }>>({});
+  const [customSpeakers, setCustomSpeakers] = useState<SpeakerData[] | null>(null);
   const shareUrl = typeof window !== 'undefined' ? window.location.href : `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/e/${slug}`;
 
   useEffect(() => {
@@ -191,6 +192,7 @@ export default function EventPage() {
                   if (cust.accent) setCustomAccent(cust.accent);
                   if (cust.heroImages?.length) setCustomHeroImages(cust.heroImages);
                   if (cust.heroVideoUrl) setCustomHeroVideoUrl(cust.heroVideoUrl);
+                  if (cust.speakers?.length) setCustomSpeakers(cust.speakers);
                   if (cust.videoUrl) setCustomVideoUrl(cust.videoUrl);
                   if (cust.description) setCustomDescription(cust.description);
                   if (cust.sectionOrder?.length) setSectionOrder(cust.sectionOrder);
@@ -224,6 +226,7 @@ export default function EventPage() {
               if (parsed.accent) setCustomAccent(parsed.accent);
               if (parsed.heroImages?.length) setCustomHeroImages(parsed.heroImages);
               if (parsed.heroVideoUrl) setCustomHeroVideoUrl(parsed.heroVideoUrl);
+              if (parsed.speakers?.length) setCustomSpeakers(parsed.speakers);
               if (parsed.videoUrl) setCustomVideoUrl(parsed.videoUrl);
               if (parsed.description) setCustomDescription(parsed.description);
               if (parsed.sectionOrder?.length) setSectionOrder(parsed.sectionOrder);
@@ -251,7 +254,7 @@ export default function EventPage() {
       ? { name: (event.venue as VenueData).name ?? event.city ?? 'Venue', address: (event.venue as VenueData).address ?? String(event.city ?? ''), capacity_note: (event.venue as VenueData).capacity_note }
       : { name: event.city ?? 'Venue', address: String(event.city ?? ''), capacity_note: undefined }
     ) as VenueData;
-    const speakers = (event.speakers || []) as SpeakerData[];
+    const speakers = (customSpeakers ?? event.speakers ?? []) as SpeakerData[];
     const pricing = (event.pricing && typeof event.pricing === 'object' ? event.pricing : { early_bird: '$199', regular: '$349', vip: '$799', currency: 'USD' }) as PricingData;
     const schema = {
       '@context': 'https://schema.org',
@@ -289,7 +292,7 @@ export default function EventPage() {
     return () => {
       el?.remove();
     };
-  }, [event]);
+  }, [event, customSpeakers]);
 
   const handleBuyTicket = (tier: string, price: string) => {
     if (!event) return;
@@ -356,7 +359,7 @@ export default function EventPage() {
     ? { name: (event.venue as VenueData).name ?? event.city ?? 'Venue', address: (event.venue as VenueData).address ?? String(event.city ?? ''), capacity_note: (event.venue as VenueData).capacity_note }
     : { name: event.city ?? 'Venue', address: String(event.city ?? ''), capacity_note: undefined }
   ) as VenueData;
-  const speakers = (event.speakers || []) as SpeakerData[];
+  const speakers = (customSpeakers ?? event.speakers ?? []) as SpeakerData[];
   const schedule = (event.schedule || []) as ScheduleItem[];
   const pricing = (event.pricing && typeof event.pricing === 'object' ? event.pricing : { early_bird: '$199', regular: '$349', vip: '$799', currency: 'USD' }) as PricingData;
   const tracks = (event.tracks || []) as string[];
@@ -615,8 +618,19 @@ export default function EventPage() {
                         </div>
                       )}
                     </div>
-                    <h3 className="font-semibold mb-1">{speaker.name}</h3>
+                    <h3 className="font-semibold mb-1">
+                      {speaker.url ? (
+                        <a href={speaker.url} target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ color: 'inherit' }}>
+                          {speaker.name}
+                        </a>
+                      ) : (
+                        speaker.name
+                      )}
+                    </h3>
                     <p className="text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>{speaker.role}</p>
+                    {speaker.bio && (
+                      <p className="text-xs mb-2 line-clamp-2" style={{ color: 'var(--color-text-muted)', opacity: 0.9 }}>{speaker.bio}</p>
+                    )}
                     {talk && (
                       <>
                         <p className="text-sm font-medium mb-1" style={{ color: accentColor }}>{talk.title}</p>
@@ -1097,12 +1111,13 @@ export default function EventPage() {
           initialHeroVideoUrl={customHeroVideoUrl}
           initialVideoUrl={customVideoUrl}
           initialDescription={customDescription || event.description || ''}
+          initialSpeakers={customSpeakers ?? event.speakers ?? []}
           initialLang={customLang}
           initialTranslations={customTranslations}
           sectionOrder={sectionOrder}
           sectionVisible={sectionVisible}
           onClose={() => setCustomizeOpen(false)}
-          onSave={async (name, tagline, accent, heroImages, heroVidUrl, videoUrl, description, order, visible, lang, translations) => {
+          onSave={async (name, tagline, accent, heroImages, heroVidUrl, videoUrl, description, order, visible, lang, translations, speakers) => {
             setCustomName(name);
             setCustomTagline(tagline);
             setCustomAccent(accent);
@@ -1110,6 +1125,7 @@ export default function EventPage() {
             setCustomHeroVideoUrl(heroVidUrl);
             setCustomVideoUrl(videoUrl);
             setCustomDescription(description);
+            if (speakers) setCustomSpeakers(speakers);
             setSectionOrder(order);
             setSectionVisible(visible);
             if (lang) setCustomLang(lang);
@@ -1125,6 +1141,7 @@ export default function EventPage() {
                     name,
                     tagline,
                     description,
+                    speakers: speakers?.length ? speakers : undefined,
                     heroImages: heroImages.length ? heroImages : undefined,
                     heroVideoUrl: heroVidUrl || undefined,
                   }),
@@ -1135,7 +1152,7 @@ export default function EventPage() {
               } catch { /* ignore */ }
             } else {
               try {
-                localStorage.setItem(`event-customize-${slug}`, JSON.stringify({ name, tagline, accent, heroImages, heroVideoUrl: heroVidUrl, videoUrl, description, sectionOrder: order, sectionVisible: visible, lang, translations }));
+                localStorage.setItem(`event-customize-${slug}`, JSON.stringify({ name, tagline, accent, heroImages, heroVideoUrl: heroVidUrl, videoUrl, description, speakers: speakers ?? customSpeakers, sectionOrder: order, sectionVisible: visible, lang, translations }));
               } catch { /* ignore */ }
             }
             setCustomizeOpen(false);
@@ -1181,6 +1198,7 @@ function CustomizeModal({
   initialHeroVideoUrl,
   initialVideoUrl,
   initialDescription,
+  initialSpeakers,
   initialLang,
   initialTranslations,
   sectionOrder,
@@ -1196,12 +1214,13 @@ function CustomizeModal({
   initialHeroVideoUrl: string;
   initialVideoUrl: string;
   initialDescription: string;
+  initialSpeakers: SpeakerData[];
   initialLang?: string;
   initialTranslations?: Record<string, { name: string; tagline: string; description: string }>;
   sectionOrder: string[];
   sectionVisible: Record<string, boolean>;
   onClose: () => void;
-  onSave: (name: string, tagline: string, accent: string | null, heroImages: string[], heroVideoUrl: string, videoUrl: string, description: string, order: string[], visible: Record<string, boolean>, lang?: string, translations?: Record<string, { name: string; tagline: string; description: string }>) => void;
+  onSave: (name: string, tagline: string, accent: string | null, heroImages: string[], heroVideoUrl: string, videoUrl: string, description: string, order: string[], visible: Record<string, boolean>, lang?: string, translations?: Record<string, { name: string; tagline: string; description: string }>, speakers?: SpeakerData[]) => void;
 }) {
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]['id']>('content');
   const [name, setName] = useState(initialName);
@@ -1217,8 +1236,29 @@ function CustomizeModal({
   const [dragged, setDragged] = useState<string | null>(null);
   const [lang, setLang] = useState(initialLang || 'en');
   const [translations, setTranslations] = useState<Record<string, { name: string; tagline: string; description: string }>>(initialTranslations || {});
+  const [speakers, setSpeakers] = useState<SpeakerData[]>(initialSpeakers || []);
 
   const { prefs, setPref, togglePref } = useAccessibility();
+
+  const updateSpeaker = (i: number, field: keyof SpeakerData, value: string) => {
+    setSpeakers((prev) => {
+      const next = [...prev];
+      if (!next[i]) return prev;
+      next[i] = { ...next[i], [field]: value };
+      if (field === 'name') {
+        next[i].initials = value.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2) || '?';
+      }
+      return next;
+    });
+  };
+
+  const addSpeaker = () => {
+    setSpeakers((prev) => [...prev, { name: `Speaker ${prev.length + 1}`, role: 'Add your speaker', initials: `S${prev.length + 1}`, bio: '' }]);
+  };
+
+  const removeSpeaker = (i: number) => {
+    setSpeakers((prev) => prev.filter((_, idx) => idx !== i));
+  };
 
   const handleDragStart = (id: string) => setDragged(id);
   const handleDragOver = (e: React.DragEvent) => e.preventDefault();
@@ -1240,7 +1280,7 @@ function CustomizeModal({
       const t = translations[code];
       return t?.name || t?.tagline || t?.description;
     });
-    onSave(name, tagline, accent, heroImages, heroVideoUrl.trim(), videoUrl.trim(), description.trim(), order, visible, lang, hasTranslations ? translations : undefined);
+    onSave(name, tagline, accent, heroImages, heroVideoUrl.trim(), videoUrl.trim(), description.trim(), order, visible, lang, hasTranslations ? translations : undefined, speakers);
   };
 
   const inputStyle = { borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text)' };
@@ -1290,6 +1330,27 @@ function CustomizeModal({
                     <button key={c} onClick={() => setAccent(accent === c ? null : c)} className="w-10 h-10 rounded-full border-2 transition-transform" style={{ background: c, borderColor: accent === c ? '#fff' : 'transparent', transform: accent === c ? 'scale(1.1)' : 'scale(1)' }} />
                   ))}
                 </div>
+              </div>
+              <div>
+                <label className="block text-sm mb-2" style={labelStyle}>Speakers</label>
+                <p className="text-xs mb-3" style={labelStyle}>Add name, role, bio, and website link for each speaker.</p>
+                <div className="space-y-3 max-h-48 overflow-y-auto">
+                  {speakers.map((s, i) => (
+                    <div key={i} className="p-3 rounded-lg" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-xs font-medium" style={labelStyle}>Speaker {i + 1}</span>
+                        <button type="button" onClick={() => removeSpeaker(i)} className="text-xs hover:text-red-400" style={labelStyle}>Remove</button>
+                      </div>
+                      <input value={s.name} onChange={(e) => updateSpeaker(i, 'name', e.target.value)} placeholder="Name" className="w-full mb-2 px-3 py-2 rounded border text-sm" style={inputStyle} />
+                      <input value={s.role} onChange={(e) => updateSpeaker(i, 'role', e.target.value)} placeholder="Role / Title" className="w-full mb-2 px-3 py-2 rounded border text-sm" style={inputStyle} />
+                      <textarea value={s.bio || ''} onChange={(e) => updateSpeaker(i, 'bio', e.target.value)} placeholder="Bio" rows={2} className="w-full mb-2 px-3 py-2 rounded border text-sm" style={inputStyle} />
+                      <input value={s.url || ''} onChange={(e) => updateSpeaker(i, 'url', e.target.value)} placeholder="Website URL (e.g. linkedin.com/...)" className="w-full px-3 py-2 rounded border text-sm" style={inputStyle} />
+                    </div>
+                  ))}
+                </div>
+                <button type="button" onClick={addSpeaker} className="mt-2 text-sm px-3 py-2 rounded border" style={{ borderColor: 'rgba(255,255,255,0.2)', color: 'var(--color-accent)' }}>
+                  + Add speaker
+                </button>
               </div>
               <div>
                 <label className="block text-sm mb-2" style={labelStyle}>Section order (drag to reorder)</label>
