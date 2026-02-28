@@ -14,6 +14,8 @@ import { DemoCustomizeModal } from '@/components/DemoCustomizeModal';
 
 const accentColor = '#00F5D4';
 
+const PLAYBACK_RATE = 0.6;
+
 const HERO_VIDEOS = [
   '/videos/grok-video-ef05866b-8ea6-4232-89c5-43471886553c.mp4',
   '/videos/grok-video-1490b874-5345-4a60-9908-38306f3bc978.mp4',
@@ -167,11 +169,25 @@ export default function AIFestivalUK2026Page() {
   const [showPromo, setShowPromo] = useState(false);
   const [showCustomize, setShowCustomize] = useState(false);
   const [videoIndex, setVideoIndex] = useState(0);
+  const [visibleVideo, setVisibleVideo] = useState(0);
+  const videoRef0 = useRef<HTMLVideoElement>(null);
+  const videoRef1 = useRef<HTMLVideoElement>(null);
+  const videoRefs = [videoRef0, videoRef1];
   const scheduleFiltered = SCHEDULE.filter((s) => s.day === scheduleDay);
 
   const handleVideoEnded = () => {
-    setVideoIndex((i) => (i + 1) % HERO_VIDEOS.length);
+    const nextIdx = (videoIndex + 1) % HERO_VIDEOS.length;
+    setVideoIndex(nextIdx);
+    setVisibleVideo((v) => 1 - v);
   };
+
+  useEffect(() => {
+    const vid = videoRefs[visibleVideo].current;
+    if (vid) {
+      vid.playbackRate = PLAYBACK_RATE;
+      vid.play().catch(() => {});
+    }
+  }, [visibleVideo, videoIndex]);
 
   useEffect(() => {
     const schema = {
@@ -220,20 +236,35 @@ export default function AIFestivalUK2026Page() {
         </div>
       </nav>
 
-      {/* World Fair 2090 — immersive hero with rotating video loop (5 clips cycle) */}
+      {/* World Fair 2090 — immersive hero with rotating video loop (5 clips, 0.75x speed, crossfade) */}
       <section className="relative px-6 pt-36 pb-28 min-h-[85vh] flex flex-col justify-center overflow-hidden isolate">
-        <div className="absolute inset-0 z-0">
-          <video
-            key={videoIndex}
-            src={HERO_VIDEOS[videoIndex]}
-            autoPlay
-            muted
-            playsInline
-            preload="auto"
-            onEnded={handleVideoEnded}
-            className="absolute inset-0 w-full h-full object-cover"
-            poster="/images/hero-ai-festival-space.png"
-          />
+        <div className="absolute inset-0 z-0" style={{ background: '#000' }}>
+          {[0, 1].map((i) => {
+            const clipIdx = i === visibleVideo ? videoIndex : (videoIndex + 1) % HERO_VIDEOS.length;
+            const isVisible = i === visibleVideo;
+            return (
+              <video
+                key={`${i}-${clipIdx}`}
+                ref={videoRefs[i]}
+                src={HERO_VIDEOS[clipIdx]}
+                muted
+                playsInline
+                preload="auto"
+                autoPlay={i === 0}
+                onEnded={isVisible ? handleVideoEnded : undefined}
+                onLoadedMetadata={(e) => {
+                  const v = e.target as HTMLVideoElement;
+                  v.playbackRate = PLAYBACK_RATE;
+                  if (i === 1) v.play().catch(() => {});
+                }}
+                onCanPlay={(e) => {
+                  if (i === 1) (e.target as HTMLVideoElement).play().catch(() => {});
+                }}
+                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+                style={{ opacity: isVisible ? 1 : 0, zIndex: isVisible ? 1 : 0 }}
+              />
+            );
+          })}
         </div>
         <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 25%, rgba(0,0,0,0.6) 65%, rgba(0,0,0,0.98) 100%)' }} />
         <div className="absolute inset-0 z-[1] opacity-30 pointer-events-none" style={{ background: `radial-gradient(ellipse 80% 50% at 50% 40%, ${accentColor}20 0%, transparent 50%)` }} />
