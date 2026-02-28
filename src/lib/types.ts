@@ -69,4 +69,8 @@ export interface CreateEventInput {
   enhanced?: boolean;
   hero_style?: string;
   hero_prompt?: string;
+  /** Optional: override AI-generated venue name */
+  venue_name?: string;
+  /** Optional: override AI-generated venue address */
+  venue_address?: string;
 }

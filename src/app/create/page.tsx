@@ -79,6 +79,8 @@ export default function CreatePage() {
     speakers_hint: '',
     hero_style: 'auto',
     hero_prompt: '',
+    venue_name: '',
+    venue_address: '',
   });
 
   const update = (field: string, value: string | number) => {
@@ -132,7 +134,13 @@ export default function CreatePage() {
       const res = await fetch(url, {
         method: 'POST',
         headers,
-        body: JSON.stringify({ ...form, capacity: form.capacity, days: form.days }),
+        body: JSON.stringify({
+          ...form,
+          capacity: form.capacity,
+          days: form.days,
+          venue_name: form.venue_name?.trim() || undefined,
+          venue_address: form.venue_address?.trim() || undefined,
+        }),
       });
 
       const data = await res.json();
@@ -316,6 +324,18 @@ export default function CreatePage() {
                 <p className="mt-1 text-sm" style={{ color: 'var(--color-warm)' }}>{validationErrors.date}</p>
               )}
             </div>
+          </div>
+
+          <div>
+            <label className="label">Venue Name (optional)</label>
+            <input type="text" className="input-field" placeholder="e.g. Johnson City Convention Center"
+              value={form.venue_name} onChange={(e) => update('venue_name', e.target.value)} />
+          </div>
+
+          <div>
+            <label className="label">Venue Address (optional)</label>
+            <input type="text" className="input-field" placeholder="e.g. 123 Main St, Johnson City, TN"
+              value={form.venue_address} onChange={(e) => update('venue_address', e.target.value)} />
           </div>
 
           <div>
