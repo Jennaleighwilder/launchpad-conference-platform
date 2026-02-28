@@ -448,39 +448,49 @@ export default function AIFestivalUK2026Page() {
 
       <WaveDivider colors={[accentColor]} />
 
-      <section className="px-6 py-24" style={{ background: 'linear-gradient(180deg, rgba(4,4,14,0.95) 0%, rgba(0,0,0,0.3) 100%)', borderTop: '1px solid rgba(0,245,212,0.1)' }}>
-        <div className="max-w-6xl mx-auto">
+      {/* Venue — World Fair 2090: glowing panels, cyan accents, vibrant cards */}
+      <section className="px-6 py-24 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, rgba(2,4,18,0.98) 0%, rgba(0,0,0,0.4) 100%)', borderTop: `1px solid ${accentColor}25` }}>
+        <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)', backgroundSize: '48px 48px' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] pointer-events-none opacity-15" style={{ background: `radial-gradient(circle, ${accentColor}40 0%, transparent 70%)` }} />
+        <div className="max-w-6xl mx-auto relative">
           <ScrollReveal>
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-normal mb-4" style={{ fontFamily: 'Orbitron, sans-serif', color: 'var(--color-text)', textShadow: `0 0 30px ${accentColor}20` }}>Venue</h2>
-            <p className="text-base max-w-xl mx-auto" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>West Suffolk College STEM Centre — £2M XR Lab, immersive tech, and spatial computing</p>
+            <p className="text-[10px] uppercase tracking-[0.4em] mb-3 font-mono" style={{ color: accentColor }}>Where it happens</p>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal mb-4" style={{ fontFamily: 'Orbitron, sans-serif', color: '#fff', textShadow: `0 0 40px ${accentColor}30` }}>Venue</h2>
+            <p className="text-lg max-w-2xl mx-auto" style={{ color: 'rgba(255,255,255,0.85)', lineHeight: 1.6 }}>West Suffolk College STEM Centre — £2M XR Lab, immersive tech, and spatial computing</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {VENUE_GALLERY.map((img, i) => (
-              <div key={i} className="rounded-lg overflow-hidden relative aspect-[4/3]" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
-                <Image src={img} alt={`${VENUE.name} ${i + 1}`} fill className="object-cover" sizes="(max-width: 768px) 50vw, 25vw" unoptimized />
+              <div key={i} className="rounded-xl overflow-hidden relative aspect-[4/3] group" style={{ border: `1px solid ${accentColor}30`, boxShadow: `0 0 20px ${accentColor}15, inset 0 0 20px rgba(0,0,0,0.3)` }}>
+                <Image src={img} alt={`${VENUE.name} ${i + 1}`} fill className="object-cover transition-transform duration-500 group-hover:scale-110" sizes="(max-width: 768px) 50vw, 25vw" unoptimized />
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: `linear-gradient(to top, ${accentColor}30 0%, transparent 50%)` }} />
               </div>
             ))}
           </div>
-          <div className="rounded-xl overflow-hidden mb-4" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
-            <Image src={VENUE.photo} alt={VENUE.name} width={800} height={400} className="w-full h-48 object-cover" unoptimized />
+          <div className="rounded-2xl overflow-hidden mb-8 relative" style={{ border: `2px solid ${accentColor}40`, boxShadow: `0 0 40px ${accentColor}20` }}>
+            <Image src={VENUE.photo} alt={VENUE.name} width={800} height={400} className="w-full h-56 object-cover" unoptimized />
+            <div className="absolute inset-0" style={{ background: `linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 50%)` }} />
+            <div className="absolute bottom-0 left-0 right-0 p-6">
+              <h3 className="text-xl font-semibold mb-1" style={{ fontFamily: 'Orbitron, sans-serif', color: '#fff' }}>{VENUE.name}</h3>
+              <p className="text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>{VENUE.address}</p>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {VENUE.amenities.map((a) => (
-              <span key={a} className="px-3 py-1.5 rounded-lg text-sm" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>{a}</span>
-            ))}
-          </div>
-          <p className="text-base mb-4" style={{ color: 'var(--color-text-muted)', lineHeight: 1.6 }}>{VENUE.capacity_note}</p>
           <div className="flex flex-wrap gap-3 mb-6">
+            {VENUE.amenities.map((a, i) => (
+              <span key={a} className="px-4 py-2 rounded-xl text-sm font-medium" style={{ background: `${accentColor}15`, border: `1px solid ${accentColor}50`, color: accentColor, boxShadow: `0 0 15px ${accentColor}20` }}>{a}</span>
+            ))}
+          </div>
+          <p className="text-base mb-8" style={{ color: 'rgba(255,255,255,0.8)', lineHeight: 1.7 }}>{VENUE.capacity_note}</p>
+          <div className="grid sm:grid-cols-3 gap-4 mb-8">
             {TRANSPORT.map((t) => (
-              <div key={t.mode} className="px-4 py-2 rounded-lg" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                <span className="font-medium text-sm">{t.mode}</span>
-                <p className="text-xs mt-1" style={{ color: 'var(--color-text-muted)' }}>{t.note}</p>
+              <div key={t.mode} className="rounded-xl p-5 transition-all hover:scale-[1.02]" style={{ background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(12px)', border: `1px solid ${accentColor}25`, boxShadow: `0 0 20px ${accentColor}10` }}>
+                <span className="block text-sm font-semibold mb-2" style={{ color: accentColor, fontFamily: 'var(--font-mono)' }}>{t.mode}</span>
+                <p className="text-sm" style={{ color: 'rgba(255,255,255,0.85)', lineHeight: 1.5 }}>{t.note}</p>
               </div>
             ))}
           </div>
-          <div className="rounded-xl overflow-hidden border" style={{ borderColor: 'rgba(255,255,255,0.08)', height: 280 }}>
-            <iframe title="Venue map" src="https://www.google.com/maps?q=STEM+Centre+73+Western+Way+Bury+St+Edmunds&z=15&output=embed" width="100%" height="100%" style={{ border: 0, filter: 'invert(0.9) hue-rotate(180deg)' }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+          <div className="rounded-2xl overflow-hidden" style={{ border: `1px solid ${accentColor}30`, boxShadow: `0 0 30px ${accentColor}15`, height: 280 }}>
+            <iframe title="Venue map" src="https://www.google.com/maps?q=STEM+Centre+73+Western+Way+Bury+St+Edmunds&z=15&output=embed" width="100%" height="100%" style={{ border: 0, filter: 'invert(0.92) hue-rotate(180deg) contrast(1.1)' }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
           </div>
           </ScrollReveal>
         </div>
