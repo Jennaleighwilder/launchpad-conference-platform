@@ -15,6 +15,7 @@ import { PROMO_VIDEO_POOL } from '@/lib/hero-videos';
 
 const DEMO_EVENTS = [
   { slug: 'ai-festival-uk-2026', name: 'AI Festival UK 2026', date: 'May 27-28, 2026', desc: 'Live event · Bury St Edmunds · £2M XR Lab', color: '#22C55E', img: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&h=400&fit=crop', live: true },
+  { slug: 'sifted-summit-2026', name: 'Sifted Summit', date: 'Sep 30 – Oct 1, 2026', desc: 'Magazine London · 12 speakers · Founder £255', color: '#FF5733', img: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600&h=400&fit=crop', live: true },
   { slug: 'the-future-forum', name: 'The Future Forum', date: 'March 23, 2026', desc: 'Gen Z energy · Tokyo · Matrix rain', color: '#EC4899', img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop' },
   { slug: 'cybernova', name: 'CyberNova', date: 'March 24, 2026', desc: 'Hacker vibes · Berlin · Radar sweep', color: '#EF4444', img: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&h=400&fit=crop' },
   { slug: 'ai-summit-2026', name: 'AI Summit 2026', date: 'March 25-26, 2026', desc: 'Flagship · San Francisco · 50-node graph', color: '#A78BFA', img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=400&fit=crop' },
