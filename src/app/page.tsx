@@ -89,10 +89,10 @@ function EarlyBirdCountdownCard() {
       <div className="flex items-baseline gap-4">
         <span className="text-xs uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Free for 30 more days —</span>
         <div className="flex gap-3 font-mono text-2xl font-bold" style={{ color: 'var(--color-accent)' }}>
-          <span>{diff.d}d</span>
-          <span>{diff.h}h</span>
-          <span>{diff.m}m</span>
-          <span>{diff.s}s</span>
+          <span>{String(diff.d).padStart(2, '0')}d</span>
+          <span>{String(diff.h).padStart(2, '0')}h</span>
+          <span>{String(diff.m).padStart(2, '0')}m</span>
+          <span>{String(diff.s).padStart(2, '0')}s</span>
         </div>
       </div>
     </div>
@@ -264,6 +264,7 @@ export default function HomePage() {
           <Link href="/affiliate" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden sm:inline" style={{ color: 'var(--color-text-muted)' }}>Affiliate</Link>
           <Link href="/careers" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden lg:inline" style={{ color: 'var(--color-text-muted)' }}>Careers</Link>
           <Link href="/pricing" className="text-sm hover:text-[var(--color-accent)] transition-colors hidden sm:inline" style={{ color: 'var(--color-text-muted)' }}>Pricing</Link>
+          <Link href="/mobile" className="text-sm hover:text-[var(--color-accent)] transition-colors flex items-center gap-1.5" style={{ color: 'var(--color-text-muted)' }}><span aria-hidden>📱</span> Mobile</Link>
           {user ? (
             <>
               <span className="text-sm hidden sm:inline" style={{ color: 'var(--color-text-muted)' }}>{user.email}</span>
@@ -831,7 +832,8 @@ export default function HomePage() {
             </div>
             <div>
               <div className="text-xs uppercase tracking-wider mb-4" style={{ color: 'var(--color-text-muted)' }}>Connect</div>
-              <div className="flex gap-4">
+              <div className="flex flex-wrap gap-4">
+                <Link href="/mobile" className="text-sm hover:text-white transition-colors flex items-center gap-1" style={{ color: '#666' }}>📱 Mobile</Link>
                 <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Twitter</a>
                 <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-white transition-colors" style={{ color: '#666' }}>LinkedIn</a>
                 <a href="https://github.com/Jennaleighwilder/launchpad-conference-platform" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-white transition-colors" style={{ color: '#666' }}>GitHub</a>

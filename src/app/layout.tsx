@@ -8,6 +8,7 @@ import { AccessibilityBody } from "@/components/AccessibilityBody";
 import { LiveChat } from "@/components/LiveChat";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://launchpad-conference-platform.vercel.app"),
   title: "Launchpad — AI-Powered Conference Generator",
   description: "Generate a complete conference page in 60 seconds. Drop your topic, city, and date — AI builds the rest.",
   openGraph: {
