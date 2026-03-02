@@ -283,7 +283,7 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* Hero — 5-photo reel with Ken Burns, centered layout, early bird countdown (Twan's preferred look) */}
+      {/* Hero — 5-photo reel with Ken Burns, centered layout, early bird countdown */}
       <section className="min-h-screen flex flex-col justify-center items-center relative px-6 py-32 overflow-hidden">
         {/* Hero image reel — 5 photos cycle every 6s with crossfade + Ken Burns */}
         <div className="absolute inset-0 z-0">

@@ -6,6 +6,7 @@ import { AccessibilityProvider } from "@/contexts/AccessibilityContext";
 import { AccessibilityToggle } from "@/components/AccessibilityToggle";
 import { AccessibilityBody } from "@/components/AccessibilityBody";
 import { LiveChat } from "@/components/LiveChat";
+import { CreatorCredit } from "@/components/CreatorCredit";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://launchpad-conference-platform.vercel.app"),
@@ -40,6 +41,7 @@ export default function RootLayout({
             {children}
             <AccessibilityToggle />
             <LiveChat />
+            <CreatorCredit />
           </AccessibilityProvider>
         </AuthProvider>
       </body>

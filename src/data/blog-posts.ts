@@ -1,7 +1,7 @@
 /** Posts excluded from blog index — accessible only via direct URL */
 export const HIDDEN_FROM_INDEX = ['murderers-lock-build'];
 
-/** Featured hero article slug (event planning content Twan liked) */
+/** Featured hero article slug (event planning content) */
 export const FEATURED_BLOG_SLUG = 'ai-obsolete-6-month-cycle';
 
 export const BLOG_POSTS = [
@@ -17,7 +17,7 @@ export const BLOG_POSTS = [
   {
     slug: 'free-to-premium-event-funnel',
     title: 'The Free-to-Premium Event Funnel That Converts',
-    excerpt: 'Launch free, give attendees a taste, then convert 12% to premium with customization, analytics, and integrations. Exactly how Twan\'s clients scale.',
+    excerpt: 'Launch free, give attendees a taste, then convert 12% to premium with customization, analytics, and integrations.',
     category: 'Guides',
     date: '2026-02-22',
     author: 'Launchpad Team',
