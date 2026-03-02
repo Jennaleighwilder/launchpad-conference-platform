@@ -54,7 +54,7 @@ Target styles by event type:
 
 ## Architecture
 
-- **Hero:** Video preferred when available (from pool or custom). Falls back to Ken Burns slideshow.
+- **Hero:** Video preferred when available (from pool or custom). Falls back to photo slideshow.
 - **Promo section:** Uses `PROMO_VIDEO_POOL` — all videos playable via `<video>` tags.
 - **Event generation:** Assigns `hero_video_url` from pool for every new event.
 - **resolveHeroVideo:** Uses pool fallback when event has no custom video.

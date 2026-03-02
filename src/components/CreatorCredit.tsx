@@ -17,6 +17,8 @@ export function CreatorCredit() {
         >
           {CREATOR_NAME}
         </Link>
+        {' · '}
+        <span>All rights reserved. Use, borrowing, or adaptation requires permission.</span>
       </p>
     </footer>
   );

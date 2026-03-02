@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { KenBurnsSlideshow } from '@/components/demo-event/DemoEventLayout';
+import { HeroSlideshow } from '@/components/demo-event/DemoEventLayout';
 import { LiveChat } from '@/components/LiveChat';
 
 const AC = '#FF5733'; const A2 = '#1E3A5F'; const A3 = '#FFB347';
@@ -101,7 +101,7 @@ export default function SiftedSummit2026() {
 
       {/* ── HERO ── */}
       <section style={{ position: 'relative', height: '92vh', minHeight: 620, overflow: 'hidden' }}>
-        <KenBurnsSlideshow images={HERO_IMGS} />
+        <HeroSlideshow images={HERO_IMGS} />
         <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(10,10,15,0.2) 0%, rgba(10,10,15,0.55) 40%, rgba(10,10,15,0.92) 75%, #0A0A0F 100%)', zIndex: 1 }} />
         <div className="relative z-10 px-6 pb-16 pt-8 max-w-6xl mx-auto w-full h-full flex flex-col justify-end">
           <Link href="/" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.35)', textDecoration: 'none', marginBottom: 16 }}>← Back to Launchpad</Link>
@@ -264,9 +264,8 @@ export default function SiftedSummit2026() {
       {/* ── FOOTER ── */}
       <footer style={{ borderTop: '1px solid rgba(255,255,255,0.04)', padding: '2rem 0', textAlign: 'center' }}>
         <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.25)' }}>
-          Powered by <Link href="/" style={{ color: AC, textDecoration: 'none' }}>Launchpad</Link> — AI-powered conference generation
+          <Link href="/" style={{ color: AC, textDecoration: 'none' }}>Launchpad</Link>
         </p>
-        <p style={{ fontSize: '0.55rem', color: 'rgba(255,255,255,0.12)', marginTop: 4 }}>Demo page generated in 15 seconds by AI agents</p>
       </footer>
       <LiveChat />
     </main>

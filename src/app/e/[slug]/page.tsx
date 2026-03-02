@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { EventData, SpeakerData, ScheduleItem, PricingData, VenueData } from '@/lib/types';
-import { KenBurnsSlideshow, CountdownTimer, resolveHeroImages, resolveHeroVideo } from '@/components/demo-event/DemoEventLayout';
+import { HeroSlideshow, CountdownTimer, resolveHeroImages, resolveHeroVideo } from '@/components/demo-event/DemoEventLayout';
 import { generateHeroCSS, generateHeroSVG } from '@/lib/hero-generator';
 import { getEventTheme } from '@/lib/event-themes';
 import { PromoteModal } from '@/components/PromoteModal';
@@ -445,7 +445,7 @@ export default function EventPage() {
           </div>
         ) : (
           <div className="absolute inset-0 z-0">
-            <KenBurnsSlideshow images={heroImages} />
+            <HeroSlideshow images={heroImages} />
           </div>
         )}
         {/* Dark overlay */}

@@ -2,6 +2,8 @@
 
 Generate professional conference websites in seconds. Enter a topic and city, and AI builds the entire event — speakers, venue, schedule, pricing, and a shareable public page.
 
+**Proprietary.** This repository is private. All code is © 2026 Jennaleigh Wilder. Unauthorized use, copying, or distribution is prohibited. Any use — including borrowing or adapting code — requires prior written permission.
+
 ## Features
 
 - **Instant Generation** — Full conference page from just topic + city + date
@@ -65,4 +67,7 @@ Next.js 16 · Tailwind v4 · Supabase · OpenAI GPT-4o-mini · Stripe · TypeScr
 
 ## License
 
-MIT
+Proprietary. All rights reserved. © 2026 Jennaleigh Wilder.
+
+This codebase is not open source. Use, reproduction, borrowing, or distribution
+requires prior written permission from the copyright holder.

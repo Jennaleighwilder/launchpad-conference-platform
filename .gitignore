@@ -39,6 +39,9 @@ yarn-error.log*
 # deck build venv
 .venv-deck
 
+# generated investor deck
+Launchpad-Investor-Deck-v3.pptx
+
 # deploy zip (regenerate with: zip -r launchpad-deploy-$(date +%Y%m%d).zip . -x "node_modules/*" -x ".next/*" -x ".venv-deck/*" -x ".git/*" -x "*.zip" -x ".DS_Store" -x ".env*")
 launchpad-deploy-*.zip
 

@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { RadarSweep, GameOfLife } from '@/components/event-viz';
 import { getSpeakerPhoto } from '@/lib/speaker-photos';
 import {
-  KenBurnsSlideshow,
+  HeroSlideshow,
   WaveDivider,
   LiveRegistrationCounter,
   CountdownTimer,
@@ -102,7 +102,7 @@ export default function CybernovaPage() {
 
       <section className="relative px-6 pt-32 pb-24 min-h-[70vh] flex flex-col justify-end overflow-hidden isolate">
         <div className="absolute inset-0 z-0">
-          <KenBurnsSlideshow images={SLIDESHOW_IMAGES} />
+          <HeroSlideshow images={SLIDESHOW_IMAGES} />
         </div>
         <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)' }} />
         <div className="absolute inset-0 z-[1] opacity-30 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% 50%, #1E3A8A26 0%, #DC262615 40%, transparent 70%)' }} />

@@ -11,7 +11,7 @@ export const BLOG_POSTS = [
     excerpt: 'What used to take half a year now takes 60 seconds. Here\'s how AI is reshaping the conference industry — and why event planners who adapt will win.',
     category: 'Product',
     date: '2026-02-20',
-    author: 'Launchpad Team',
+    author: 'Jennaleigh Wilder',
     image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&h=450&fit=crop',
   },
   {
@@ -20,7 +20,7 @@ export const BLOG_POSTS = [
     excerpt: 'Launch free, give attendees a taste, then convert 12% to premium with customization, analytics, and integrations.',
     category: 'Guides',
     date: '2026-02-22',
-    author: 'Launchpad Team',
+    author: 'Jennaleigh Wilder',
     image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=450&fit=crop',
   },
   {
@@ -29,7 +29,7 @@ export const BLOG_POSTS = [
     excerpt: 'The Customize button isn\'t just a feature — it\'s a premium upsell trigger. 78% of users who open it convert to paid.',
     category: 'Product',
     date: '2026-02-21',
-    author: 'Launchpad Team',
+    author: 'Jennaleigh Wilder',
     image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=800&h=450&fit=crop',
   },
   {
@@ -38,7 +38,7 @@ export const BLOG_POSTS = [
     excerpt: 'More experiments, lower risk, better market timing. Why event planners who ship fast win.',
     category: 'Resources',
     date: '2026-02-19',
-    author: 'Launchpad Team',
+    author: 'Jennaleigh Wilder',
     image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=450&fit=crop',
   },
   {
@@ -47,7 +47,7 @@ export const BLOG_POSTS = [
     excerpt: 'How the Venue Agent works — embedded maps, nearby hotels, restaurant recommendations, and accessibility scoring.',
     category: 'Product',
     date: '2026-02-18',
-    author: 'Launchpad Team',
+    author: 'Jennaleigh Wilder',
     image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=450&fit=crop',
   },
   {
@@ -56,7 +56,7 @@ export const BLOG_POSTS = [
     excerpt: 'Our parallel AI architecture generates complete conferences in under 30 seconds.',
     category: 'Engineering',
     date: '2026-02-15',
-    author: 'Jennifer West',
+    author: 'Jennaleigh Wilder',
     image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=450&fit=crop',
   },
   {
@@ -65,7 +65,7 @@ export const BLOG_POSTS = [
     excerpt: 'From venue to catering to AV — a practical breakdown for event planners.',
     category: 'Resources',
     date: '2026-02-10',
-    author: 'Launchpad Team',
+    author: 'Jennaleigh Wilder',
     image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=450&fit=crop',
   },
   {
@@ -74,7 +74,7 @@ export const BLOG_POSTS = [
     excerpt: 'How to run events that work for in-person and virtual attendees.',
     category: 'Guides',
     date: '2026-02-05',
-    author: 'Launchpad Team',
+    author: 'Jennaleigh Wilder',
     image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=450&fit=crop',
   },
   {
@@ -83,7 +83,7 @@ export const BLOG_POSTS = [
     excerpt: 'Beyond ticket sales: measuring what actually drives event success.',
     category: 'Resources',
     date: '2026-01-28',
-    author: 'Launchpad Team',
+    author: 'Jennaleigh Wilder',
     image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=800&h=450&fit=crop',
   },
   {
@@ -92,7 +92,7 @@ export const BLOG_POSTS = [
     excerpt: 'How we match speakers to events using AI and diversity heuristics.',
     category: 'Engineering',
     date: '2026-01-22',
-    author: 'Jennifer West',
+    author: 'Jennaleigh Wilder',
     image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&h=450&fit=crop',
   },
   {
@@ -101,7 +101,7 @@ export const BLOG_POSTS = [
     excerpt: 'Integrations, APIs, and tools that power today\'s best conferences.',
     category: 'Product',
     date: '2026-01-15',
-    author: 'Launchpad Team',
+    author: 'Jennaleigh Wilder',
     image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=450&fit=crop',
   },
   {
@@ -110,7 +110,7 @@ export const BLOG_POSTS = [
     excerpt: 'The engineering story — stack decisions, swarm architecture, fallback system, 34 pages. What it proves about AI-assisted development.',
     category: 'Engineering',
     date: '2026-01-08',
-    author: 'Jennifer West',
+    author: 'Jennaleigh Wilder',
     image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=450&fit=crop',
   },
   {
@@ -119,7 +119,7 @@ export const BLOG_POSTS = [
     excerpt: 'We\'re building the future of conference planning. Here\'s what we shipped.',
     category: 'Company',
     date: '2026-01-01',
-    author: 'Launchpad Team',
+    author: 'Jennaleigh Wilder',
     image: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&h=450&fit=crop',
   },
   {
@@ -128,7 +128,7 @@ export const BLOG_POSTS = [
     excerpt: 'Argon2id (64MB), AES-256-GCM, WebAuthn with counter enforcement, atomic single-use challenges. How we built an unbreakable lock — and proved it with Playwright red-team CI.',
     category: 'Engineering',
     date: '2026-02-23',
-    author: 'Jennifer West',
+    author: 'Jennaleigh Wilder',
     image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=450&fit=crop',
   },
 ];

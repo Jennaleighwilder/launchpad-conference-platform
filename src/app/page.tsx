@@ -10,7 +10,7 @@ import { useAuth } from '@/components/AuthProvider';
 import { PromotionEngine } from '@/components/PromotionEngine';
 import { AnimatedTerminal } from '@/components/AnimatedTerminal';
 import { SocialProofTicker } from '@/components/SocialProofTicker';
-import { KenBurnsSlideshow } from '@/components/demo-event/DemoEventLayout';
+import { HeroSlideshow } from '@/components/demo-event/DemoEventLayout';
 import { PROMO_VIDEO_POOL } from '@/lib/hero-videos';
 
 const DEMO_EVENTS = [
@@ -283,11 +283,11 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* Hero — 5-photo reel with Ken Burns, centered layout, early bird countdown */}
+      {/* Hero — 5-photo reel, centered layout, early bird countdown */}
       <section className="min-h-screen flex flex-col justify-center items-center relative px-6 py-32 overflow-hidden">
-        {/* Hero image reel — 5 photos cycle every 6s with crossfade + Ken Burns */}
+        {/* Hero image reel — 5 photos cycle every 6s with crossfade */}
         <div className="absolute inset-0 z-0">
-          <KenBurnsSlideshow images={HERO_IMAGES} />
+          <HeroSlideshow images={HERO_IMAGES} />
           <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)' }} />
         </div>
         <div className="absolute inset-0" style={{
@@ -841,7 +841,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="pt-8 border-t flex flex-col md:flex-row items-center justify-between gap-4" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-            <p className="text-sm" style={{ color: '#666' }}>© 2026 Launchpad. All rights reserved.</p>
+            <p className="text-sm" style={{ color: '#666' }}>© 2026 Launchpad. All rights reserved. Unauthorized use or reproduction prohibited.</p>
             <div className="flex gap-6">
               <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-white transition-colors" style={{ color: '#666' }}>LinkedIn</a>
               <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-white transition-colors" style={{ color: '#666' }}>Twitter</a>

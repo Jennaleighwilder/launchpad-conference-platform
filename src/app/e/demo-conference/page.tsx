@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getSpeakerPhoto } from '@/lib/speaker-photos';
 import { PrisonerDilemmaKaleidoscope } from '@/components/event-viz';
-import { KenBurnsSlideshow } from '@/components/demo-event/DemoEventLayout';
+import { HeroSlideshow } from '@/components/demo-event/DemoEventLayout';
 import { PromoteModal } from '@/components/PromoteModal';
 import { DemoCustomizeModal } from '@/components/DemoCustomizeModal';
 import { FALLBACK_HERO_POOL } from '@/lib/hero-images';
@@ -333,7 +333,7 @@ export default function DemoConferencePage() {
       {/* Hero */}
       <section className="relative px-6 pt-32 pb-24 min-h-[70vh] flex flex-col justify-end overflow-hidden isolate">
         <div className="absolute inset-0 z-0">
-          <KenBurnsSlideshow images={SLIDESHOW_IMAGES} />
+          <HeroSlideshow images={SLIDESHOW_IMAGES} />
         </div>
         <div className="absolute inset-0 z-[1]" style={{
           background: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.75) 60%, rgba(4,4,14,0.95) 85%, #04040E 100%)',

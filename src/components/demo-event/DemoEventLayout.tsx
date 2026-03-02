@@ -54,7 +54,7 @@ export function ScanlineOverlay({ color = '79,255,223' }: { color?: string }) {
   );
 }
 
-export function KenBurnsSlideshow({ images }: { images: string[] }) {
+export function HeroSlideshow({ images }: { images: string[] }) {
   const [idx, setIdx] = useState(0);
   // Filter falsy URLs — [undefined] or [''] would render broken <img> elements
   const filtered = (images ?? []).filter((u): u is string => !!u && typeof u === 'string');

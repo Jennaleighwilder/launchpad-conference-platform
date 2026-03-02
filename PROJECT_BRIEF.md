@@ -34,7 +34,7 @@ The title and description text are washed out by the hero background. The gradie
 ---
 
 ### 3. Hero image/video — wrong asset
-The hero shows a red tricycle or other non–tech/AI imagery. Ken Burns slideshow or hero video may be loading the wrong asset.
+The hero shows a red tricycle or other non–tech/AI imagery. Photo slideshow or hero video may be loading the wrong asset.
 
 **Fix:** Hero images/video must be tech/AI themed, not random Unsplash nature shots. Update the hero media source in `src/app/e/ai-festival-uk-2026/page.tsx` (currently uses lava video `9b68ed1f-ef9b-437c-b0bc-642f911e47a3_hd.mp4`). If the page inherits from a shared layout, ensure the AI Festival page overrides with appropriate tech/AI assets.
 
