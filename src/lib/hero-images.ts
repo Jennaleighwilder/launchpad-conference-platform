@@ -1,10 +1,11 @@
 /**
- * Hero image pool — topic-aware designs.
- * Picsum = 100% reliable fallback. Unsplash = richer, event-appropriate imagery.
- * Each topic gets images that "make sense with the event" (wellness→nature, AI→tech, etc).
+ * Hero image pool — powered by Image Governor.
+ * Topic-aware designs. Picsum = fallback. Governor = curated pools.
  */
 
-// Topic-keyed Unsplash pools — event-appropriate imagery (no API key for direct URLs)
+import { getHeroPoolForTopic, getUniqueHeroForEvent as govGetUniqueHero } from "@/image-governor";
+
+// Topic-keyed Unsplash pools — kept for getHeroImages compatibility
 const TOPIC_HERO_POOLS: Record<string, string[]> = {
   ai: [
     'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1920&h=1080&fit=crop',
@@ -202,17 +203,11 @@ function topicToKey(topic: string): string {
 
 /**
  * Get topic-aware hero images. Guaranteed non-empty.
- * Uses Unsplash topic pools when available; Picsum as fallback.
+ * Uses Image Governor's curated topic pools; Picsum as fallback.
  */
 export function getHeroImages(seed?: string, topic?: string): string[] {
-  const topicPool = (topic && TOPIC_HERO_POOLS[topicToKey(topic)]) || null;
-  if (topicPool?.length) {
-    const h = seed ? simpleHash(seed) : 0;
-    const mixed = [...topicPool];
-    for (let i = 0; i < 4; i++) {
-      mixed.push(PICSUM_POOL[(h + i) % PICSUM_POOL.length]);
-    }
-    return mixed;
+  if (topic) {
+    return getHeroPoolForTopic(topic);
   }
   return [...PICSUM_POOL];
 }
@@ -351,12 +346,8 @@ export function selectHeroImage(topicKey: string, heroStyle: string, slug: strin
 
 /**
  * Assign a unique hero image per event. Topic-aware: AI events get tech imagery, etc.
- * Deterministic: same event = same image. Different events get different images.
+ * Deterministic: same event = same image. Powered by Image Governor.
  */
 export function getUniqueHeroForEvent(topic: string, city: string, slug: string): string {
-  const topicPool = TOPIC_HERO_POOLS[topicToKey(topic)];
-  const pool = topicPool?.length ? topicPool : PICSUM_POOL;
-  const seed = `${topic}|${city}|${slug}`;
-  const idx = simpleHash(seed) % pool.length;
-  return pool[idx];
+  return govGetUniqueHero(topic, city, slug);
 }
